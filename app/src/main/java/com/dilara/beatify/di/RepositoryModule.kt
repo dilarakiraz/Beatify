@@ -2,8 +2,10 @@ package com.dilara.beatify.di
 
 import com.dilara.beatify.data.repository.FavoritesRepositoryImpl
 import com.dilara.beatify.data.repository.MusicRepositoryImpl
+import com.dilara.beatify.data.repository.PlaylistRepositoryImpl
 import com.dilara.beatify.domain.repository.FavoritesRepository
 import com.dilara.beatify.domain.repository.MusicRepository
+import com.dilara.beatify.domain.repository.PlaylistRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -25,5 +27,11 @@ abstract class RepositoryModule {
     abstract fun bindFavoritesRepository(
         favoritesRepositoryImpl: FavoritesRepositoryImpl
     ): FavoritesRepository
+    
+    @Binds
+    @Singleton
+    abstract fun bindPlaylistRepository(
+        playlistRepositoryImpl: PlaylistRepositoryImpl
+    ): PlaylistRepository
 }
 

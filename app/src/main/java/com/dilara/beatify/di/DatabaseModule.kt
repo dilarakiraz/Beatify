@@ -3,6 +3,7 @@ package com.dilara.beatify.di
 import android.content.Context
 import androidx.room.Room
 import com.dilara.beatify.data.local.dao.FavoriteTrackDao
+import com.dilara.beatify.data.local.dao.PlaylistDao
 import com.dilara.beatify.data.local.database.BeatifyDatabase
 import dagger.Module
 import dagger.Provides
@@ -24,13 +25,21 @@ object DatabaseModule {
             context,
             BeatifyDatabase::class.java,
             "beatify_database"
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
     }
     
     @Provides
     @Singleton
     fun provideFavoriteTrackDao(database: BeatifyDatabase): FavoriteTrackDao {
         return database.favoriteTrackDao()
+    }
+    
+    @Provides
+    @Singleton
+    fun providePlaylistDao(database: BeatifyDatabase): PlaylistDao {
+        return database.playlistDao()
     }
 }
 

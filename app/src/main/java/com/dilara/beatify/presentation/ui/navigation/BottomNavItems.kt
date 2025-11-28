@@ -28,7 +28,7 @@ object BottomNavItems {
         BottomNavItem(
             label = "Playlists",
             icon = Icons.Default.List,
-            selectedIcon = Icons.Default.Add,
+            selectedIcon = Icons.Default.List,
             route = BeatifyRoutes.Playlists.route
         )
     )

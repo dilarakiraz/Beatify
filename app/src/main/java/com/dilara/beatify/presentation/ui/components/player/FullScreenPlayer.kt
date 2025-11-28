@@ -411,9 +411,9 @@ fun SeekBar(
                     .background(
                         brush = Brush.horizontalGradient(
                             colors = listOf(
-                                NeonCyan,
-                                NeonPurple,
-                                Color(0xFF6A9BD5)  // Soft blue - eye-friendly
+                                NeonCyan.copy(alpha = 0.7f),
+                                NeonCyan.copy(alpha = 0.85f),
+                                NeonCyan.copy(alpha = 0.7f)
                             )
                         )
                     )
@@ -427,8 +427,8 @@ fun SeekBar(
                     .background(
                         brush = Brush.radialGradient(
                             colors = listOf(
-                                NeonCyan.copy(alpha = 0.9f),
-                                NeonCyan.copy(alpha = 0.7f)
+                                NeonCyan.copy(alpha = 0.8f),
+                                NeonCyan.copy(alpha = 0.6f)
                             )
                         )
                     )
@@ -440,7 +440,7 @@ fun SeekBar(
                         .background(
                             brush = Brush.radialGradient(
                                 colors = listOf(
-                                    Color.White.copy(alpha = 0.4f),
+                                    Color.White.copy(alpha = 0.3f),
                                     Transparent
                                 )
                             )

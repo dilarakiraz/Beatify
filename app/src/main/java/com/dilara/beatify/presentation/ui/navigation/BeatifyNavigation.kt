@@ -2,8 +2,13 @@ package com.dilara.beatify.presentation.ui.navigation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.Scaffold
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -15,10 +20,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.dilara.beatify.core.navigation.BeatifyRoutes
 import com.dilara.beatify.core.navigation.NavigationAnimations
 import com.dilara.beatify.presentation.state.FavoritesUIEvent
@@ -28,6 +35,8 @@ import com.dilara.beatify.presentation.ui.components.player.FullScreenPlayer
 import com.dilara.beatify.presentation.ui.components.player.MiniPlayer
 import com.dilara.beatify.presentation.ui.favorites.FavoritesScreen
 import com.dilara.beatify.presentation.ui.home.HomeScreen
+import com.dilara.beatify.presentation.ui.playlists.PlaylistDetailScreen
+import com.dilara.beatify.presentation.ui.playlists.PlaylistsScreen
 import com.dilara.beatify.presentation.ui.search.SearchScreen
 import com.dilara.beatify.presentation.viewmodel.FavoritesViewModel
 import com.dilara.beatify.presentation.viewmodel.PlayerViewModel
@@ -98,6 +107,32 @@ fun BeatifyNavigation(
                         }
                     )
                 }
+            } else {
+                // MiniPlayer'ı detay ekranlarında da göster (ama bottom nav bar olmadan)
+                if (playerState.currentTrack != null) {
+                    val density = LocalDensity.current
+                    val systemBars = WindowInsets.systemBars
+                    val bottomPadding = with(density) { 
+                        systemBars.getBottom(density).toDp().coerceAtLeast(0.dp) 
+                    }
+                    
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = bottomPadding)
+                    ) {
+                        MiniPlayer(
+                            track = playerState.currentTrack,
+                            isPlaying = playerState.isPlaying,
+                            onPlayPauseClick = {
+                                playerViewModel.onEvent(PlayerUIEvent.PlayPause)
+                            },
+                            onExpandClick = {
+                                playerViewModel.onEvent(PlayerUIEvent.Expand)
+                            }
+                        )
+                    }
+                }
             }
         }
     ) { innerPadding ->
@@ -155,11 +190,33 @@ fun BeatifyNavigation(
                     popEnterTransition = NavigationAnimations.bottomNavScreenPopTransitions().first,
                     popExitTransition = NavigationAnimations.bottomNavScreenPopTransitions().second
                 ) {
-                    PlaylistsPlaceholder()
+                    PlaylistsScreen(
+                        onPlaylistClick = { playlistId ->
+                            navController.navigate(BeatifyRoutes.PlaylistDetail.createRoute(playlistId))
+                        }
+                    )
                 }
 
-                composable(route = BeatifyRoutes.PlaylistDetail.route) {
-                    PlaylistDetailPlaceholder()
+                composable(
+                    route = BeatifyRoutes.PlaylistDetail.route,
+                    arguments = listOf(
+                        navArgument("playlistId") { type = NavType.LongType }
+                    ),
+                    enterTransition = NavigationAnimations.bottomNavScreenTransitions().first,
+                    exitTransition = NavigationAnimations.bottomNavScreenTransitions().second,
+                    popEnterTransition = NavigationAnimations.bottomNavScreenPopTransitions().first,
+                    popExitTransition = NavigationAnimations.bottomNavScreenPopTransitions().second
+                ) { backStackEntry ->
+                    val playlistId = backStackEntry.arguments?.getLong("playlistId") ?: return@composable
+                    PlaylistDetailScreen(
+                        playlistId = playlistId,
+                        onTrackClick = { track, playlist ->
+                            playerViewModel.onEvent(PlayerUIEvent.PlayTrack(track, playlist))
+                        },
+                        onNavigateBack = {
+                            navController.popBackStack()
+                        }
+                    )
                 }
 
                 composable(route = BeatifyRoutes.Profile.route) {

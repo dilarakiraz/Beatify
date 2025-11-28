@@ -1,6 +1,5 @@
 package com.dilara.beatify.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dilara.beatify.core.player.PlayerStateHolder
@@ -73,10 +72,8 @@ class PlayerViewModel @Inject constructor(
 
     private fun playTrack(track: Track, playlist: List<Track>) {
         val url = track.previewUrl
-        Log.d("PlayerViewModel", "Playing track: ${track.title}, URL: $url")
         
         if (url.isNullOrBlank()) {
-            Log.e("PlayerViewModel", "Preview URL is empty for track: ${track.title}")
             _uiState.value = _uiState.value.copy(
                 error = "Preview not available for this track",
                 isLoading = false,
@@ -116,13 +113,11 @@ class PlayerViewModel @Inject constructor(
                 
                 if (p.playbackState == Player.STATE_READY) {
                     if (!p.playWhenReady) {
-                        Log.d("PlayerViewModel", "Player ready but playWhenReady false. Setting to true...")
                         p.playWhenReady = true
                     }
 
                     delay(200)
                     if (!p.isPlaying && p.playbackState == Player.STATE_READY) {
-                        Log.d("PlayerViewModel", "Player ready but not playing. Force starting...")
                         val currentPos = p.currentPosition
                         p.seekTo(currentPos)
                         p.playWhenReady = true
@@ -133,7 +128,6 @@ class PlayerViewModel @Inject constructor(
                 }
             }
         } catch (e: Exception) {
-            Log.e("PlayerViewModel", "Error playing track: ${e.message}", e)
             _uiState.value = _uiState.value.copy(
                 error = "Failed to play: ${e.message}",
                 isLoading = false,
@@ -144,7 +138,6 @@ class PlayerViewModel @Inject constructor(
 
     private fun togglePlayPause() {
         val isPlaying = _uiState.value.isPlaying
-        Log.d("PlayerViewModel", "Toggle play/pause. Current state: isPlaying=$isPlaying")
         
         if (isPlaying) {
             playerStateHolder.pause()
@@ -221,13 +214,10 @@ class PlayerViewModel @Inject constructor(
     private fun observePlayerState() {
         val playerListener = object : Player.Listener {
             override fun onPlaybackStateChanged(playbackState: Int) {
-                Log.d("PlayerViewModel", "Playback state changed: $playbackState")
                 when (playbackState) {
                     Player.STATE_READY -> {
-                        Log.d("PlayerViewModel", "Player ready, duration: ${player.duration}, isPlaying: ${player.isPlaying}, playWhenReady: ${player.playWhenReady}, volume: ${player.volume}")
                         val duration = player.duration
                         if (duration > 0) {
-                            // Update state immediately
                             _uiState.value = _uiState.value.copy(
                                 duration = duration,
                                 isLoading = false,
@@ -236,24 +226,20 @@ class PlayerViewModel @Inject constructor(
                             )
                             
                             if (!player.playWhenReady) {
-                                Log.d("PlayerViewModel", "Setting playWhenReady to true...")
                                 player.playWhenReady = true
                             }
                             
                             if (player.playWhenReady && !player.isPlaying) {
-                                Log.d("PlayerViewModel", "Player ready but not playing. Force starting playback...")
                                 viewModelScope.launch {
                                     delay(100)
                                     
                                     if (player.playbackState == Player.STATE_READY && !player.isPlaying) {
-                                        Log.d("PlayerViewModel", "Forcing playback by toggling playWhenReady...")
                                         player.playWhenReady = false
                                         delay(50)
                                         player.playWhenReady = true
 
                                         delay(150)
                                         if (!player.isPlaying && player.playbackState == Player.STATE_READY) {
-                                            Log.d("PlayerViewModel", "Still not playing. Trying seek to trigger playback...")
                                             val pos = player.currentPosition
                                             player.seekTo(if (pos > 0) pos else 0)
                                             player.playWhenReady = true
@@ -268,14 +254,12 @@ class PlayerViewModel @Inject constructor(
                         }
                     }
                     Player.STATE_BUFFERING -> {
-                        Log.d("PlayerViewModel", "Player buffering")
                         _uiState.value = _uiState.value.copy(
                             isBuffering = true,
                             isLoading = true
                         )
                     }
                     Player.STATE_ENDED -> {
-                        Log.d("PlayerViewModel", "Player ended")
                         _uiState.value = _uiState.value.copy(
                             isPlaying = false,
                             position = 0L
@@ -285,17 +269,14 @@ class PlayerViewModel @Inject constructor(
                         }
                     }
                     Player.STATE_IDLE -> {
-                        Log.d("PlayerViewModel", "Player idle")
                     }
                 }
             }
 
             override fun onIsPlayingChanged(isPlaying: Boolean) {
-                Log.d("PlayerViewModel", "Is playing changed: $isPlaying, playWhenReady: ${player.playWhenReady}, playbackState: ${player.playbackState}")
                 _uiState.value = _uiState.value.copy(isPlaying = isPlaying)
                 
                 if (!isPlaying && player.playWhenReady && player.playbackState == Player.STATE_READY) {
-                    Log.d("PlayerViewModel", "Playback stopped unexpectedly. Attempting to restart...")
                     viewModelScope.launch {
                         delay(200)
                         if (!player.isPlaying && player.playWhenReady && player.playbackState == Player.STATE_READY) {
@@ -309,15 +290,12 @@ class PlayerViewModel @Inject constructor(
             }
             
             override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
-                Log.d("PlayerViewModel", "PlayWhenReady changed: $playWhenReady, reason: $reason, playbackState: ${player.playbackState}, isPlaying: ${player.isPlaying}")
                 _uiState.value = _uiState.value.copy(isPlaying = player.isPlaying)
                 
                 if (playWhenReady && player.playbackState == Player.STATE_READY && !player.isPlaying) {
-                    Log.d("PlayerViewModel", "PlayWhenReady is true but not playing. Attempting to start...")
                     viewModelScope.launch {
                         delay(200)
                         if (player.playWhenReady && player.playbackState == Player.STATE_READY && !player.isPlaying) {
-                            Log.d("PlayerViewModel", "Still not playing. Force starting...")
                             player.seekTo(player.currentPosition)
                             player.playWhenReady = true
                             _uiState.value = _uiState.value.copy(isPlaying = player.isPlaying)
@@ -327,7 +305,6 @@ class PlayerViewModel @Inject constructor(
             }
             
             override fun onPlayerError(error: com.google.android.exoplayer2.PlaybackException) {
-                Log.e("PlayerViewModel", "ExoPlayer error: ${error.message}", error)
                 _uiState.value = _uiState.value.copy(
                     error = error.message ?: "Playback error: ${error.errorCode}",
                     isLoading = false,

@@ -85,7 +85,6 @@ fun BeatifyNavigation(
                 composable(route = BeatifyRoutes.Home.route) {
                     HomeScreen(
                         onTrackClick = { track ->
-                            android.util.Log.d("BeatifyNavigation", "Track clicked: ${track.title}")
                             playerViewModel.onEvent(PlayerUIEvent.PlayTrack(track, emptyList()))
                         }
                     )

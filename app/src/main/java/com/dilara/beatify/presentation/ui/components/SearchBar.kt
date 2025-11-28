@@ -3,7 +3,12 @@ package com.dilara.beatify.presentation.ui.components
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -17,14 +22,19 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import com.dilara.beatify.ui.theme.*
+import com.dilara.beatify.ui.theme.DarkSurface
+import com.dilara.beatify.ui.theme.NeonCyan
+import com.dilara.beatify.ui.theme.NeonPink
+import com.dilara.beatify.ui.theme.NeonPurple
+import com.dilara.beatify.ui.theme.NeonTextPrimary
+import com.dilara.beatify.ui.theme.NeonTextSecondary
 
 @Composable
 fun BeatifySearchBar(
@@ -44,6 +54,7 @@ fun BeatifySearchBar(
         modifier = modifier
             .fillMaxWidth()
             .height(56.dp)
+            .clip(RoundedCornerShape(16.dp))
             .background(
                 brush = Brush.horizontalGradient(
                     colors = listOf(
@@ -51,67 +62,74 @@ fun BeatifySearchBar(
                         NeonCyan.copy(alpha = 0.05f),
                         NeonPink.copy(alpha = 0.1f)
                     )
-                ),
-                shape = RoundedCornerShape(16.dp)
+                )
             )
-            .padding(horizontal = 4.dp, vertical = 2.dp)
+            .padding(2.dp)
     ) {
-        TextField(
-            value = query,
-            onValueChange = onQueryChange,
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(52.dp)
-                .alpha(alpha),
-            placeholder = {
-                Text(
-                    text = placeholder,
-                    color = NeonTextSecondary.copy(alpha = 0.7f)
-                )
-            },
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = "Search",
-                    tint = NeonCyan,
-                    modifier = Modifier.size(22.dp)
-                )
-            },
-            trailingIcon = {
-                if (query.isNotEmpty()) {
-                    IconButton(
-                        onClick = onClearClick,
-                        modifier = Modifier.size(40.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Clear,
-                            contentDescription = "Clear",
-                            tint = NeonTextSecondary,
-                            modifier = Modifier.size(18.dp)
-                        )
+                .fillMaxHeight()
+                .clip(RoundedCornerShape(14.dp))
+        ) {
+            TextField(
+                value = query,
+                onValueChange = onQueryChange,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .alpha(alpha),
+                placeholder = {
+                    Text(
+                        text = placeholder,
+                        color = NeonTextSecondary.copy(alpha = 0.7f)
+                    )
+                },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Search",
+                        tint = NeonCyan,
+                        modifier = Modifier.size(22.dp)
+                    )
+                },
+                trailingIcon = {
+                    if (query.isNotEmpty()) {
+                        IconButton(
+                            onClick = onClearClick,
+                            modifier = Modifier.size(40.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Clear,
+                                contentDescription = "Clear",
+                                tint = NeonTextSecondary,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
                     }
-                }
-            },
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = DarkSurface.copy(alpha = 0.8f),
-                unfocusedContainerColor = DarkSurface.copy(alpha = 0.6f),
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent,
-                focusedTextColor = NeonTextPrimary,
-                unfocusedTextColor = NeonTextPrimary
-            ),
-            shape = RoundedCornerShape(14.dp),
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Search
-            ),
-            keyboardActions = KeyboardActions(
-                onSearch = {
-                    // Search is handled by debounce
-                }
+                },
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = DarkSurface.copy(alpha = 0.8f),
+                    unfocusedContainerColor = DarkSurface.copy(alpha = 0.6f),
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    focusedTextColor = NeonTextPrimary,
+                    unfocusedTextColor = NeonTextPrimary,
+                    disabledTextColor = NeonTextSecondary,
+                    disabledContainerColor = DarkSurface.copy(alpha = 0.4f)
+                ),
+                shape = RoundedCornerShape(14.dp),
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Search
+                ),
+                keyboardActions = KeyboardActions(
+                    onSearch = {
+                    }
+                )
             )
-        )
+        }
     }
 }
 

@@ -67,6 +67,7 @@ fun MiniPlayer(
             modifier = modifier
                 .fillMaxWidth()
                 .height(72.dp)
+                .clip(RoundedCornerShape(20.dp))
                 .background(
                     brush = Brush.horizontalGradient(
                         colors = listOf(
@@ -75,11 +76,11 @@ fun MiniPlayer(
                         )
                     )
                 )
-                .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
+                    .clip(RoundedCornerShape(20.dp))
                     .background(
                         brush = Brush.horizontalGradient(
                             colors = listOf(
@@ -91,98 +92,104 @@ fun MiniPlayer(
                     )
             )
 
-            Row(
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 12.dp, vertical = 8.dp)
+                    .clip(RoundedCornerShape(20.dp))
+                    .clickable { onExpandClick() }
                     .pointerInput(Unit) {
                         detectDragGestures(
                             onDragEnd = { onExpandClick() }
                         ) { change, dragAmount ->
-                            if (dragAmount.y < 0) { // Upward drag
+                            if (dragAmount.y < 0) {
                                 onExpandClick()
                             }
                         }
                     }
-                    .clickable { onExpandClick() },
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                AsyncImage(
-                    model = track.album.coverMedium ?: track.album.cover,
-                    contentDescription = track.album.title,
+                Row(
                     modifier = Modifier
-                        .size(56.dp)
-                        .clip(RoundedCornerShape(12.dp)),
-                    contentScale = ContentScale.Crop
-                )
-
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    verticalArrangement = Arrangement.Center
+                        .fillMaxSize()
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Text(
-                        text = track.title,
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = NeonTextPrimary,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                    AsyncImage(
+                        model = track.album.coverMedium ?: track.album.cover,
+                        contentDescription = track.album.title,
+                        modifier = Modifier
+                            .size(56.dp)
+                            .clip(RoundedCornerShape(12.dp)),
+                        contentScale = ContentScale.Crop
                     )
-                    
-                    Spacer(modifier = Modifier.height(2.dp))
-                    
-                    Text(
-                        text = track.artist.name,
-                        fontSize = 12.sp,
-                        color = NeonTextSecondary,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
 
-                IconButton(
-                    onClick = { onPlayPauseClick() },
-                    modifier = Modifier
-                        .size(48.dp)
-                        .background(
-                            brush = Brush.radialGradient(
-                                colors = listOf(
-                                    NeonCyan.copy(alpha = 0.3f),
-                                    Transparent
-                                )
-                            ),
-                            shape = CircleShape
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = track.title,
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = NeonTextPrimary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
-                ) {
-                    if (isPlaying) {
-                        Row(
-                            modifier = Modifier.size(28.dp),
-                            horizontalArrangement = Arrangement.spacedBy(4.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .width(6.dp)
-                                    .height(20.dp)
-                                    .background(NeonCyan, RoundedCornerShape(2.dp))
+
+                        Spacer(modifier = Modifier.height(2.dp))
+
+                        Text(
+                            text = track.artist.name,
+                            fontSize = 12.sp,
+                            color = NeonTextSecondary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+
+                    IconButton(
+                        onClick = { onPlayPauseClick() },
+                        modifier = Modifier
+                            .size(48.dp)
+                            .background(
+                                brush = Brush.radialGradient(
+                                    colors = listOf(
+                                        NeonCyan.copy(alpha = 0.3f),
+                                        Transparent
+                                    )
+                                ),
+                                shape = CircleShape
                             )
-                            Box(
-                                modifier = Modifier
-                                    .width(6.dp)
-                                    .height(20.dp)
-                                    .background(NeonCyan, RoundedCornerShape(2.dp))
+                    ) {
+                        if (isPlaying) {
+                            Row(
+                                modifier = Modifier.size(28.dp),
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .width(6.dp)
+                                        .height(20.dp)
+                                        .background(NeonCyan, RoundedCornerShape(2.dp))
+                                )
+                                Box(
+                                    modifier = Modifier
+                                        .width(6.dp)
+                                        .height(20.dp)
+                                        .background(NeonCyan, RoundedCornerShape(2.dp))
+                                )
+                            }
+                        } else {
+                            Icon(
+                                imageVector = Icons.Default.PlayArrow,
+                                contentDescription = "Play",
+                                tint = NeonPink,
+                                modifier = Modifier.size(28.dp)
                             )
                         }
-                    } else {
-                        Icon(
-                            imageVector = Icons.Default.PlayArrow,
-                            contentDescription = "Play",
-                            tint = NeonPink,
-                            modifier = Modifier.size(28.dp)
-                        )
                     }
                 }
             }

@@ -1,19 +1,36 @@
 package com.dilara.beatify.presentation.ui.home
 
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.draw.clip
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -24,7 +41,12 @@ import com.dilara.beatify.presentation.state.HomeUIEvent
 import com.dilara.beatify.presentation.ui.components.TrackCard
 import com.dilara.beatify.presentation.ui.components.TrackCardHorizontal
 import com.dilara.beatify.presentation.viewmodel.HomeViewModel
-import com.dilara.beatify.ui.theme.*
+import com.dilara.beatify.ui.theme.DarkBackground
+import com.dilara.beatify.ui.theme.DarkSurface
+import com.dilara.beatify.ui.theme.NeonCyan
+import com.dilara.beatify.ui.theme.NeonPink
+import com.dilara.beatify.ui.theme.NeonPurple
+import com.dilara.beatify.ui.theme.NeonTextSecondary
 
 @Composable
 fun HomeScreen(
@@ -45,12 +67,6 @@ fun HomeScreen(
         ),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Header
-        item {
-            HomeHeader()
-        }
-
-        // Featured Tracks Section (ilk 3 şarkı için büyük card)
         if (!uiState.isLoading && uiState.error == null && uiState.topTracks.isNotEmpty()) {
             item {
                 SectionHeader(
@@ -58,7 +74,7 @@ fun HomeScreen(
                     subtitle = "Top picks for you"
                 )
             }
-            
+
             items(
                 count = minOf(3, uiState.topTracks.size),
                 key = { index -> uiState.topTracks[index].id }
@@ -82,7 +98,6 @@ fun HomeScreen(
             }
         }
 
-        // Top Charts Section
         item {
             SectionHeader(
                 title = "Top Charts",
@@ -90,14 +105,13 @@ fun HomeScreen(
             )
         }
 
-        // Loading or Error or Content
         when {
             uiState.isLoading -> {
                 items(5) {
                     TrackCardSkeleton()
                 }
             }
-            
+
             uiState.error != null -> {
                 item {
                     ErrorSection(
@@ -106,15 +120,14 @@ fun HomeScreen(
                     )
                 }
             }
-            
+
             uiState.topTracks.isEmpty() -> {
                 item {
                     EmptySection(message = "No tracks available")
                 }
             }
-            
+
             else -> {
-                // İlk 3 şarkı zaten Featured'da gösterildi, kalanları burada göster
                 itemsIndexed(
                     items = uiState.topTracks.drop(3),
                     key = { _, track -> track.id }
@@ -137,30 +150,6 @@ fun HomeScreen(
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun HomeHeader() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 16.dp)
-    ) {
-        Text(
-            text = "Welcome Back",
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
-            color = NeonTextPrimary
-        )
-
-        Spacer(modifier = Modifier.height(4.dp))
-
-        Text(
-            text = "Discover new music",
-            fontSize = 16.sp,
-            color = NeonTextSecondary
-        )
     }
 }
 
@@ -216,7 +205,6 @@ private fun TrackCardSkeleton() {
             verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // Skeleton album cover
             Box(
                 modifier = Modifier
                     .size(56.dp)
@@ -224,7 +212,6 @@ private fun TrackCardSkeleton() {
                     .background(NeonPurple.copy(alpha = 0.2f))
             )
 
-            // Skeleton text
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(8.dp)

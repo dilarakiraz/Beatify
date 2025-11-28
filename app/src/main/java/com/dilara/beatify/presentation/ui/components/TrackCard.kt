@@ -1,22 +1,26 @@
 package com.dilara.beatify.presentation.ui.components
 
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -25,7 +29,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.dilara.beatify.domain.model.Track
-import com.dilara.beatify.ui.theme.*
+import com.dilara.beatify.ui.theme.DarkSurface
+import com.dilara.beatify.ui.theme.NeonCyan
+import com.dilara.beatify.ui.theme.NeonPurple
+import com.dilara.beatify.ui.theme.NeonTextPrimary
+import com.dilara.beatify.ui.theme.NeonTextSecondary
 
 @Composable
 fun TrackCard(
@@ -36,7 +44,6 @@ fun TrackCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .height(80.dp)
             .clickable { onClick() },
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
@@ -46,7 +53,7 @@ fun TrackCard(
     ) {
         Box(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .background(
                     brush = Brush.horizontalGradient(
                         colors = listOf(
@@ -59,12 +66,11 @@ fun TrackCard(
         ) {
             Row(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
                     .padding(12.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                // Album Cover
                 AsyncImage(
                     model = track.album.coverMedium ?: track.album.cover,
                     contentDescription = track.album.title,
@@ -74,7 +80,6 @@ fun TrackCard(
                     contentScale = ContentScale.Crop
                 )
 
-                // Track Info
                 Column(
                     modifier = Modifier
                         .weight(1f)
@@ -86,7 +91,7 @@ fun TrackCard(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = NeonTextPrimary,
-                        maxLines = 1,
+                        maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
                     
@@ -123,7 +128,6 @@ fun TrackCardHorizontal(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .height(100.dp)
             .clickable { onClick() },
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
@@ -133,7 +137,7 @@ fun TrackCardHorizontal(
     ) {
         Box(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .background(
                     brush = Brush.linearGradient(
                         colors = listOf(
@@ -146,12 +150,11 @@ fun TrackCardHorizontal(
         ) {
             Row(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
                     .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Album Cover - Larger
                 AsyncImage(
                     model = track.album.coverBig ?: track.album.coverMedium ?: track.album.cover,
                     contentDescription = track.album.title,
@@ -161,11 +164,9 @@ fun TrackCardHorizontal(
                     contentScale = ContentScale.Crop
                 )
 
-                // Track Info
                 Column(
                     modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
+                        .weight(1f),
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
@@ -173,7 +174,7 @@ fun TrackCardHorizontal(
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = NeonTextPrimary,
-                        maxLines = 1,
+                        maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
                     
@@ -199,7 +200,6 @@ fun TrackCardHorizontal(
                     )
                 }
 
-                // Duration
                 Text(
                     text = formatDuration(track.duration),
                     fontSize = 13.sp,

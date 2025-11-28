@@ -14,7 +14,6 @@ import androidx.navigation.compose.rememberNavController
 import com.dilara.beatify.core.navigation.BeatifyRoutes
 import com.dilara.beatify.presentation.ui.components.BeatifyBottomNavigationBar
 import com.dilara.beatify.presentation.ui.home.HomeScreen
-import com.dilara.beatify.presentation.ui.navigation.BottomNavItems
 import com.dilara.beatify.presentation.ui.splash.SplashScreen
 
 @Composable

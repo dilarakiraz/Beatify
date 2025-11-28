@@ -15,12 +15,11 @@ import com.dilara.beatify.core.navigation.BeatifyRoutes
 import com.dilara.beatify.presentation.ui.components.BeatifyBottomNavigationBar
 import com.dilara.beatify.presentation.ui.home.HomeScreen
 import com.dilara.beatify.presentation.ui.search.SearchScreen
-import com.dilara.beatify.presentation.ui.splash.SplashScreen
 
 @Composable
 fun BeatifyNavigation(
     navController: NavHostController = rememberNavController(),
-    startDestination: String = BeatifyRoutes.Splash.route
+    startDestination: String = BeatifyRoutes.Home.route
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -57,18 +56,6 @@ fun BeatifyNavigation(
             startDestination = startDestination,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(route = BeatifyRoutes.Splash.route) {
-                SplashScreen(
-                    onSplashFinished = {
-                        navController.navigate(BeatifyRoutes.Home.route) {
-                            popUpTo(BeatifyRoutes.Splash.route) {
-                                inclusive = true
-                            }
-                        }
-                    }
-                )
-            }
-
             composable(route = BeatifyRoutes.Home.route) {
                 HomeScreen()
             }

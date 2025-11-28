@@ -6,6 +6,8 @@ data class SearchUIState(
     val searchQuery: String = "",
     val isLoading: Boolean = false,
     val tracks: List<Track> = emptyList(),
+    val suggestedTracks: List<Track> = emptyList(),
+    val isLoadingSuggestions: Boolean = false,
     val error: String? = null,
     val isSearchActive: Boolean = false
 )

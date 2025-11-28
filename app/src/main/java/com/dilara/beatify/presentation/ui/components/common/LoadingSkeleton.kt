@@ -61,18 +61,3 @@ fun TrackCardSkeleton(
     }
 }
 
-@Composable
-fun LoadingSkeletonList(
-    count: Int = 5,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        repeat(count) {
-            TrackCardSkeleton()
-        }
-    }
-}
-

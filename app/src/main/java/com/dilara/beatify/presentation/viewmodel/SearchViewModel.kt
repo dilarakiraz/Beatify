@@ -8,7 +8,6 @@ import com.dilara.beatify.presentation.state.SearchUIEvent
 import com.dilara.beatify.presentation.state.SearchUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -30,6 +29,8 @@ class SearchViewModel @Inject constructor(
     private val searchQueryFlow = MutableStateFlow("")
 
     init {
+        loadSuggestedTracks()
+        
         searchQueryFlow
             .debounce(Constants.SEARCH_DEBOUNCE_MS)
             .onEach { query ->
@@ -44,6 +45,29 @@ class SearchViewModel @Inject constructor(
                 }
             }
             .launchIn(viewModelScope)
+    }
+
+    private fun loadSuggestedTracks() {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoadingSuggestions = true)
+            
+            musicRepository.getTopTracks()
+                .onSuccess { tracks ->
+                    // Rastgele 8-10 şarkı seç (öneri olarak)
+                    val shuffled = tracks.shuffled()
+                    val suggested = shuffled.take(minOf(10, shuffled.size))
+                    
+                    _uiState.value = _uiState.value.copy(
+                        suggestedTracks = suggested,
+                        isLoadingSuggestions = false
+                    )
+                }
+                .onFailure {
+                    _uiState.value = _uiState.value.copy(
+                        isLoadingSuggestions = false
+                    )
+                }
+        }
     }
 
     fun onEvent(event: SearchUIEvent) {
@@ -76,7 +100,13 @@ class SearchViewModel @Inject constructor(
             }
             
             is SearchUIEvent.ClearSearch -> {
-                _uiState.value = SearchUIState()
+                // Suggested tracks'i koru, sadece search state'i temizle
+                _uiState.value = _uiState.value.copy(
+                    searchQuery = "",
+                    tracks = emptyList(),
+                    error = null,
+                    isLoading = false
+                )
                 searchQueryFlow.value = ""
             }
         }

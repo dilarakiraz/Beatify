@@ -12,11 +12,9 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Install splash screen before super.onCreate()
-        val splashScreen = installSplashScreen()
+        installSplashScreen()
         
         super.onCreate(savedInstanceState)
-        
         enableEdgeToEdge()
         
         setContent {
@@ -24,8 +22,5 @@ class MainActivity : ComponentActivity() {
                 BeatifyNavigation()
             }
         }
-        
-        // Keep splash screen visible until navigation is ready
-        splashScreen.setKeepOnScreenCondition { false }
     }
 }

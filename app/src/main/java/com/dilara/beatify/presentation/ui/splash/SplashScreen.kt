@@ -5,7 +5,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Text
 import androidx.compose.ui.res.painterResource
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -18,15 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.dilara.beatify.R
 import com.dilara.beatify.ui.theme.DarkBackground
-import com.dilara.beatify.ui.theme.NeonCyan
-import com.dilara.beatify.ui.theme.NeonPink
-import com.dilara.beatify.ui.theme.NeonPurple
 import kotlinx.coroutines.delay
 
 @Composable
@@ -40,7 +33,7 @@ fun SplashScreen(
             durationMillis = 1000
         ), label = "alpha"
     )
-    
+
     val scaleAnim = animateFloatAsState(
         targetValue = if (startAnimation) 1f else 0.5f,
         animationSpec = tween(
@@ -50,7 +43,7 @@ fun SplashScreen(
 
     LaunchedEffect(key1 = true) {
         startAnimation = true
-        delay(2000) // Splash screen görünür kalma süresi
+        delay(2000)
         onSplashFinished()
     }
 
@@ -72,41 +65,14 @@ fun Splash(alpha: Float, scale: Float) {
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+        Image(
+            painter = painterResource(id = R.drawable.ic_launcher_foreground),
+            contentDescription = "App Logo",
             modifier = Modifier
+                .size(200.dp)
                 .alpha(alpha)
                 .scale(scale)
-        ) {
-            // Logo
-            Image(
-                painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                contentDescription = "Wild Roots Logo",
-                modifier = Modifier
-                    .size(200.dp)
-                    .padding(bottom = 32.dp)
-            )
-
-            // App Name with Neon Effect
-            Text(
-                text = "WILD ROOTS",
-                fontSize = 48.sp,
-                fontWeight = FontWeight.Bold,
-                color = NeonPink,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .padding(bottom = 8.dp)
-            )
-
-            Text(
-                text = "BREWERY",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = NeonCyan,
-                textAlign = TextAlign.Center
-            )
-        }
+        )
     }
 }
 

@@ -14,6 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import com.dilara.beatify.core.navigation.BeatifyRoutes
 import com.dilara.beatify.presentation.ui.components.BeatifyBottomNavigationBar
 import com.dilara.beatify.presentation.ui.home.HomeScreen
+import com.dilara.beatify.presentation.ui.search.SearchScreen
 import com.dilara.beatify.presentation.ui.splash.SplashScreen
 
 @Composable
@@ -73,8 +74,7 @@ fun BeatifyNavigation(
             }
 
             composable(route = BeatifyRoutes.Search.route) {
-                // TODO: Search Screen
-                SearchPlaceholder()
+                SearchScreen()
             }
 
             composable(route = BeatifyRoutes.Favorites.route) {

@@ -459,3 +459,5 @@ Room
 Modern müzik player UI
 
 hepsini tek bir uygulamada birleştiriyor.
+
+Kod tekrarları olmıcak. clean Architecture yapıda olucak kod tekrarları varsa ortak yapıda olucak.

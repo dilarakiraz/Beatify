@@ -29,7 +29,7 @@ import com.dilara.beatify.ui.theme.DarkBackground
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel = hiltViewModel(),
-    onTrackClick: (Long) -> Unit = {},
+    onTrackClick: (com.dilara.beatify.domain.model.Track) -> Unit = {},
     onArtistClick: (Long) -> Unit = {},
     onAlbumClick: (Long) -> Unit = {}
 ) {
@@ -45,7 +45,6 @@ fun SearchScreen(
         ),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Search Bar
         item {
             BeatifySearchBar(
                 query = uiState.searchQuery,
@@ -58,7 +57,6 @@ fun SearchScreen(
             )
         }
 
-        // Content based on state
         when {
             uiState.isLoading -> {
                 items(5) {
@@ -80,7 +78,6 @@ fun SearchScreen(
             }
 
             uiState.searchQuery.isBlank() -> {
-                // Show suggested tracks
                 if (uiState.isLoadingSuggestions) {
                     items(5) {
                         TrackCardSkeleton()
@@ -108,7 +105,7 @@ fun SearchScreen(
                                 track = track,
                                 onClick = {
                                     viewModel.onEvent(SearchUIEvent.OnTrackClick(track.id))
-                                    onTrackClick(track.id)
+                                    onTrackClick(track)
                                 }
                             )
                         }
@@ -149,7 +146,7 @@ fun SearchScreen(
                             track = track,
                             onClick = {
                                 viewModel.onEvent(SearchUIEvent.OnTrackClick(track.id))
-                                onTrackClick(track.id)
+                                onTrackClick(track)
                             }
                         )
                     }

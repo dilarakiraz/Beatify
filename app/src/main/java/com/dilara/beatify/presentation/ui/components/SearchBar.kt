@@ -43,6 +43,7 @@ fun BeatifySearchBar(
     Box(
         modifier = modifier
             .fillMaxWidth()
+            .height(56.dp)
             .background(
                 brush = Brush.horizontalGradient(
                     colors = listOf(
@@ -51,15 +52,16 @@ fun BeatifySearchBar(
                         NeonPink.copy(alpha = 0.1f)
                     )
                 ),
-                shape = RoundedCornerShape(20.dp)
+                shape = RoundedCornerShape(16.dp)
             )
-            .padding(4.dp)
+            .padding(horizontal = 4.dp, vertical = 2.dp)
     ) {
         TextField(
             value = query,
             onValueChange = onQueryChange,
             modifier = Modifier
                 .fillMaxWidth()
+                .height(52.dp)
                 .alpha(alpha),
             placeholder = {
                 Text(
@@ -72,17 +74,20 @@ fun BeatifySearchBar(
                     imageVector = Icons.Default.Search,
                     contentDescription = "Search",
                     tint = NeonCyan,
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(22.dp)
                 )
             },
             trailingIcon = {
                 if (query.isNotEmpty()) {
-                    IconButton(onClick = onClearClick) {
+                    IconButton(
+                        onClick = onClearClick,
+                        modifier = Modifier.size(40.dp)
+                    ) {
                         Icon(
                             imageVector = Icons.Default.Clear,
                             contentDescription = "Clear",
                             tint = NeonTextSecondary,
-                            modifier = Modifier.size(20.dp)
+                            modifier = Modifier.size(18.dp)
                         )
                     }
                 }
@@ -96,7 +101,7 @@ fun BeatifySearchBar(
                 focusedTextColor = NeonTextPrimary,
                 unfocusedTextColor = NeonTextPrimary
             ),
-            shape = RoundedCornerShape(16.dp),
+            shape = RoundedCornerShape(14.dp),
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Search

@@ -30,7 +30,7 @@ import com.dilara.beatify.ui.theme.DarkBackground
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
-    onTrackClick: (Long) -> Unit = {},
+    onTrackClick: (com.dilara.beatify.domain.model.Track) -> Unit = {},
     onArtistClick: (Long) -> Unit = {},
     onAlbumClick: (Long) -> Unit = {}
 ) {
@@ -70,7 +70,7 @@ fun HomeScreen(
                         track = track,
                         onClick = {
                             viewModel.onEvent(HomeUIEvent.OnTrackClick(track.id))
-                            onTrackClick(track.id)
+                            onTrackClick(track)
                         }
                     )
                 }
@@ -122,7 +122,7 @@ fun HomeScreen(
                             track = track,
                             onClick = {
                                 viewModel.onEvent(HomeUIEvent.OnTrackClick(track.id))
-                                onTrackClick(track.id)
+                                onTrackClick(track)
                             }
                         )
                     }

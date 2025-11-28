@@ -122,10 +122,11 @@ fun BeatifySearchBar(
                 shape = RoundedCornerShape(14.dp),
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Search
+                    imeAction = ImeAction.Done
                 ),
                 keyboardActions = KeyboardActions(
-                    onSearch = {
+                    onDone = {
+                        // Klavye kapatılabilir, arama otomatik başlatılır (debounce ile)
                     }
                 )
             )

@@ -29,6 +29,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.dilara.beatify.presentation.state.FavoritesUIEvent
 import com.dilara.beatify.presentation.state.HomeUIEvent
 import com.dilara.beatify.presentation.ui.components.TrackCard
 import com.dilara.beatify.presentation.ui.components.TrackCardHorizontal
@@ -38,6 +39,7 @@ import com.dilara.beatify.presentation.ui.components.common.SectionHeader
 import com.dilara.beatify.presentation.ui.components.common.TrackCardSkeleton
 import com.dilara.beatify.presentation.ui.components.profile.ProfileButton
 import com.dilara.beatify.presentation.ui.components.profile.ProfileDrawerContent
+import com.dilara.beatify.presentation.viewmodel.FavoritesViewModel
 import com.dilara.beatify.presentation.viewmodel.HomeViewModel
 import com.dilara.beatify.ui.theme.DarkBackground
 import kotlinx.coroutines.launch
@@ -51,6 +53,8 @@ fun HomeScreen(
     onAlbumClick: (Long) -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val favoritesViewModel: FavoritesViewModel = hiltViewModel()
+    val favoritesState by favoritesViewModel.uiState.collectAsState()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val profileImageUri: String? = null
@@ -94,7 +98,7 @@ fun HomeScreen(
                         )
 
                         SectionHeader(
-                            title = "Hoş Geldiniz",
+                            title = "Hoş Geldin",
                         )
                     }
                 }
@@ -123,6 +127,10 @@ fun HomeScreen(
                                 onClick = {
                                     viewModel.onEvent(HomeUIEvent.OnTrackClick(track.id))
                                     onTrackClick(track)
+                                },
+                                isFavorite = favoritesState.favoriteTrackIds.contains(track.id),
+                                onFavoriteClick = {
+                                    favoritesViewModel.onEvent(FavoritesUIEvent.ToggleFavorite(track))
                                 }
                             )
                         }
@@ -174,6 +182,10 @@ fun HomeScreen(
                                     onClick = {
                                         viewModel.onEvent(HomeUIEvent.OnTrackClick(track.id))
                                         onTrackClick(track)
+                                    },
+                                    isFavorite = favoritesState.favoriteTrackIds.contains(track.id),
+                                    onFavoriteClick = {
+                                        favoritesViewModel.onEvent(FavoritesUIEvent.ToggleFavorite(track))
                                     }
                                 )
                             }

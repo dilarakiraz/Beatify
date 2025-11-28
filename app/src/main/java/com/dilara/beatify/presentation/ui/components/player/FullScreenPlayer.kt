@@ -49,6 +49,7 @@ import coil.compose.AsyncImage
 import com.dilara.beatify.R
 import com.dilara.beatify.domain.model.Track
 import com.dilara.beatify.presentation.state.RepeatMode
+import com.dilara.beatify.presentation.ui.components.common.FavoriteButton
 import com.dilara.beatify.ui.theme.DarkBackground
 import com.dilara.beatify.ui.theme.DarkSurface
 import com.dilara.beatify.ui.theme.NeonCyan
@@ -67,12 +68,14 @@ fun FullScreenPlayer(
     repeatMode: RepeatMode,
     isShuffleEnabled: Boolean,
     error: String? = null,
+    isFavorite: Boolean = false,
     onPlayPauseClick: () -> Unit,
     onNextClick: () -> Unit,
     onPreviousClick: () -> Unit,
     onSeekTo: (Long) -> Unit,
     onRepeatClick: () -> Unit,
     onShuffleClick: () -> Unit,
+    onFavoriteClick: () -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -81,7 +84,7 @@ fun FullScreenPlayer(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         modifier = modifier,
-        containerColor = Color.Transparent,
+        containerColor = Transparent,
         dragHandle = {
             Box(
                 modifier = Modifier
@@ -133,23 +136,40 @@ fun FullScreenPlayer(
                 coverUrl = track.album.coverBig ?: track.album.cover,
                 isPlaying = isPlaying,
                 modifier = Modifier
-                    .size(200.dp)
-                    .padding(vertical = 12.dp)
+                    .size(180.dp)
+                    .padding(vertical = 8.dp)
             )
 
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = track.title,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = NeonTextPrimary
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = track.artist.name,
-                    fontSize = 18.sp,
-                    color = NeonTextSecondary
-                )
+                Spacer(modifier = Modifier.height(12.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(
+                            text = track.title,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = NeonTextPrimary
+                        )
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Text(
+                            text = track.artist.name,
+                            fontSize = 16.sp,
+                            color = NeonTextSecondary
+                        )
+                    }
+                    
+                    FavoriteButton(
+                        isFavorite = isFavorite,
+                        onClick = onFavoriteClick,
+                        size = 48.dp,
+                        iconSize = 28.dp
+                    )
+                }
 
                 if (error != null) {
                     Spacer(modifier = Modifier.height(16.dp))

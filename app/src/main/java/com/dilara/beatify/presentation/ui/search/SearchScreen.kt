@@ -26,6 +26,8 @@ import com.dilara.beatify.presentation.ui.components.common.EmptySection
 import com.dilara.beatify.presentation.ui.components.common.ErrorSection
 import com.dilara.beatify.presentation.ui.components.common.SectionHeader
 import com.dilara.beatify.presentation.ui.components.common.TrackCardSkeleton
+import com.dilara.beatify.presentation.state.FavoritesUIEvent
+import com.dilara.beatify.presentation.viewmodel.FavoritesViewModel
 import com.dilara.beatify.presentation.viewmodel.SearchViewModel
 import com.dilara.beatify.ui.theme.DarkBackground
 
@@ -37,6 +39,8 @@ fun SearchScreen(
     onAlbumClick: (Long) -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val favoritesViewModel: FavoritesViewModel = hiltViewModel()
+    val favoritesState by favoritesViewModel.uiState.collectAsState()
 
     LazyColumn(
         modifier = Modifier
@@ -79,7 +83,7 @@ fun SearchScreen(
             uiState.error != null -> {
                 item {
                     ErrorSection(
-                        message = uiState.error ?: "Unknown error",
+                        message = uiState.error ?: "Bilinmeyen hata",
                         onRetry = {
                             if (uiState.searchQuery.isNotBlank()) {
                                 viewModel.onEvent(SearchUIEvent.OnQueryChange(uiState.searchQuery))
@@ -117,28 +121,32 @@ fun SearchScreen(
                                 onClick = {
                                     viewModel.onEvent(SearchUIEvent.OnTrackClick(track.id))
                                     onTrackClick(track)
+                                },
+                                isFavorite = favoritesState.favoriteTrackIds.contains(track.id),
+                                onFavoriteClick = {
+                                    favoritesViewModel.onEvent(FavoritesUIEvent.ToggleFavorite(track))
                                 }
                             )
                         }
                     }
                 } else {
                     item {
-                        EmptySection(message = "Start typing to search for music")
+                        EmptySection(message = "Müzik aramak için yazmaya başlayın")
                     }
                 }
             }
 
             uiState.tracks.isEmpty() -> {
                 item {
-                    EmptySection(message = "No results found for \"${uiState.searchQuery}\"")
+                    EmptySection(message = "\"${uiState.searchQuery}\" için sonuç bulunamadı")
                 }
             }
 
             else -> {
                 item {
                     SectionHeader(
-                        title = "Search Results",
-                        subtitle = "${uiState.tracks.size} tracks found"
+                        title = "Arama Sonuçları",
+                        subtitle = "${uiState.tracks.size} şarkı bulundu"
                     )
                 }
 
@@ -158,6 +166,10 @@ fun SearchScreen(
                             onClick = {
                                 viewModel.onEvent(SearchUIEvent.OnTrackClick(track.id))
                                 onTrackClick(track)
+                            },
+                            isFavorite = favoritesState.favoriteTrackIds.contains(track.id),
+                            onFavoriteClick = {
+                                favoritesViewModel.onEvent(FavoritesUIEvent.ToggleFavorite(track))
                             }
                         )
                     }

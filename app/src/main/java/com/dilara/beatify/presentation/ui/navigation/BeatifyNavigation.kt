@@ -6,8 +6,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -17,12 +21,15 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.dilara.beatify.core.navigation.BeatifyRoutes
 import com.dilara.beatify.core.navigation.NavigationAnimations
+import com.dilara.beatify.presentation.state.FavoritesUIEvent
 import com.dilara.beatify.presentation.state.PlayerUIEvent
 import com.dilara.beatify.presentation.ui.components.BeatifyBottomNavigationBar
 import com.dilara.beatify.presentation.ui.components.player.FullScreenPlayer
 import com.dilara.beatify.presentation.ui.components.player.MiniPlayer
+import com.dilara.beatify.presentation.ui.favorites.FavoritesScreen
 import com.dilara.beatify.presentation.ui.home.HomeScreen
 import com.dilara.beatify.presentation.ui.search.SearchScreen
+import com.dilara.beatify.presentation.viewmodel.FavoritesViewModel
 import com.dilara.beatify.presentation.viewmodel.PlayerViewModel
 
 @Composable
@@ -33,8 +40,25 @@ fun BeatifyNavigation(
     val playerViewModel: PlayerViewModel = hiltViewModel()
     val playerState by playerViewModel.uiState.collectAsState()
     
+    val favoritesViewModel: FavoritesViewModel = hiltViewModel()
+    
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+    
+    // Check if current track is favorite
+    val currentTrackId = playerState.currentTrack?.id
+    var isCurrentTrackFavorite by remember { mutableStateOf(false) }
+    
+    LaunchedEffect(currentTrackId) {
+        if (currentTrackId != null) {
+            favoritesViewModel.isFavorite(currentTrackId)
+                .collect { isFavorite ->
+                    isCurrentTrackFavorite = isFavorite
+                }
+        } else {
+            isCurrentTrackFavorite = false
+        }
+    }
 
     val showBottomBar = currentRoute in listOf(
         BeatifyRoutes.Home.route,
@@ -117,7 +141,11 @@ fun BeatifyNavigation(
                     popEnterTransition = NavigationAnimations.bottomNavScreenPopTransitions().first,
                     popExitTransition = NavigationAnimations.bottomNavScreenPopTransitions().second
                 ) {
-                    FavoritesPlaceholder()
+                    FavoritesScreen(
+                        onTrackClick = { track ->
+                            playerViewModel.onEvent(PlayerUIEvent.PlayTrack(track, emptyList()))
+                        }
+                    )
                 }
 
                 composable(
@@ -160,6 +188,7 @@ fun BeatifyNavigation(
                     repeatMode = playerState.repeatMode,
                     isShuffleEnabled = playerState.isShuffleEnabled,
                     error = playerState.error,
+                    isFavorite = if (currentTrackId != null) isCurrentTrackFavorite else false,
                     onPlayPauseClick = {
                         playerViewModel.onEvent(PlayerUIEvent.PlayPause)
                     },
@@ -177,6 +206,11 @@ fun BeatifyNavigation(
                     },
                     onShuffleClick = {
                         playerViewModel.onEvent(PlayerUIEvent.ToggleShuffle)
+                    },
+                    onFavoriteClick = {
+                        playerState.currentTrack?.let { track ->
+                            favoritesViewModel.onEvent(FavoritesUIEvent.ToggleFavorite(track))
+                        }
                     },
                     onDismiss = {
                         playerViewModel.onEvent(PlayerUIEvent.Collapse)

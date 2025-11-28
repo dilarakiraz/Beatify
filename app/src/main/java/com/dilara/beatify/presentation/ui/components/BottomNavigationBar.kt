@@ -33,10 +33,8 @@ import androidx.compose.ui.unit.dp
 import com.dilara.beatify.presentation.ui.navigation.model.BottomNavItem
 import com.dilara.beatify.ui.theme.DarkSurface
 import com.dilara.beatify.ui.theme.NeonCyan
-import com.dilara.beatify.ui.theme.NeonGreen
-import com.dilara.beatify.ui.theme.NeonOrange
-import com.dilara.beatify.ui.theme.NeonPink
 import com.dilara.beatify.ui.theme.NeonPurple
+import com.dilara.beatify.ui.theme.NeonPink
 import com.dilara.beatify.ui.theme.NeonTextSecondary
 
 @Composable
@@ -124,7 +122,7 @@ private fun BottomNavBarItem(
             .clip(CircleShape)
             .background(
                 color = if (isSelected) {
-                    getNeonColorForRoute(item.route).copy(alpha = 0.15f)
+                    NeonCyan.copy(alpha = 0.15f)
                 } else if (isPressed) {
                     NeonTextSecondary.copy(alpha = 0.1f)
                 } else {
@@ -152,7 +150,7 @@ private fun BottomNavBarItem(
                         .background(
                             brush = Brush.radialGradient(
                                 colors = listOf(
-                                    getNeonColorForRoute(item.route).copy(alpha = 0.3f),
+                                    NeonCyan.copy(alpha = 0.3f),
                                     Color.Transparent
                                 )
                             ),
@@ -165,7 +163,7 @@ private fun BottomNavBarItem(
                 imageVector = if (isSelected) item.selectedIcon else item.icon,
                 contentDescription = item.label,
                 tint = if (isSelected) {
-                    getNeonColorForRoute(item.route)
+                    NeonCyan
                 } else {
                     NeonTextSecondary
                 },
@@ -174,17 +172,4 @@ private fun BottomNavBarItem(
         }
     }
 }
-
-@Composable
-private fun getNeonColorForRoute(route: String): Color {
-    return when (route) {
-        "home" -> NeonCyan
-        "search" -> NeonPink
-        "favorites" -> NeonOrange
-        "playlists" -> NeonPurple
-        "profile" -> NeonGreen
-        else -> NeonCyan
-    }
-}
-
 

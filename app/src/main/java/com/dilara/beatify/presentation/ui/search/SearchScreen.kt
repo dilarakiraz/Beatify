@@ -6,8 +6,11 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
@@ -40,21 +43,30 @@ fun SearchScreen(
             .fillMaxSize()
             .background(DarkBackground),
         contentPadding = PaddingValues(
-            horizontal = 16.dp,
-            vertical = 8.dp
+            start = 16.dp,
+            end = 16.dp,
+            top = 0.dp,
+            bottom = 8.dp
         ),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        item {
-            BeatifySearchBar(
-                query = uiState.searchQuery,
-                onQueryChange = { query ->
-                    viewModel.onEvent(SearchUIEvent.OnQueryChange(query))
-                },
-                onClearClick = {
-                    viewModel.onEvent(SearchUIEvent.ClearSearch)
-                }
-            )
+        stickyHeader {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(DarkBackground)
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+            ) {
+                BeatifySearchBar(
+                    query = uiState.searchQuery,
+                    onQueryChange = { query ->
+                        viewModel.onEvent(SearchUIEvent.OnQueryChange(query))
+                    },
+                    onClearClick = {
+                        viewModel.onEvent(SearchUIEvent.ClearSearch)
+                    }
+                )
+            }
         }
 
         when {
@@ -85,11 +97,10 @@ fun SearchScreen(
                 } else if (uiState.suggestedTracks.isNotEmpty()) {
                     item {
                         SectionHeader(
-                            title = "Suggested for You",
-                            subtitle = "Popular tracks"
+                            title = "Sizin İçin Önerilenler",
                         )
                     }
-                    
+
                     itemsIndexed(
                         items = uiState.suggestedTracks,
                         key = { _, track -> track.id }

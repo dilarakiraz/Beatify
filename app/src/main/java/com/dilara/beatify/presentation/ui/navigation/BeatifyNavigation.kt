@@ -16,6 +16,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.dilara.beatify.core.navigation.BeatifyRoutes
+import com.dilara.beatify.core.navigation.NavigationAnimations
 import com.dilara.beatify.presentation.state.PlayerUIEvent
 import com.dilara.beatify.presentation.ui.components.BeatifyBottomNavigationBar
 import com.dilara.beatify.presentation.ui.components.player.FullScreenPlayer
@@ -39,8 +40,7 @@ fun BeatifyNavigation(
         BeatifyRoutes.Home.route,
         BeatifyRoutes.Search.route,
         BeatifyRoutes.Favorites.route,
-        BeatifyRoutes.Playlists.route,
-        BeatifyRoutes.Profile.route
+        BeatifyRoutes.Playlists.route
     )
 
     Scaffold(
@@ -82,7 +82,13 @@ fun BeatifyNavigation(
                 navController = navController,
                 startDestination = startDestination
             ) {
-                composable(route = BeatifyRoutes.Home.route) {
+                composable(
+                    route = BeatifyRoutes.Home.route,
+                    enterTransition = NavigationAnimations.homeScreenTransitions().first,
+                    exitTransition = NavigationAnimations.homeScreenTransitions().second,
+                    popEnterTransition = NavigationAnimations.homeScreenPopTransitions().first,
+                    popExitTransition = NavigationAnimations.homeScreenPopTransitions().second
+                ) {
                     HomeScreen(
                         onTrackClick = { track ->
                             playerViewModel.onEvent(PlayerUIEvent.PlayTrack(track, emptyList()))
@@ -90,7 +96,13 @@ fun BeatifyNavigation(
                     )
                 }
 
-                composable(route = BeatifyRoutes.Search.route) {
+                composable(
+                    route = BeatifyRoutes.Search.route,
+                    enterTransition = NavigationAnimations.bottomNavScreenTransitions().first,
+                    exitTransition = NavigationAnimations.bottomNavScreenTransitions().second,
+                    popEnterTransition = NavigationAnimations.bottomNavScreenPopTransitions().first,
+                    popExitTransition = NavigationAnimations.bottomNavScreenPopTransitions().second
+                ) {
                     SearchScreen(
                         onTrackClick = { track ->
                             playerViewModel.onEvent(PlayerUIEvent.PlayTrack(track, emptyList()))
@@ -98,11 +110,23 @@ fun BeatifyNavigation(
                     )
                 }
 
-                composable(route = BeatifyRoutes.Favorites.route) {
+                composable(
+                    route = BeatifyRoutes.Favorites.route,
+                    enterTransition = NavigationAnimations.bottomNavScreenTransitions().first,
+                    exitTransition = NavigationAnimations.bottomNavScreenTransitions().second,
+                    popEnterTransition = NavigationAnimations.bottomNavScreenPopTransitions().first,
+                    popExitTransition = NavigationAnimations.bottomNavScreenPopTransitions().second
+                ) {
                     FavoritesPlaceholder()
                 }
 
-                composable(route = BeatifyRoutes.Playlists.route) {
+                composable(
+                    route = BeatifyRoutes.Playlists.route,
+                    enterTransition = NavigationAnimations.bottomNavScreenTransitions().first,
+                    exitTransition = NavigationAnimations.bottomNavScreenTransitions().second,
+                    popEnterTransition = NavigationAnimations.bottomNavScreenPopTransitions().first,
+                    popExitTransition = NavigationAnimations.bottomNavScreenPopTransitions().second
+                ) {
                     PlaylistsPlaceholder()
                 }
 

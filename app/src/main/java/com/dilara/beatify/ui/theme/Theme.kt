@@ -33,10 +33,10 @@ private val NeonDarkColorScheme = darkColorScheme(
     tertiaryContainer = NeonPurple.copy(alpha = 0.2f),
     onTertiaryContainer = NeonPurpleLight,
     
-    error = NeonPink,
+    error = Color(0xFFE57373),  // Soft coral/salmon - eye-friendly error color
     onError = Color.Black,
-    errorContainer = NeonPink.copy(alpha = 0.2f),
-    onErrorContainer = NeonPinkLight,
+    errorContainer = Color(0xFFE57373).copy(alpha = 0.2f),
+    onErrorContainer = Color(0xFFFFB4A2),
     
     background = DarkBackground,           // Very dark background
     onBackground = NeonTextPrimary,

@@ -30,12 +30,6 @@ object BottomNavItems {
             icon = Icons.Default.List,
             selectedIcon = Icons.Default.Add,
             route = BeatifyRoutes.Playlists.route
-        ),
-        BottomNavItem(
-            label = "Profile",
-            icon = Icons.Default.AccountCircle,
-            selectedIcon = Icons.Default.Person,
-            route = BeatifyRoutes.Profile.route
         )
     )
 }

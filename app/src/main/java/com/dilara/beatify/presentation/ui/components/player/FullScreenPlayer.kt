@@ -7,14 +7,17 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -26,8 +29,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,6 +39,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Transparent
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -99,9 +101,9 @@ fun FullScreenPlayer(
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(
-                            DarkBackground.copy(alpha = 0.95f),
-                            DarkSurface.copy(alpha = 0.9f),
-                            DarkBackground.copy(alpha = 0.95f)
+                            DarkBackground.copy(alpha = 0.98f),
+                            DarkSurface.copy(alpha = 0.96f),
+                            DarkBackground.copy(alpha = 0.98f)
                         )
                     )
                 )
@@ -112,15 +114,15 @@ fun FullScreenPlayer(
                     .background(
                         brush = Brush.radialGradient(
                             colors = listOf(
-                                NeonPurple.copy(alpha = 0.15f),
-                                NeonCyan.copy(alpha = 0.1f),
+                                NeonPurple.copy(alpha = 0.08f),
+                                NeonCyan.copy(alpha = 0.05f),
                                 Transparent
                             ),
                             radius = 800f
                         )
                     )
             )
-            
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -131,140 +133,140 @@ fun FullScreenPlayer(
                 coverUrl = track.album.coverBig ?: track.album.cover,
                 isPlaying = isPlaying,
                 modifier = Modifier
-                    .size(320.dp)
-                    .padding(vertical = 24.dp)
+                    .size(200.dp)
+                    .padding(vertical = 12.dp)
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = track.title,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = NeonTextPrimary
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = track.artist.name,
-                fontSize = 18.sp,
-                color = NeonTextSecondary
-            )
-            
-            if (error != null) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = error,
-                    fontSize = 14.sp,
-                    color = NeonPink,
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    text = track.title,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = NeonTextPrimary
                 )
-            }
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = track.artist.name,
+                    fontSize = 18.sp,
+                    color = NeonTextSecondary
+                )
 
-            Spacer(modifier = Modifier.height(32.dp))
-
-            SeekBar(
-                position = position,
-                duration = duration,
-                onSeekTo = onSeekTo,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(onClick = onShuffleClick) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_shuffle),
-                        contentDescription = "Shuffle",
-                        modifier = Modifier.size(28.dp),
-                        colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(
-                            if (isShuffleEnabled) NeonCyan else NeonTextSecondary
-                        )
+                if (error != null) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = error,
+                        fontSize = 14.sp,
+                        color = NeonPink,
+                        modifier = Modifier.padding(horizontal = 16.dp)
                     )
                 }
 
-                IconButton(onClick = onPreviousClick) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_skip_previous),
-                        contentDescription = "Previous",
-                        modifier = Modifier.size(32.dp),
-                        colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(NeonPink)
-                    )
-                }
+                Spacer(modifier = Modifier.height(32.dp))
 
-                IconButton(
-                    onClick = onPlayPauseClick,
-                    modifier = Modifier
-                        .size(72.dp)
-                        .background(
-                            brush = Brush.radialGradient(
-                                colors = listOf(
-                                    NeonCyan.copy(alpha = 0.4f),
-                                    NeonPurple.copy(alpha = 0.2f)
-                                )
-                            ),
-                            shape = CircleShape
-                        )
+                SeekBar(
+                    position = position,
+                    duration = duration,
+                    onSeekTo = onSeekTo,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    if (isPlaying) {
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(4.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .width(8.dp)
-                                    .height(28.dp)
-                                    .background(NeonCyan, RoundedCornerShape(2.dp))
+                    IconButton(onClick = onShuffleClick) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_shuffle),
+                            contentDescription = "Shuffle",
+                            modifier = Modifier.size(28.dp),
+                            colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(
+                                if (isShuffleEnabled) NeonCyan else NeonTextSecondary
                             )
-                            Box(
-                                modifier = Modifier
-                                    .width(8.dp)
-                                    .height(28.dp)
-                                    .background(NeonCyan, RoundedCornerShape(2.dp))
+                        )
+                    }
+
+                    IconButton(onClick = onPreviousClick) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_skip_previous),
+                            contentDescription = "Previous",
+                            modifier = Modifier.size(32.dp),
+                            colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(NeonPink)
+                        )
+                    }
+
+                    IconButton(
+                        onClick = onPlayPauseClick,
+                        modifier = Modifier
+                            .size(72.dp)
+                            .background(
+                                brush = Brush.radialGradient(
+                                    colors = listOf(
+                                        NeonCyan.copy(alpha = 0.4f),
+                                        NeonPurple.copy(alpha = 0.2f)
+                                    )
+                                ),
+                                shape = CircleShape
+                            )
+                    ) {
+                        if (isPlaying) {
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .width(8.dp)
+                                        .height(28.dp)
+                                        .background(NeonCyan, RoundedCornerShape(2.dp))
+                                )
+                                Box(
+                                    modifier = Modifier
+                                        .width(8.dp)
+                                        .height(28.dp)
+                                        .background(NeonCyan, RoundedCornerShape(2.dp))
+                                )
+                            }
+                        } else {
+                            Icon(
+                                imageVector = Icons.Default.PlayArrow,
+                                contentDescription = "Play",
+                                tint = NeonPink,
+                                modifier = Modifier.size(36.dp)
                             )
                         }
-                    } else {
-                        Icon(
-                            imageVector = Icons.Default.PlayArrow,
-                            contentDescription = "Play",
-                            tint = NeonPink,
-                            modifier = Modifier.size(36.dp)
+                    }
+
+                    IconButton(onClick = onNextClick) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_skip_next),
+                            contentDescription = "Next",
+                            modifier = Modifier.size(32.dp),
+                            colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(NeonPink)
+                        )
+                    }
+
+                    IconButton(onClick = onRepeatClick) {
+                        Image(
+                            painter = painterResource(
+                                id = when (repeatMode) {
+                                    RepeatMode.OFF -> R.drawable.ic_repeat
+                                    RepeatMode.ALL -> R.drawable.ic_repeat
+                                    RepeatMode.ONE -> R.drawable.ic_repeat_one
+                                }
+                            ),
+                            contentDescription = "Repeat",
+                            modifier = Modifier.size(28.dp),
+                            colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(
+                                if (repeatMode != RepeatMode.OFF) NeonCyan else NeonTextSecondary
+                            )
                         )
                     }
                 }
 
-                IconButton(onClick = onNextClick) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_skip_next),
-                        contentDescription = "Next",
-                        modifier = Modifier.size(32.dp),
-                        colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(NeonPink)
-                    )
-                }
-
-                IconButton(onClick = onRepeatClick) {
-                    Image(
-                        painter = painterResource(
-                            id = when (repeatMode) {
-                                RepeatMode.OFF -> R.drawable.ic_repeat
-                                RepeatMode.ALL -> R.drawable.ic_repeat
-                                RepeatMode.ONE -> R.drawable.ic_repeat_one
-                            }
-                        ),
-                        contentDescription = "Repeat",
-                        modifier = Modifier.size(28.dp),
-                        colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(
-                            if (repeatMode != RepeatMode.OFF) NeonCyan else NeonTextSecondary
-                        )
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(32.dp))
             }
         }
     }
@@ -327,36 +329,104 @@ fun SeekBar(
     onSeekTo: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val progress = if (duration > 0) (position.toFloat() / duration.toFloat()) else 0f
+    val progress = if (duration > 0) (position.toFloat() / duration.toFloat()).coerceIn(0f, 1f) else 0f
 
-    Column(modifier = modifier) {
-        Slider(
-            value = progress,
-            onValueChange = { newProgress ->
-                val newPosition = (newProgress * duration).toLong()
-                onSeekTo(newPosition)
-            },
-            modifier = Modifier.fillMaxWidth(),
-            colors = SliderDefaults.colors(
-                thumbColor = NeonCyan,
-                activeTrackColor = NeonCyan,
-                inactiveTrackColor = DarkSurface.copy(alpha = 0.3f)
-            )
-        )
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 text = formatTime(position),
-                fontSize = 12.sp,
-                color = NeonTextSecondary
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Medium,
+                color = NeonCyan
             )
             Text(
                 text = formatTime(duration),
-                fontSize = 12.sp,
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Medium,
                 color = NeonTextSecondary
             )
+        }
+
+        BoxWithConstraints(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(40.dp),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            val trackWidth = maxWidth
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .pointerInput(Unit) {
+                        detectTapGestures { tapOffset ->
+                            if (duration > 0 && constraints.maxWidth > 0) {
+                                val newProgress = (tapOffset.x / constraints.maxWidth).coerceIn(0f, 1f)
+                                val newPosition = (newProgress * duration).toLong()
+                                onSeekTo(newPosition)
+                            }
+                        }
+                    }
+            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(5.dp)
+                    .clip(RoundedCornerShape(2.5.dp))
+                    .background(DarkSurface.copy(alpha = 0.4f))
+            )
+
+            Box(
+                modifier = Modifier
+                    .height(5.dp)
+                    .width((trackWidth * progress).coerceAtMost(trackWidth))
+                    .clip(RoundedCornerShape(2.5.dp))
+                    .background(
+                        brush = Brush.horizontalGradient(
+                            colors = listOf(
+                                NeonCyan,
+                                NeonPurple,
+                                Color(0xFF6A9BD5)  // Soft blue - eye-friendly
+                            )
+                        )
+                    )
+            )
+
+            Box(
+                modifier = Modifier
+                    .offset(x = (trackWidth * progress - 10.dp).coerceAtLeast(0.dp).coerceAtMost(trackWidth - 20.dp))
+                    .size(20.dp)
+                    .clip(CircleShape)
+                    .background(
+                        brush = Brush.radialGradient(
+                            colors = listOf(
+                                NeonCyan.copy(alpha = 0.9f),
+                                NeonCyan.copy(alpha = 0.7f)
+                            )
+                        )
+                    )
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(CircleShape)
+                        .background(
+                            brush = Brush.radialGradient(
+                                colors = listOf(
+                                    Color.White.copy(alpha = 0.4f),
+                                    Transparent
+                                )
+                            )
+                        )
+                )
+            }
         }
     }
 }

@@ -4,7 +4,7 @@ import androidx.compose.ui.graphics.Color
 
 // Neon Color Palette - Wild Roots Brewery Inspired
 val NeonCyan = Color(0xFF00F5FF)      // Bright cyan glow
-val NeonPink = Color(0xFFFF1493)      // Hot pink/magenta glow
+val NeonPink = Color(0xFFB19CD9)      // Soft lavender/mauve - eye-friendly
 val NeonPurple = Color(0xFF9D00FF)    // Vibrant purple glow
 val NeonOrange = Color(0xFFFF8C00)    // Vibrant orange glow
 val NeonGreen = Color(0xFF32CD32)     // Lime green (hop cone)
@@ -16,7 +16,7 @@ val DarkSurfaceVariant = Color(0xFF1A1A1A)
 
 // Light variants for glow effects
 val NeonCyanLight = Color(0xFF66F5FF)
-val NeonPinkLight = Color(0xFFFF66C4)
+val NeonPinkLight = Color(0xFFD4C5E8)  // Softer lavender light variant
 val NeonPurpleLight = Color(0xFFB84DFF)
 val NeonOrangeLight = Color(0xFFFFB366)
 val NeonGreenLight = Color(0xFF66FF66)

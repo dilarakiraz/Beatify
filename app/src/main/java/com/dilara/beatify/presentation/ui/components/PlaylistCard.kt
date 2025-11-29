@@ -7,6 +7,7 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -36,8 +37,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.dilara.beatify.domain.model.Playlist
+import com.dilara.beatify.presentation.ui.components.common.GlassIconButton
+import com.dilara.beatify.presentation.ui.components.common.GlassIconButtonStyle
 import com.dilara.beatify.ui.theme.DarkSurface
-import com.dilara.beatify.ui.theme.NeonPink
 import com.dilara.beatify.ui.theme.NeonTextPrimary
 import com.dilara.beatify.ui.theme.NeonTextSecondary
 
@@ -133,28 +135,18 @@ fun PlaylistCard(
             }
             
             if (showDeleteButton && onDelete != null) {
-                Box(
+                GlassIconButton(
+                    icon = Icons.Default.Delete,
+                    onClick = {
+                        onDelete?.invoke()
+                        showDeleteButton = false
+                    },
                     modifier = Modifier
                         .align(Alignment.TopStart)
-                        .padding(12.dp)
-                        .size(40.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(
-                            NeonPink.copy(alpha = 0.9f)
-                        )
-                        .clickable {
-                            onDelete()
-                            showDeleteButton = false
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = "Sil",
-                        tint = Color.White,
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
+                        .padding(12.dp),
+                    style = GlassIconButtonStyle.DANGER,
+                    contentDescription = "Sil"
+                )
             }
             
             Column(

@@ -14,12 +14,24 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,6 +48,7 @@ import com.dilara.beatify.domain.model.Track
 import com.dilara.beatify.presentation.ui.components.common.FavoriteButton
 import com.dilara.beatify.ui.theme.DarkSurface
 import com.dilara.beatify.ui.theme.NeonCyan
+import com.dilara.beatify.ui.theme.NeonPink
 import com.dilara.beatify.ui.theme.NeonPurple
 import com.dilara.beatify.ui.theme.NeonTextPrimary
 import com.dilara.beatify.ui.theme.NeonTextSecondary
@@ -52,8 +65,13 @@ fun TrackCard(
     modifier: Modifier = Modifier,
     style: TrackCardStyle = TrackCardStyle.VERTICAL,
     isFavorite: Boolean = false,
-    onFavoriteClick: (() -> Unit)? = null
+    onFavoriteClick: (() -> Unit)? = null,
+    onDelete: (() -> Unit)? = null,
+    isDragging: Boolean = false
 ) {
+    val deleteInteractionSource = remember { MutableInteractionSource() }
+    val isDeletePressed by deleteInteractionSource.collectIsPressedAsState()
+    
     val config = when (style) {
         TrackCardStyle.VERTICAL -> TrackCardConfig(
             cornerRadius = 16.dp,
@@ -123,10 +141,16 @@ fun TrackCard(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null
-                    ) { onClick() }
+                    .then(
+                        if (!isDragging) {
+                            Modifier.clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null
+                            ) { onClick() }
+                        } else {
+                            Modifier
+                        }
+                    )
             ) {
                 Row(
                     modifier = Modifier
@@ -192,8 +216,7 @@ fun TrackCard(
                         }
                     }
 
-                    // Duration - favori butonu varsa gösterilmez
-                    if (onFavoriteClick == null) {
+                    if (onFavoriteClick == null && onDelete == null) {
                         Text(
                             text = formatDuration(track.duration),
                             fontSize = config.durationFontSize,
@@ -216,6 +239,76 @@ fun TrackCard(
                     size = 36.dp,
                     iconSize = 20.dp
                 )
+            }
+            
+            if (onDelete != null && onFavoriteClick == null) {
+                val deleteButtonScale by animateFloatAsState(
+                    targetValue = if (isDeletePressed) 1.15f else 1f,
+                    animationSpec = tween(200),
+                    label = "delete_scale"
+                )
+                
+                val deleteButtonAlpha by animateFloatAsState(
+                    targetValue = if (isDeletePressed) 1f else 0.85f,
+                    animationSpec = tween(200),
+                    label = "delete_alpha"
+                )
+                
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .padding(end = 12.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(44.dp)
+                            .graphicsLayer {
+                                scaleX = deleteButtonScale
+                                scaleY = deleteButtonScale
+                                alpha = deleteButtonAlpha
+                            }
+                            .background(
+                                brush = Brush.radialGradient(
+                                    colors = listOf(
+                                        NeonPink.copy(alpha = 0.3f),
+                                        NeonPink.copy(alpha = 0.15f),
+                                        Transparent
+                                    ),
+                                    radius = 60f
+                                ),
+                                shape = CircleShape
+                            )
+                            .clickable(
+                                onClick = { onDelete() },
+                                interactionSource = deleteInteractionSource,
+                                indication = null
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(36.dp)
+                                .background(
+                                    brush = Brush.radialGradient(
+                                        colors = listOf(
+                                            NeonPink.copy(alpha = if (isDeletePressed) 0.4f else 0.25f),
+                                            NeonPink.copy(alpha = if (isDeletePressed) 0.2f else 0.12f)
+                                        )
+                                    ),
+                                    shape = CircleShape
+                                )
+                                .clip(CircleShape),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "Sil",
+                                tint = NeonPink.copy(alpha = if (isDeletePressed) 1f else 0.9f),
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    }
+                }
             }
         }
     }

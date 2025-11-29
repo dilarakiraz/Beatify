@@ -16,6 +16,7 @@ data class FavoriteTrackEntity(
     val albumId: Long,
     val albumTitle: String,
     val albumCover: String?,
+    val position: Int = 0,
     val addedAt: Long = System.currentTimeMillis()
 )
 

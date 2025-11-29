@@ -13,9 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -54,6 +52,7 @@ import com.dilara.beatify.presentation.state.PlaylistDetailUIEvent
 import com.dilara.beatify.presentation.ui.components.TrackCard
 import com.dilara.beatify.presentation.ui.components.common.AddTrackToPlaylistDialog
 import com.dilara.beatify.presentation.ui.components.common.BackButton
+import com.dilara.beatify.presentation.ui.components.common.DraggableLazyColumn
 import com.dilara.beatify.presentation.ui.components.common.EmptySection
 import com.dilara.beatify.presentation.ui.components.common.ErrorSection
 import com.dilara.beatify.presentation.ui.components.common.FloatingActionButton
@@ -65,6 +64,7 @@ import com.dilara.beatify.ui.theme.NeonCyan
 import com.dilara.beatify.ui.theme.NeonTextPrimary
 import com.dilara.beatify.ui.theme.NeonTextSecondary
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PlaylistDetailScreen(
     playlistId: Long,
@@ -73,7 +73,6 @@ fun PlaylistDetailScreen(
     onNavigateBack: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val listState = rememberLazyListState()
 
     var showAddTrackDialog by remember { mutableStateOf(false) }
     var isEditingName by remember { mutableStateOf(false) }
@@ -89,20 +88,12 @@ fun PlaylistDetailScreen(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        LazyColumn(
-            state = listState,
+        val playlist = uiState.playlist
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .background(DarkBackground),
-            contentPadding = PaddingValues(bottom = 160.dp)
+                .fillMaxWidth()
+                .height(320.dp)
         ) {
-            item {
-                val playlist = uiState.playlist
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(320.dp)
-                ) {
                     if (playlist != null && playlist.coverUrl != null) {
                         AsyncImage(
                             model = playlist.coverUrl,
@@ -277,58 +268,109 @@ fun PlaylistDetailScreen(
                         )
                     }
                 }
-
-                Spacer(modifier = Modifier.height(24.dp))
-            }
-
-            item {
-                if (!uiState.isLoading && uiState.error == null && uiState.tracks.isNotEmpty()) {
-                    Text(
-                        text = "Şarkılar",
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = NeonTextPrimary,
-                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
-                    )
-                }
-            }
-
+        
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 320.dp)
+        ) {
             when {
                 uiState.isLoading -> {
-                    items(5) {
-                        TrackCardSkeleton()
+                    androidx.compose.foundation.lazy.LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(DarkBackground),
+                        contentPadding = PaddingValues(
+                            start = 20.dp,
+                            end = 20.dp,
+                            top = 24.dp,
+                            bottom = 160.dp
+                        ),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        items(5) {
+                            TrackCardSkeleton()
+                        }
                     }
                 }
-
+                
                 uiState.error != null -> {
-                    item {
-                        ErrorSection(
-                            message = uiState.error ?: "Bilinmeyen hata",
-                            onRetry = { viewModel.onEvent(PlaylistDetailUIEvent.LoadPlaylist(playlistId)) }
+                    androidx.compose.foundation.lazy.LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(DarkBackground),
+                        contentPadding = PaddingValues(
+                            start = 20.dp,
+                            end = 20.dp,
+                            top = 24.dp,
+                            bottom = 160.dp
                         )
+                    ) {
+                        item {
+                            ErrorSection(
+                                message = uiState.error ?: "Bilinmeyen hata",
+                                onRetry = { viewModel.onEvent(PlaylistDetailUIEvent.LoadPlaylist(playlistId)) }
+                            )
+                        }
                     }
                 }
-
+                
                 uiState.tracks.isEmpty() -> {
-                    item {
-                        EmptySection(
-                            message = "Bu çalma listesinde henüz şarkı yok. Şarkı eklemek için + butonuna tıklayın."
+                    androidx.compose.foundation.lazy.LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(DarkBackground),
+                        contentPadding = PaddingValues(
+                            start = 20.dp,
+                            end = 20.dp,
+                            top = 24.dp,
+                            bottom = 160.dp
                         )
+                    ) {
+                        item {
+                            EmptySection(
+                                message = "Bu çalma listesinde henüz şarkı yok. Şarkı eklemek için + butonuna tıklayın."
+                            )
+                        }
                     }
                 }
-
+                
                 else -> {
-                    itemsIndexed(
+                    DraggableLazyColumn(
                         items = uiState.tracks,
-                        key = { _, track -> track.id }
-                    ) { index, track ->
+                        onMove = { fromIndex, toIndex ->
+                            viewModel.onEvent(PlaylistDetailUIEvent.ReorderTracks(fromIndex, toIndex))
+                        },
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(DarkBackground),
+                        contentPadding = PaddingValues(
+                            start = 20.dp,
+                            end = 20.dp,
+                            top = 24.dp,
+                            bottom = 160.dp
+                        ),
+                        key = { track -> track.id },
+                        headerContent = {
+                            Text(
+                                text = "Şarkılar",
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = NeonTextPrimary,
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            )
+                        }
+                    ) { _, track, isDragging ->
                         TrackCard(
                             track = track,
                             onClick = {
                                 viewModel.onEvent(PlaylistDetailUIEvent.OnTrackClick(track.id))
                                 onTrackClick(track, uiState.tracks)
                             },
-                            modifier = Modifier.padding(horizontal = 20.dp)
+                            onDelete = {
+                                viewModel.onEvent(PlaylistDetailUIEvent.RemoveTrack(track.id))
+                            },
+                            isDragging = isDragging
                         )
                     }
                 }

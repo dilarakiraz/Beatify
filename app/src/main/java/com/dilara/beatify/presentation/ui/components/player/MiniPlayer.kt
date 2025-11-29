@@ -165,8 +165,8 @@ fun MiniPlayer(
                     ) {
                         if (isPlaying) {
                             Row(
-                                modifier = Modifier.size(28.dp),
-                                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                modifier = Modifier.fillMaxSize(),
+                                horizontalArrangement = Arrangement.Center,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Box(
@@ -175,6 +175,7 @@ fun MiniPlayer(
                                         .height(20.dp)
                                         .background(NeonCyan, RoundedCornerShape(2.dp))
                                 )
+                                Spacer(modifier = Modifier.width(4.dp))
                                 Box(
                                     modifier = Modifier
                                         .width(6.dp)

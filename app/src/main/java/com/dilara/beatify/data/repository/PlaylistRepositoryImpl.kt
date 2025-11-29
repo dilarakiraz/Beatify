@@ -9,6 +9,7 @@ import com.dilara.beatify.domain.model.Playlist
 import com.dilara.beatify.domain.model.Track
 import com.dilara.beatify.domain.repository.PlaylistRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -34,9 +35,12 @@ class PlaylistRepositoryImpl @Inject constructor(
     
     override suspend fun createPlaylist(name: String, coverUrl: String?): Result<Long> {
         return safeApiCall {
+            val maxPosition = playlistDao.getMaxPlaylistPosition() ?: -1
+            val newPosition = maxPosition + 1
             val playlist = com.dilara.beatify.data.local.entity.PlaylistEntity(
                 name = name,
-                coverUrl = coverUrl
+                coverUrl = coverUrl,
+                position = newPosition
             )
             playlistDao.insertPlaylist(playlist)
         }
@@ -83,6 +87,46 @@ class PlaylistRepositoryImpl @Inject constructor(
     
     override suspend fun getPlaylistTracks(playlistId: Long): List<Track> {
         return playlistDao.getPlaylistTracks(playlistId).map { it.toDomain() }
+    }
+    
+    override suspend fun reorderPlaylistTracks(
+        playlistId: Long,
+        fromIndex: Int,
+        toIndex: Int
+    ): Result<Unit> {
+        return safeApiCall {
+            val tracks = playlistDao.getPlaylistTracks(playlistId)
+            
+            if (fromIndex !in tracks.indices || toIndex !in tracks.indices) {
+                throw IllegalArgumentException("Invalid index")
+            }
+            
+            val reorderedTracks = tracks.toMutableList()
+            val movedTrack = reorderedTracks.removeAt(fromIndex)
+            reorderedTracks.add(toIndex, movedTrack)
+            
+            reorderedTracks.forEachIndexed { index, track ->
+                playlistDao.updateTrackPosition(track.id, index)
+            }
+        }
+    }
+    
+    override suspend fun reorderPlaylists(fromIndex: Int, toIndex: Int): Result<Unit> {
+        return safeApiCall {
+            val playlists = playlistDao.getAllPlaylists().first()
+            
+            if (fromIndex !in playlists.indices || toIndex !in playlists.indices) {
+                throw IllegalArgumentException("Invalid index")
+            }
+            
+            val reorderedPlaylists = playlists.toMutableList()
+            val movedPlaylist = reorderedPlaylists.removeAt(fromIndex)
+            reorderedPlaylists.add(toIndex, movedPlaylist)
+            
+            reorderedPlaylists.forEachIndexed { index, playlist ->
+                playlistDao.updatePlaylistPosition(playlist.id, index)
+            }
+        }
     }
 }
 

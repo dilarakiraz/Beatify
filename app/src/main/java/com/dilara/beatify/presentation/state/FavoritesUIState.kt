@@ -13,5 +13,6 @@ sealed class FavoritesUIEvent {
     data class OnTrackClick(val trackId: Long) : FavoritesUIEvent()
     data class ToggleFavorite(val track: Track) : FavoritesUIEvent()
     data object LoadFavorites : FavoritesUIEvent()
+    data class ReorderFavorites(val fromIndex: Int, val toIndex: Int) : FavoritesUIEvent()
 }
 

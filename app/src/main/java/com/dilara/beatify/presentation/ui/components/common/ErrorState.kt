@@ -32,7 +32,7 @@ fun ErrorSection(
             fontSize = 48.sp
         )
         Text(
-            text = "Oops! Something went wrong",
+            text = "Bir şeyler ters gitti",
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             color = NeonPink,
@@ -55,7 +55,7 @@ fun ErrorSection(
             modifier = Modifier.padding(top = 8.dp)
         ) {
             Text(
-                text = "Retry",
+                text = "Tekrar Dene",
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
             )

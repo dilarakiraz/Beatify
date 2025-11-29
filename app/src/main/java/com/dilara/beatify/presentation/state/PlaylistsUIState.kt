@@ -13,6 +13,7 @@ sealed class PlaylistsUIEvent {
     data class CreatePlaylist(val name: String) : PlaylistsUIEvent()
     data class DeletePlaylist(val playlistId: Long) : PlaylistsUIEvent()
     data class OnPlaylistClick(val playlistId: Long) : PlaylistsUIEvent()
+    data class ReorderPlaylists(val fromIndex: Int, val toIndex: Int) : PlaylistsUIEvent()
 }
 
 

@@ -33,6 +33,11 @@ interface FavoritesRepository {
      * Toggle favorite status
      */
     suspend fun toggleFavorite(track: Track): Result<Boolean>
+    
+    /**
+     * Reorder favorite tracks
+     */
+    suspend fun reorderFavorites(fromIndex: Int, toIndex: Int): Result<Unit>
 }
 
 

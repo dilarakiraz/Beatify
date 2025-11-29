@@ -4,8 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -38,17 +38,18 @@ fun AddTrackToPlaylistDialog(
 
     BeatifyBottomSheet(
         onDismiss = onDismiss,
-        modifier = modifier.fillMaxHeight(0.9f)
+        modifier = modifier
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight()
+                .offset(y = (-32).dp)
+                .padding(top = 32.dp)
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(24.dp, 16.dp)
+                    .padding(horizontal = 24.dp, vertical = 16.dp)
             ) {
                 Text(
                     text = "Şarkı Ekle",
@@ -87,7 +88,7 @@ fun AddTrackToPlaylistDialog(
                     start = 24.dp,
                     end = 24.dp,
                     top = 8.dp,
-                    bottom = 8.dp
+                    bottom = 0.dp
                 ),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {

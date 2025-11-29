@@ -29,6 +29,7 @@ class PlaylistDetailViewModel @Inject constructor(
             is PlaylistDetailUIEvent.OnTrackClick -> { /* Handled by navigation */ }
             is PlaylistDetailUIEvent.DeletePlaylist -> deletePlaylist(event.playlistId)
             is PlaylistDetailUIEvent.UpdatePlaylistName -> updatePlaylistName(event.playlistId, event.name)
+            is PlaylistDetailUIEvent.ReorderTracks -> reorderTracks(event.fromIndex, event.toIndex)
         }
     }
 
@@ -109,6 +110,29 @@ class PlaylistDetailViewModel @Inject constructor(
                 onFailure = { exception ->
                     _uiState.value = _uiState.value.copy(
                         error = exception.message ?: "Çalma listesi adı güncellenemedi"
+                    )
+                }
+            )
+        }
+    }
+    
+    private fun reorderTracks(fromIndex: Int, toIndex: Int) {
+        val playlist = _uiState.value.playlist ?: return
+        
+        val currentTracks = _uiState.value.tracks.toMutableList()
+        if (fromIndex in currentTracks.indices && toIndex in currentTracks.indices) {
+            val movedTrack = currentTracks.removeAt(fromIndex)
+            currentTracks.add(toIndex, movedTrack)
+            _uiState.value = _uiState.value.copy(tracks = currentTracks)
+        }
+        
+        viewModelScope.launch {
+            playlistRepository.reorderPlaylistTracks(playlist.id, fromIndex, toIndex).fold(
+                onSuccess = { /* Already updated optimistically */ },
+                onFailure = { exception ->
+                    loadPlaylist(playlist.id)
+                    _uiState.value = _uiState.value.copy(
+                        error = exception.message ?: "Sıralama değiştirilemedi"
                     )
                 }
             )

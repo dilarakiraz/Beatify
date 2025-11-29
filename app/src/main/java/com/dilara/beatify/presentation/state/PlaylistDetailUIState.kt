@@ -17,5 +17,6 @@ sealed class PlaylistDetailUIEvent {
     data class OnTrackClick(val trackId: Long) : PlaylistDetailUIEvent()
     data class DeletePlaylist(val playlistId: Long) : PlaylistDetailUIEvent()
     data class UpdatePlaylistName(val playlistId: Long, val name: String) : PlaylistDetailUIEvent()
+    data class ReorderTracks(val fromIndex: Int, val toIndex: Int) : PlaylistDetailUIEvent()
 }
 

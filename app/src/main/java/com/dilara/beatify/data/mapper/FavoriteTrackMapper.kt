@@ -43,7 +43,7 @@ fun FavoriteTrackEntity.toDomain(): Track {
     )
 }
 
-fun Track.toFavoriteEntity(): FavoriteTrackEntity {
+fun Track.toFavoriteEntity(position: Int = 0): FavoriteTrackEntity {
     return FavoriteTrackEntity(
         trackId = id,
         title = title,
@@ -55,6 +55,7 @@ fun Track.toFavoriteEntity(): FavoriteTrackEntity {
         albumId = album.id,
         albumTitle = album.title,
         albumCover = album.coverBig ?: album.cover,
+        position = position,
         addedAt = System.currentTimeMillis()
     )
 }

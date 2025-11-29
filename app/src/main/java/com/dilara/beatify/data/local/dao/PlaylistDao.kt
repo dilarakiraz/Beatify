@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PlaylistDao {
     
-    @Query("SELECT * FROM playlists ORDER BY updatedAt DESC")
+    @Query("SELECT * FROM playlists ORDER BY position ASC")
     fun getAllPlaylists(): Flow<List<PlaylistEntity>>
     
     @Query("SELECT * FROM playlists WHERE id = :playlistId")
@@ -53,6 +53,15 @@ interface PlaylistDao {
     
     @Query("SELECT MAX(position) FROM playlist_tracks WHERE playlistId = :playlistId")
     suspend fun getMaxPosition(playlistId: Long): Int?
+    
+    @Query("UPDATE playlist_tracks SET position = :newPosition WHERE id = :trackId")
+    suspend fun updateTrackPosition(trackId: Long, newPosition: Int)
+    
+    @Query("SELECT MAX(position) FROM playlists")
+    suspend fun getMaxPlaylistPosition(): Int?
+    
+    @Query("UPDATE playlists SET position = :newPosition WHERE id = :playlistId")
+    suspend fun updatePlaylistPosition(playlistId: Long, newPosition: Int)
 }
 
 

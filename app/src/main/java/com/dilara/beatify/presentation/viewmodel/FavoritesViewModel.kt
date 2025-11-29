@@ -11,6 +11,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -39,38 +42,62 @@ class FavoritesViewModel @Inject constructor(
             is FavoritesUIEvent.LoadFavorites -> {
                 loadFavorites()
             }
+            
+            is FavoritesUIEvent.ReorderFavorites -> {
+                reorderFavorites(event.fromIndex, event.toIndex)
+            }
         }
     }
     
     private fun loadFavorites() {
-        viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
-            
-            favoritesRepository.getAllFavorites()
-                .catch { exception ->
-                    _uiState.value = _uiState.value.copy(
-                        isLoading = false,
-                        error = exception.message ?: "Failed to load favorites"
-                    )
-                }
-                .collect { tracks ->
-                    _uiState.value = _uiState.value.copy(
-                        favoriteTracks = tracks,
-                        favoriteTrackIds = tracks.map { it.id }.toSet(),
-                        isLoading = false,
-                        error = null
-                    )
-                }
-        }
+        favoritesRepository.getAllFavorites()
+            .onStart { _uiState.value = _uiState.value.copy(isLoading = true, error = null) }
+            .catch { exception ->
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    error = exception.message ?: "Favoriler yüklenemedi"
+                )
+            }
+            .onEach { tracks ->
+                _uiState.value = _uiState.value.copy(
+                    favoriteTracks = tracks,
+                    favoriteTrackIds = tracks.map { it.id }.toSet(),
+                    isLoading = false,
+                    error = null
+                )
+            }
+            .launchIn(viewModelScope)
     }
     
     private fun toggleFavorite(track: Track) {
         viewModelScope.launch {
             favoritesRepository.toggleFavorite(track).fold(
-                onSuccess = { },
+                onSuccess = { /* Automatically updated via Flow */ },
                 onFailure = { exception ->
                     _uiState.value = _uiState.value.copy(
-                        error = exception.message ?: "Failed to toggle favorite"
+                        error = exception.message ?: "Favori durumu değiştirilemedi"
+                    )
+                }
+            )
+        }
+    }
+    
+    private fun reorderFavorites(fromIndex: Int, toIndex: Int) {
+        // Optimistic UI update
+        val currentTracks = _uiState.value.favoriteTracks.toMutableList()
+        if (fromIndex in currentTracks.indices && toIndex in currentTracks.indices) {
+            val movedTrack = currentTracks.removeAt(fromIndex)
+            currentTracks.add(toIndex, movedTrack)
+            _uiState.value = _uiState.value.copy(favoriteTracks = currentTracks)
+        }
+        
+        viewModelScope.launch {
+            favoritesRepository.reorderFavorites(fromIndex, toIndex).fold(
+                onSuccess = { /* Already updated optimistically */ },
+                onFailure = { exception ->
+                    loadFavorites()
+                    _uiState.value = _uiState.value.copy(
+                        error = exception.message ?: "Sıralama değiştirilemedi"
                     )
                 }
             )
@@ -81,4 +108,3 @@ class FavoritesViewModel @Inject constructor(
         return favoritesRepository.isFavorite(trackId)
     }
 }
-

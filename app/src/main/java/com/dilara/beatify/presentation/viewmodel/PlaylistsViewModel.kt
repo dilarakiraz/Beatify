@@ -34,6 +34,7 @@ class PlaylistsViewModel @Inject constructor(
             is PlaylistsUIEvent.CreatePlaylist -> createPlaylist(event.name)
             is PlaylistsUIEvent.DeletePlaylist -> deletePlaylist(event.playlistId)
             is PlaylistsUIEvent.OnPlaylistClick -> { /* Handled by navigation */ }
+            is PlaylistsUIEvent.ReorderPlaylists -> reorderPlaylists(event.fromIndex, event.toIndex)
         }
     }
     
@@ -83,5 +84,25 @@ class PlaylistsViewModel @Inject constructor(
             )
         }
     }
+    
+    private fun reorderPlaylists(fromIndex: Int, toIndex: Int) {
+        val currentPlaylists = _uiState.value.playlists.toMutableList()
+        if (fromIndex in currentPlaylists.indices && toIndex in currentPlaylists.indices) {
+            val movedPlaylist = currentPlaylists.removeAt(fromIndex)
+            currentPlaylists.add(toIndex, movedPlaylist)
+            _uiState.value = _uiState.value.copy(playlists = currentPlaylists)
+        }
+        
+        viewModelScope.launch {
+            playlistRepository.reorderPlaylists(fromIndex, toIndex).fold(
+                onSuccess = { /* Already updated optimistically */ },
+                onFailure = { exception ->
+                    loadPlaylists()
+                    _uiState.value = _uiState.value.copy(
+                        error = exception.message ?: "Sıralama değiştirilemedi"
+                    )
+                }
+            )
+        }
+    }
 }
-

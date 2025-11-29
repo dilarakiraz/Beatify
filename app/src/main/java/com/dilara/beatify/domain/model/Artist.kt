@@ -10,3 +10,4 @@ data class Artist(
     val pictureXl: String?
 )
 
+

@@ -21,3 +21,4 @@ sealed class BeatifyRoutes(val route: String) {
     }
 }
 
+

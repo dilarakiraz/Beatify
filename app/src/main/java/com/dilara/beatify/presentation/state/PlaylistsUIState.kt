@@ -15,3 +15,4 @@ sealed class PlaylistsUIEvent {
     data class OnPlaylistClick(val playlistId: Long) : PlaylistsUIEvent()
 }
 
+

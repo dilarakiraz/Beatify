@@ -35,3 +35,4 @@ interface FavoritesRepository {
     suspend fun toggleFavorite(track: Track): Result<Boolean>
 }
 
+

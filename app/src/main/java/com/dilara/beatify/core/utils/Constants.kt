@@ -12,3 +12,4 @@ object Constants {
     const val COVER_ROTATION_DURATION_MS = 10_000L // 10 seconds per rotation
 }
 
+

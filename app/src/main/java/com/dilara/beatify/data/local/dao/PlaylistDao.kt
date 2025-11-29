@@ -55,3 +55,4 @@ interface PlaylistDao {
     suspend fun getMaxPosition(playlistId: Long): Int?
 }
 
+

@@ -1,5 +1,7 @@
 package com.dilara.beatify.data.repository
 
+import com.dilara.beatify.core.utils.safeApiCall
+
 import com.dilara.beatify.data.local.dao.FavoriteTrackDao
 import com.dilara.beatify.data.mapper.toDomain
 import com.dilara.beatify.data.mapper.toFavoriteEntity
@@ -26,35 +28,27 @@ class FavoritesRepositoryImpl @Inject constructor(
     }
     
     override suspend fun addToFavorites(track: Track): Result<Unit> {
-        return try {
+        return safeApiCall {
             favoriteTrackDao.insertFavoriteTrack(track.toFavoriteEntity())
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
         }
     }
     
     override suspend fun removeFromFavorites(trackId: Long): Result<Unit> {
-        return try {
+        return safeApiCall {
             favoriteTrackDao.deleteFavoriteTrackById(trackId)
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
         }
     }
     
     override suspend fun toggleFavorite(track: Track): Result<Boolean> {
-        return try {
+        return safeApiCall {
             val existing = favoriteTrackDao.getFavoriteTrackById(track.id)
             if (existing != null) {
                 favoriteTrackDao.deleteFavoriteTrackById(track.id)
-                Result.success(false)
+                false
             } else {
                 favoriteTrackDao.insertFavoriteTrack(track.toFavoriteEntity())
-                Result.success(true)
+                true
             }
-        } catch (e: Exception) {
-            Result.failure(e)
         }
     }
 }

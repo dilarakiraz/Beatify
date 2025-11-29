@@ -3,7 +3,9 @@ package com.dilara.beatify.presentation.ui.components.common
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -39,7 +41,8 @@ fun CreatePlaylistDialog(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(24.dp),
+                .fillMaxHeight()
+                .padding(horizontal = 24.dp, vertical = 24.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             Text(
@@ -103,6 +106,8 @@ fun CreatePlaylistDialog(
                     enabled = playlistName.isNotBlank()
                 )
             }
+            
+            Spacer(modifier = Modifier.padding(bottom = 48.dp))
         }
     }
 }

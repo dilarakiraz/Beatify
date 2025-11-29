@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dilara.beatify.core.player.PlayerStateHolder
 import com.dilara.beatify.domain.model.Track
+import com.dilara.beatify.domain.repository.MusicRepository
 import com.dilara.beatify.presentation.state.PlayerUIEvent
 import com.dilara.beatify.presentation.state.PlayerUIState
 import com.dilara.beatify.presentation.state.RepeatMode
@@ -18,7 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
-    private val playerStateHolder: PlayerStateHolder
+    private val playerStateHolder: PlayerStateHolder,
+    private val musicRepository: MusicRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PlayerUIState())
@@ -71,30 +73,58 @@ class PlayerViewModel @Inject constructor(
     }
 
     private fun playTrack(track: Track, playlist: List<Track>) {
-        val url = track.previewUrl
-        
-        if (url.isNullOrBlank()) {
+        viewModelScope.launch {
             _uiState.value = _uiState.value.copy(
-                error = "Preview not available for this track",
-                isLoading = false,
+                currentTrack = track,
+                isLoading = true,
+                error = null,
                 isPlaying = false
             )
-            return
+
+            val trackToPlay = fetchFreshTrack(track)
+            val url = trackToPlay.previewUrl
+            
+            if (url.isNullOrBlank()) {
+                _uiState.value = _uiState.value.copy(
+                    error = "Şarkı önizlemesi bulunamadı",
+                    isLoading = false,
+                    isPlaying = false
+                )
+                return@launch
+            }
+            
+            if (trackToPlay != track) {
+                _uiState.value = _uiState.value.copy(currentTrack = trackToPlay)
+            }
+    
+            val trackList = playlist.ifEmpty { listOf(trackToPlay) }
+            val index = trackList.indexOfFirst { it.id == trackToPlay.id }.takeIf { it != -1 } ?: 0
+    
+            _uiState.value = _uiState.value.copy(
+                playlist = trackList,
+                currentIndex = index,
+                position = 0L
+            )
+    
+            startPlayback(url)
         }
+    }
 
-        val trackList = playlist.ifEmpty { listOf(track) }
-        val index = trackList.indexOf(track)
+    private suspend fun fetchFreshTrack(track: Track): Track {
+        return try {
+            val result = musicRepository.getTrackById(track.id)
+            if (result.isSuccess) {
+                result.getOrNull() ?: track
+            } else {
+                track
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            track
+        }
+    }
 
-        _uiState.value = _uiState.value.copy(
-            currentTrack = track,
-            playlist = trackList,
-            currentIndex = index,
-            isPlaying = false,
-            isLoading = true,
-            error = null,
-            position = 0L
-        )
-
+    private fun startPlayback(url: String) {
         try {
             playerStateHolder.play(url)
             
@@ -129,7 +159,7 @@ class PlayerViewModel @Inject constructor(
             }
         } catch (e: Exception) {
             _uiState.value = _uiState.value.copy(
-                error = "Failed to play: ${e.message}",
+                error = "Oynatma hatası: ${e.message}",
                 isLoading = false,
                 isPlaying = false
             )

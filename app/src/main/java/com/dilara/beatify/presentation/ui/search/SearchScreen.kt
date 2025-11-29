@@ -11,7 +11,10 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -20,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.dilara.beatify.presentation.state.SearchUIEvent
+import com.dilara.beatify.presentation.ui.components.ArtistCard
 import com.dilara.beatify.presentation.ui.components.BeatifySearchBar
 import com.dilara.beatify.presentation.ui.components.TrackCard
 import com.dilara.beatify.presentation.ui.components.common.EmptySection
@@ -136,42 +140,78 @@ fun SearchScreen(
                 }
             }
 
-            uiState.tracks.isEmpty() -> {
+            uiState.tracks.isEmpty() && uiState.artists.isEmpty() -> {
                 item {
                     EmptySection(message = "\"${uiState.searchQuery}\" için sonuç bulunamadı")
                 }
             }
 
             else -> {
-                item {
-                    SectionHeader(
-                        title = "Arama Sonuçları",
-                        subtitle = "${uiState.tracks.size} şarkı bulundu"
-                    )
+                if (uiState.artists.isNotEmpty()) {
+                    item {
+                        SectionHeader(
+                            title = "Sanatçılar",
+                            subtitle = "${uiState.artists.size} sanatçı bulundu"
+                        )
+                    }
+
+                    item {
+                        LazyRow(
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            contentPadding = PaddingValues(horizontal = 4.dp)
+                        ) {
+                            items(
+                                items = uiState.artists,
+                                key = { artist -> artist.id }
+                            ) { artist ->
+                                ArtistCard(
+                                    artist = artist,
+                                    onClick = {
+                                        viewModel.onEvent(SearchUIEvent.OnArtistClick(artist.id))
+                                        onArtistClick(artist.id)
+                                    },
+                                    modifier = Modifier.size(width = 120.dp, height = 120.dp)
+                                )
+                            }
+                        }
+                    }
                 }
 
-                itemsIndexed(
-                    items = uiState.tracks,
-                    key = { _, track -> track.id }
-                ) { index, track ->
-                    AnimatedVisibility(
-                        visible = true,
-                        enter = fadeIn() + slideInVertically(
-                            initialOffsetY = { it },
-                            animationSpec = tween(300, delayMillis = index * 30)
+                if (uiState.tracks.isNotEmpty()) {
+                    item {
+                        SectionHeader(
+                            title = "Şarkılar",
+                            subtitle = "${uiState.tracks.size} şarkı bulundu"
                         )
-                    ) {
-                        TrackCard(
-                            track = track,
-                            onClick = {
-                                viewModel.onEvent(SearchUIEvent.OnTrackClick(track.id))
-                                onTrackClick(track)
-                            },
-                            isFavorite = favoritesState.favoriteTrackIds.contains(track.id),
-                            onFavoriteClick = {
-                                favoritesViewModel.onEvent(FavoritesUIEvent.ToggleFavorite(track))
-                            }
-                        )
+                    }
+
+                    itemsIndexed(
+                        items = uiState.tracks,
+                        key = { _, track -> track.id }
+                    ) { index, track ->
+                        AnimatedVisibility(
+                            visible = true,
+                            enter = fadeIn() + slideInVertically(
+                                initialOffsetY = { it },
+                                animationSpec = tween(300, delayMillis = index * 30)
+                            )
+                        ) {
+                            TrackCard(
+                                track = track,
+                                onClick = {
+                                    viewModel.onEvent(SearchUIEvent.OnTrackClick(track.id))
+                                    onTrackClick(track)
+                                },
+                                isFavorite = favoritesState.favoriteTrackIds.contains(track.id),
+                                onFavoriteClick = {
+                                    favoritesViewModel.onEvent(FavoritesUIEvent.ToggleFavorite(track))
+                                },
+                                onArtistClick = {
+                                    viewModel.onEvent(SearchUIEvent.OnArtistClick(track.artist.id))
+                                    onArtistClick(track.artist.id)
+                                }
+                            )
+                        }
                     }
                 }
             }

@@ -31,7 +31,9 @@ import com.dilara.beatify.ui.theme.NeonTextPrimary
 fun AddTrackToPlaylistDialog(
     onTrackSelected: (Track) -> Unit,
     onDismiss: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onArtistClick: ((Long) -> Unit)? = null,
+    onTrackClick: ((Track) -> Unit)? = null
 ) {
     val searchViewModel: SearchViewModel = hiltViewModel()
     val uiState by searchViewModel.uiState.collectAsState()
@@ -131,7 +133,14 @@ fun AddTrackToPlaylistDialog(
                                 track = track,
                                 onClick = {
                                     onTrackSelected(track)
+                                    onTrackClick?.invoke(track)
                                     onDismiss()
+                                },
+                                onArtistClick = onArtistClick?.let { callback ->
+                                    {
+                                        callback(track.artist.id)
+                                        onDismiss()
+                                    }
                                 }
                             )
                         }

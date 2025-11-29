@@ -33,6 +33,7 @@ import com.dilara.beatify.presentation.state.PlayerUIEvent
 import com.dilara.beatify.presentation.ui.components.BeatifyBottomNavigationBar
 import com.dilara.beatify.presentation.ui.components.player.FullScreenPlayer
 import com.dilara.beatify.presentation.ui.components.player.MiniPlayer
+import com.dilara.beatify.presentation.ui.artist.ArtistDetailScreen
 import com.dilara.beatify.presentation.ui.favorites.FavoritesScreen
 import com.dilara.beatify.presentation.ui.home.HomeScreen
 import com.dilara.beatify.presentation.ui.playlists.PlaylistDetailScreen
@@ -151,6 +152,9 @@ fun BeatifyNavigation(
                     HomeScreen(
                         onTrackClick = { track ->
                             playerViewModel.onEvent(PlayerUIEvent.PlayTrack(track, emptyList()))
+                        },
+                        onArtistClick = { artistId ->
+                            navController.navigate(BeatifyRoutes.ArtistDetail.createRoute(artistId))
                         }
                     )
                 }
@@ -165,6 +169,9 @@ fun BeatifyNavigation(
                     SearchScreen(
                         onTrackClick = { track ->
                             playerViewModel.onEvent(PlayerUIEvent.PlayTrack(track, emptyList()))
+                        },
+                        onArtistClick = { artistId ->
+                            navController.navigate(BeatifyRoutes.ArtistDetail.createRoute(artistId))
                         }
                     )
                 }
@@ -215,6 +222,9 @@ fun BeatifyNavigation(
                         },
                         onNavigateBack = {
                             navController.popBackStack()
+                        },
+                        onArtistClick = { artistId ->
+                            navController.navigate(BeatifyRoutes.ArtistDetail.createRoute(artistId))
                         }
                     )
                 }
@@ -227,8 +237,32 @@ fun BeatifyNavigation(
                     TrackDetailPlaceholder()
                 }
 
-                composable(route = BeatifyRoutes.ArtistDetail.route) {
-                    ArtistDetailPlaceholder()
+                composable(
+                    route = BeatifyRoutes.ArtistDetail.route,
+                    arguments = listOf(
+                        navArgument("artistId") { type = NavType.LongType }
+                    ),
+                    enterTransition = NavigationAnimations.bottomNavScreenTransitions().first,
+                    exitTransition = NavigationAnimations.bottomNavScreenTransitions().second,
+                    popEnterTransition = NavigationAnimations.bottomNavScreenPopTransitions().first,
+                    popExitTransition = NavigationAnimations.bottomNavScreenPopTransitions().second
+                ) { backStackEntry ->
+                    val artistId = backStackEntry.arguments?.getLong("artistId") ?: return@composable
+                    ArtistDetailScreen(
+                        artistId = artistId,
+                        onTrackClick = { track, playlist ->
+                            playerViewModel.onEvent(PlayerUIEvent.PlayTrack(track, playlist))
+                        },
+                        onAlbumClick = { albumId ->
+                            navController.navigate(BeatifyRoutes.AlbumDetail.createRoute(albumId))
+                        },
+                        onArtistClick = { relatedArtistId ->
+                            navController.navigate(BeatifyRoutes.ArtistDetail.createRoute(relatedArtistId))
+                        },
+                        onNavigateBack = {
+                            navController.popBackStack()
+                        }
+                    )
                 }
 
                 composable(route = BeatifyRoutes.AlbumDetail.route) {
@@ -271,6 +305,12 @@ fun BeatifyNavigation(
                     },
                     onDismiss = {
                         playerViewModel.onEvent(PlayerUIEvent.Collapse)
+                    },
+                    onArtistClick = {
+                        playerState.currentTrack?.let { track ->
+                            navController.navigate(BeatifyRoutes.ArtistDetail.createRoute(track.artist.id))
+                            playerViewModel.onEvent(PlayerUIEvent.Collapse)
+                        }
                     }
                 )
             }

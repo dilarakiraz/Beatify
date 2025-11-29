@@ -21,6 +21,11 @@ interface MusicRepository {
     suspend fun searchTracks(query: String, limit: Int = 25, index: Int = 0): Result<List<Track>>
     
     /**
+     * Search for artists
+     */
+    suspend fun searchArtists(query: String, limit: Int = 25, index: Int = 0): Result<List<Artist>>
+    
+    /**
      * Get track details by ID
      */
     suspend fun getTrackById(trackId: Long): Result<Track>
@@ -34,5 +39,20 @@ interface MusicRepository {
      * Get album details by ID
      */
     suspend fun getAlbumById(albumId: Long): Result<Album>
+    
+    /**
+     * Get artist's albums
+     */
+    suspend fun getArtistAlbums(artistId: Long, limit: Int = 25, index: Int = 0): Result<List<Album>>
+    
+    /**
+     * Get artist's top tracks
+     */
+    suspend fun getArtistTopTracks(artistId: Long, limit: Int = 25): Result<List<Track>>
+    
+    /**
+     * Get related artists
+     */
+    suspend fun getRelatedArtists(artistId: Long, limit: Int = 10): Result<List<Artist>>
 }
 

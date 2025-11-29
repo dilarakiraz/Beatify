@@ -140,4 +140,32 @@ data class DeezerAlbumTracksResponse(
     val tracks: List<DeezerTrackDto>
 )
 
+// Artist Albums Response
+data class DeezerArtistAlbumsResponse(
+    @SerializedName("data")
+    val albums: List<DeezerAlbumDto>,
+    @SerializedName("total")
+    val total: Int? = null
+)
+
+// Artist Top Tracks Response
+data class DeezerArtistTopTracksResponse(
+    @SerializedName("data")
+    val tracks: List<DeezerTrackDto>
+)
+
+// Artist Related Artists Response
+data class DeezerRelatedArtistsResponse(
+    @SerializedName("data")
+    val artists: List<DeezerArtistDto>
+)
+
+// Artist Search Response
+data class DeezerArtistSearchResponse(
+    @SerializedName("data")
+    val artists: List<DeezerArtistDto>,
+    @SerializedName("total")
+    val total: Int
+)
+
 

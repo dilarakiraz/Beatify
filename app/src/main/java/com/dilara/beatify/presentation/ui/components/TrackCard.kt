@@ -67,6 +67,7 @@ fun TrackCard(
     isFavorite: Boolean = false,
     onFavoriteClick: (() -> Unit)? = null,
     onDelete: (() -> Unit)? = null,
+    onArtistClick: (() -> Unit)? = null,
     isDragging: Boolean = false
 ) {
     val deleteInteractionSource = remember { MutableInteractionSource() }
@@ -201,7 +202,19 @@ fun TrackCard(
                             fontWeight = FontWeight.Normal,
                             color = NeonTextSecondary,
                             maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier
+                                .then(
+                                    if (onArtistClick != null) {
+                                        Modifier.clickable(
+                                            onClick = onArtistClick,
+                                            indication = null,
+                                            interactionSource = remember { MutableInteractionSource() }
+                                        )
+                                    } else {
+                                        Modifier
+                                    }
+                                )
                         )
                         
                         if (config.showAlbumTitle) {

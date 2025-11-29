@@ -7,6 +7,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -77,6 +78,7 @@ fun FullScreenPlayer(
     onShuffleClick: () -> Unit,
     onFavoriteClick: () -> Unit,
     onDismiss: () -> Unit,
+    onArtistClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     if (track == null) return
@@ -159,7 +161,15 @@ fun FullScreenPlayer(
                         Text(
                             text = track.artist.name,
                             fontSize = 16.sp,
-                            color = NeonTextSecondary
+                            color = NeonTextSecondary,
+                            modifier = Modifier
+                                .then(
+                                    if (onArtistClick != null) {
+                                        Modifier.clickable(onClick = onArtistClick)
+                                    } else {
+                                        Modifier
+                                    }
+                                )
                         )
                     }
                     

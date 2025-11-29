@@ -39,6 +39,7 @@ class SearchViewModel @Inject constructor(
                 } else {
                     _uiState.value = _uiState.value.copy(
                         tracks = emptyList(),
+                        artists = emptyList(),
                         error = null,
                         isLoading = false
                     )
@@ -104,6 +105,7 @@ class SearchViewModel @Inject constructor(
                 _uiState.value = _uiState.value.copy(
                     searchQuery = "",
                     tracks = emptyList(),
+                    artists = emptyList(),
                     error = null,
                     isLoading = false
                 )
@@ -119,21 +121,51 @@ class SearchViewModel @Inject constructor(
                 error = null
             )
 
-            musicRepository.searchTracks(query, limit = 25)
-                .onSuccess { tracks ->
-                    _uiState.value = _uiState.value.copy(
-                        isLoading = false,
-                        tracks = tracks,
-                        error = null
+            val tracksResult = musicRepository.searchTracks(query, limit = 25)
+            val artistsResult = musicRepository.searchArtists(query, limit = 10)
+
+            tracksResult.fold(
+                onSuccess = { tracks ->
+                    artistsResult.fold(
+                        onSuccess = { artists ->
+                            _uiState.value = _uiState.value.copy(
+                                isLoading = false,
+                                tracks = tracks,
+                                artists = artists,
+                                error = null
+                            )
+                        },
+                        onFailure = { exception ->
+                            _uiState.value = _uiState.value.copy(
+                                isLoading = false,
+                                tracks = tracks,
+                                artists = emptyList(),
+                                error = null // Don't fail completely if artists search fails
+                            )
+                        }
+                    )
+                },
+                onFailure = { exception ->
+                    artistsResult.fold(
+                        onSuccess = { artists ->
+                            _uiState.value = _uiState.value.copy(
+                                isLoading = false,
+                                tracks = emptyList(),
+                                artists = artists,
+                                error = null // Don't fail completely if tracks search fails
+                            )
+                        },
+                        onFailure = { artistsException ->
+                            _uiState.value = _uiState.value.copy(
+                                isLoading = false,
+                                error = exception.message ?: "Arama başarısız",
+                                tracks = emptyList(),
+                                artists = emptyList()
+                            )
+                        }
                     )
                 }
-                .onFailure { exception ->
-                    _uiState.value = _uiState.value.copy(
-                        isLoading = false,
-                        error = exception.message ?: "Search failed",
-                        tracks = emptyList()
-                    )
-                }
+            )
         }
     }
 }

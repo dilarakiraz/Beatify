@@ -28,6 +28,13 @@ class MusicRepositoryImpl @Inject constructor(
             transform = { response -> response.tracks.map { it.toDomain() } }
         )
     }
+    
+    override suspend fun searchArtists(query: String, limit: Int, index: Int): Result<List<Artist>> {
+        return safeApiCall(
+            apiCall = { apiService.searchArtists(query, limit, index) },
+            transform = { response -> response.artists.map { it.toDomain() } }
+        )
+    }
 
     override suspend fun getTrackById(trackId: Long): Result<Track> {
         return safeApiCall(
@@ -47,6 +54,31 @@ class MusicRepositoryImpl @Inject constructor(
         return safeApiCall(
             apiCall = { apiService.getAlbum(albumId) },
             transform = { it.toDomain() }
+        )
+    }
+    
+    override suspend fun getArtistAlbums(artistId: Long, limit: Int, index: Int): Result<List<Album>> {
+        return safeApiCall(
+            apiCall = { apiService.getArtistAlbums(artistId, limit, index) },
+            transform = { response ->
+                response.albums.map { albumDto ->
+                    albumDto.toDomain(artist = albumDto.artist.toDomain())
+                }
+            }
+        )
+    }
+    
+    override suspend fun getArtistTopTracks(artistId: Long, limit: Int): Result<List<Track>> {
+        return safeApiCall(
+            apiCall = { apiService.getArtistTopTracks(artistId, limit) },
+            transform = { response -> response.tracks.map { it.toDomain() } }
+        )
+    }
+    
+    override suspend fun getRelatedArtists(artistId: Long, limit: Int): Result<List<Artist>> {
+        return safeApiCall(
+            apiCall = { apiService.getRelatedArtists(artistId, limit) },
+            transform = { response -> response.artists.map { it.toDomain() } }
         )
     }
 }

@@ -70,7 +70,8 @@ fun PlaylistDetailScreen(
     playlistId: Long,
     viewModel: PlaylistDetailViewModel = hiltViewModel(),
     onTrackClick: (Track, List<Track>) -> Unit = { _, _ -> },
-    onNavigateBack: () -> Unit = {}
+    onNavigateBack: () -> Unit = {},
+    onArtistClick: ((Long) -> Unit)? = null
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -391,7 +392,11 @@ fun PlaylistDetailScreen(
                 viewModel.onEvent(PlaylistDetailUIEvent.AddTrack(track))
                 showAddTrackDialog = false
             },
-            onDismiss = { showAddTrackDialog = false }
+            onDismiss = { showAddTrackDialog = false },
+            onArtistClick = onArtistClick,
+            onTrackClick = { track ->
+                onTrackClick(track, uiState.tracks + track)
+            }
         )
     }
 }

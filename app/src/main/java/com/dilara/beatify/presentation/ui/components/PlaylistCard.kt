@@ -2,12 +2,9 @@ package com.dilara.beatify.presentation.ui.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -41,7 +38,6 @@ import com.dilara.beatify.presentation.ui.components.common.GlassIconButton
 import com.dilara.beatify.presentation.ui.components.common.GlassIconButtonStyle
 import com.dilara.beatify.ui.theme.DarkSurface
 import com.dilara.beatify.ui.theme.NeonTextPrimary
-import com.dilara.beatify.ui.theme.NeonTextSecondary
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -153,8 +149,7 @@ fun PlaylistCard(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .fillMaxWidth()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                    .padding(16.dp)
             ) {
                 Text(
                     text = playlist.name,
@@ -163,13 +158,6 @@ fun PlaylistCard(
                     color = NeonTextPrimary,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
-                )
-                
-                Text(
-                    text = "${playlist.trackCount} şarkı",
-                    fontSize = 14.sp,
-                    color = NeonTextSecondary,
-                    maxLines = 1
                 )
             }
         }

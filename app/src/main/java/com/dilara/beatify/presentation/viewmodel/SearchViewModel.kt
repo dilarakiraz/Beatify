@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dilara.beatify.core.utils.Constants
 import com.dilara.beatify.domain.repository.MusicRepository
+import com.dilara.beatify.domain.repository.SearchHistoryRepository
 import com.dilara.beatify.presentation.state.SearchUIEvent
 import com.dilara.beatify.presentation.state.SearchUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,6 +12,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -20,7 +22,8 @@ import javax.inject.Inject
 @OptIn(FlowPreview::class)
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val musicRepository: MusicRepository
+    private val musicRepository: MusicRepository,
+    private val searchHistoryRepository: SearchHistoryRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SearchUIState())
@@ -30,7 +33,8 @@ class SearchViewModel @Inject constructor(
 
     init {
         loadSuggestedTracks()
-        
+        loadSearchHistory()
+
         searchQueryFlow
             .debounce(Constants.SEARCH_DEBOUNCE_MS)
             .onEach { query ->
@@ -51,13 +55,12 @@ class SearchViewModel @Inject constructor(
     private fun loadSuggestedTracks() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoadingSuggestions = true)
-            
+
             musicRepository.getTopTracks()
                 .onSuccess { tracks ->
-                    // Rastgele 8-10 şarkı seç (öneri olarak)
                     val shuffled = tracks.shuffled()
                     val suggested = shuffled.take(minOf(10, shuffled.size))
-                    
+
                     _uiState.value = _uiState.value.copy(
                         suggestedTracks = suggested,
                         isLoadingSuggestions = false
@@ -71,37 +74,57 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    private fun loadSearchHistory() {
+        searchHistoryRepository.getRecentSearches(limit = 10)
+            .catch { exception ->
+                exception.printStackTrace()
+            }
+            .onEach { searchHistory ->
+                _uiState.value = _uiState.value.copy(
+                    searchHistory = searchHistory
+                )
+            }
+            .launchIn(viewModelScope)
+    }
+
     fun onEvent(event: SearchUIEvent) {
         when (event) {
             is SearchUIEvent.OnQueryChange -> {
-                val query = event.query
-                _uiState.value = _uiState.value.copy(
-                    searchQuery = query,
-                    error = null
-                )
-                searchQueryFlow.value = query
+                updateSearchQuery(event.query)
             }
-            
+
             is SearchUIEvent.OnTrackClick -> {
+                val track = findTrackById(event.trackId)
+                track?.let {
+                    saveToHistory(it)
+                }
                 // TODO: Navigate to track detail or play track
             }
-            
+
             is SearchUIEvent.OnArtistClick -> {
                 // TODO: Navigate to artist detail
             }
-            
+
             is SearchUIEvent.OnAlbumClick -> {
                 // TODO: Navigate to album detail
             }
+
+            is SearchUIEvent.OnSearchHistoryClick -> {
+                updateSearchQuery(event.query)
+            }
             
+            is SearchUIEvent.OnSearchHistoryTrackClick -> {
+                val trackTitle = event.track.title
+                updateSearchQuery(trackTitle)
+            }
+
             is SearchUIEvent.OnSearchFocusChanged -> {
                 _uiState.value = _uiState.value.copy(
                     isSearchActive = !_uiState.value.isSearchActive
                 )
             }
-            
+
             is SearchUIEvent.ClearSearch -> {
-                // Suggested tracks'i koru, sadece search state'i temizle
                 _uiState.value = _uiState.value.copy(
                     searchQuery = "",
                     tracks = emptyList(),
@@ -110,6 +133,10 @@ class SearchViewModel @Inject constructor(
                     isLoading = false
                 )
                 searchQueryFlow.value = ""
+            }
+
+            is SearchUIEvent.DeleteSearchHistory -> {
+                deleteSearchHistory(event.searchHistoryId)
             }
         }
     }
@@ -124,49 +151,57 @@ class SearchViewModel @Inject constructor(
             val tracksResult = musicRepository.searchTracks(query, limit = 25)
             val artistsResult = musicRepository.searchArtists(query, limit = 10)
 
-            tracksResult.fold(
-                onSuccess = { tracks ->
-                    artistsResult.fold(
-                        onSuccess = { artists ->
-                            _uiState.value = _uiState.value.copy(
-                                isLoading = false,
-                                tracks = tracks,
-                                artists = artists,
-                                error = null
-                            )
-                        },
-                        onFailure = { exception ->
-                            _uiState.value = _uiState.value.copy(
-                                isLoading = false,
-                                tracks = tracks,
-                                artists = emptyList(),
-                                error = null // Don't fail completely if artists search fails
-                            )
-                        }
-                    )
-                },
+            val tracks = tracksResult.getOrNull() ?: emptyList()
+            val artists = artistsResult.getOrNull() ?: emptyList()
+            val error = when {
+                tracksResult.isFailure && artistsResult.isFailure -> 
+                    tracksResult.exceptionOrNull()?.message ?: "Arama başarısız"
+                else -> null
+            }
+
+            _uiState.value = _uiState.value.copy(
+                isLoading = false,
+                tracks = tracks,
+                artists = artists,
+                error = error
+            )
+        }
+    }
+
+    private fun updateSearchQuery(query: String) {
+        _uiState.value = _uiState.value.copy(
+            searchQuery = query,
+            error = null
+        )
+        searchQueryFlow.value = query
+    }
+
+    private fun saveToHistory(track: com.dilara.beatify.domain.model.Track) {
+        viewModelScope.launch {
+            searchHistoryRepository.addSearch(track).fold(
+                onSuccess = { },
+                onFailure = { }
+            )
+        }
+    }
+
+    private fun deleteSearchHistory(id: Long) {
+        viewModelScope.launch {
+            searchHistoryRepository.deleteSearch(id).fold(
+                onSuccess = { },
                 onFailure = { exception ->
-                    artistsResult.fold(
-                        onSuccess = { artists ->
-                            _uiState.value = _uiState.value.copy(
-                                isLoading = false,
-                                tracks = emptyList(),
-                                artists = artists,
-                                error = null // Don't fail completely if tracks search fails
-                            )
-                        },
-                        onFailure = { artistsException ->
-                            _uiState.value = _uiState.value.copy(
-                                isLoading = false,
-                                error = exception.message ?: "Arama başarısız",
-                                tracks = emptyList(),
-                                artists = emptyList()
-                            )
-                        }
+                    _uiState.value = _uiState.value.copy(
+                        error = exception.message ?: "Arama geçmişi silinemedi"
                     )
                 }
             )
         }
+    }
+    
+    private fun findTrackById(trackId: Long): com.dilara.beatify.domain.model.Track? {
+        val currentState = _uiState.value
+        return currentState.tracks.find { it.id == trackId }
+            ?: currentState.suggestedTracks.find { it.id == trackId }
     }
 }
 

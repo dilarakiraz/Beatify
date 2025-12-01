@@ -42,7 +42,7 @@ fun BeatifySearchBar(
     onQueryChange: (String) -> Unit,
     onClearClick: () -> Unit,
     modifier: Modifier = Modifier,
-    placeholder: String = "Search for songs, artists, albums..."
+    placeholder: String = "Şarkı, sanatçı, albüm ara..."
 ) {
     val alpha by animateFloatAsState(
         targetValue = if (query.isNotEmpty()) 1f else 0.6f,
@@ -126,7 +126,6 @@ fun BeatifySearchBar(
                 ),
                 keyboardActions = KeyboardActions(
                     onDone = {
-                        // Klavye kapatılabilir, arama otomatik başlatılır (debounce ile)
                     }
                 )
             )

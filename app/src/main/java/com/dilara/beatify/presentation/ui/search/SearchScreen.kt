@@ -8,8 +8,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,6 +28,7 @@ import com.dilara.beatify.presentation.state.SearchUIEvent
 import com.dilara.beatify.presentation.ui.components.ArtistCard
 import com.dilara.beatify.presentation.ui.components.BeatifySearchBar
 import com.dilara.beatify.presentation.ui.components.TrackCard
+import com.dilara.beatify.presentation.ui.components.common.CircularSearchHistoryChip
 import com.dilara.beatify.presentation.ui.components.common.EmptySection
 import com.dilara.beatify.presentation.ui.components.common.ErrorSection
 import com.dilara.beatify.presentation.ui.components.common.SectionHeader
@@ -102,40 +105,76 @@ fun SearchScreen(
                     items(5) {
                         TrackCardSkeleton()
                     }
-                } else if (uiState.suggestedTracks.isNotEmpty()) {
-                    item {
-                        SectionHeader(
-                            title = "Sizin İçin Önerilenler",
-                        )
-                    }
-
-                    itemsIndexed(
-                        items = uiState.suggestedTracks,
-                        key = { _, track -> track.id }
-                    ) { index, track ->
-                        AnimatedVisibility(
-                            visible = true,
-                            enter = fadeIn() + slideInVertically(
-                                initialOffsetY = { it },
-                                animationSpec = tween(300, delayMillis = index * 40)
-                            )
-                        ) {
-                            TrackCard(
-                                track = track,
-                                onClick = {
-                                    viewModel.onEvent(SearchUIEvent.OnTrackClick(track.id))
-                                    onTrackClick(track)
-                                },
-                                isFavorite = favoritesState.favoriteTrackIds.contains(track.id),
-                                onFavoriteClick = {
-                                    favoritesViewModel.onEvent(FavoritesUIEvent.ToggleFavorite(track))
-                                }
+                } else {
+                    if (uiState.searchHistory.isNotEmpty()) {
+                        item {
+                            SectionHeader(
+                                title = "Son Aramalarım"
                             )
                         }
+                        
+                        item {
+                            LazyRow(
+                                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)
+                            ) {
+                                items(
+                                    items = uiState.searchHistory,
+                                    key = { history -> history.id }
+                                ) { history ->
+                                    CircularSearchHistoryChip(
+                                        track = history.track,
+                                        onClick = {
+                                            viewModel.onEvent(SearchUIEvent.OnSearchHistoryTrackClick(history.track))
+                                        },
+                                        onDelete = {
+                                            viewModel.onEvent(SearchUIEvent.DeleteSearchHistory(history.id))
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                        
+                        item {
+                            Spacer(modifier = Modifier.height(8.dp))
+                        }
                     }
-                } else {
-                    item {
-                        EmptySection(message = "Müzik aramak için yazmaya başlayın")
+                    
+                    if (uiState.suggestedTracks.isNotEmpty()) {
+                        item {
+                            SectionHeader(
+                                title = "Sizin İçin Önerilenler"
+                            )
+                        }
+                        
+                        itemsIndexed(
+                            items = uiState.suggestedTracks,
+                            key = { _, track -> track.id }
+                        ) { index, track ->
+                            AnimatedVisibility(
+                                visible = true,
+                                enter = fadeIn() + slideInVertically(
+                                    initialOffsetY = { it },
+                                    animationSpec = tween(300, delayMillis = index * 40)
+                                )
+                            ) {
+                                TrackCard(
+                                    track = track,
+                                    onClick = {
+                                        viewModel.onEvent(SearchUIEvent.OnTrackClick(track.id))
+                                        onTrackClick(track)
+                                    },
+                                    isFavorite = favoritesState.favoriteTrackIds.contains(track.id),
+                                    onFavoriteClick = {
+                                        favoritesViewModel.onEvent(FavoritesUIEvent.ToggleFavorite(track))
+                                    }
+                                )
+                            }
+                        }
+                    } else if (uiState.searchHistory.isEmpty()) {
+                        item {
+                            EmptySection(message = "Müzik aramak için yazmaya başlayın")
+                        }
                     }
                 }
             }

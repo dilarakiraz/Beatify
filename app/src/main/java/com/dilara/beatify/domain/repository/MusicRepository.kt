@@ -16,6 +16,16 @@ interface MusicRepository {
     suspend fun getTopTracks(): Result<List<Track>>
     
     /**
+     * Get top albums from charts
+     */
+    suspend fun getTopAlbums(): Result<List<Album>>
+    
+    /**
+     * Get top artists from charts
+     */
+    suspend fun getTopArtists(): Result<List<Artist>>
+    
+    /**
      * Search for tracks
      */
     suspend fun searchTracks(query: String, limit: Int = 25, index: Int = 0): Result<List<Track>>

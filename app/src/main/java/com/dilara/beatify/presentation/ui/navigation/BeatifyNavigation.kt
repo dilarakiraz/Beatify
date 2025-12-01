@@ -156,6 +156,9 @@ fun BeatifyNavigation(
                         },
                         onArtistClick = { artistId ->
                             navController.navigate(BeatifyRoutes.ArtistDetail.createRoute(artistId))
+                        },
+                        onAlbumClick = { albumId ->
+                            navController.navigate(BeatifyRoutes.AlbumDetail.createRoute(albumId))
                         }
                     )
                 }

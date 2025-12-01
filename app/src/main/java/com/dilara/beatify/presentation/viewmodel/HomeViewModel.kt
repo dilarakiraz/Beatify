@@ -21,7 +21,7 @@ class HomeViewModel @Inject constructor(
     val uiState: StateFlow<HomeUIState> = _uiState.asStateFlow()
 
     init {
-        loadTopTracks()
+        loadHomeData()
     }
 
     fun onEvent(event: HomeUIEvent) {
@@ -39,29 +39,40 @@ class HomeViewModel @Inject constructor(
             }
 
             is HomeUIEvent.Retry -> {
-                loadTopTracks()
+                loadHomeData()
             }
         }
     }
 
-    private fun loadTopTracks() {
+    private fun loadHomeData() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
 
             musicRepository.getTopTracks()
                 .onSuccess { tracks ->
-                    _uiState.value = _uiState.value.copy(
-                        isLoading = false,
-                        topTracks = tracks,
-                        error = null
-                    )
+                    _uiState.value = _uiState.value.copy(topTracks = tracks)
                 }
                 .onFailure { exception ->
                     _uiState.value = _uiState.value.copy(
-                        isLoading = false,
-                        error = exception.message ?: "Unknown error"
+                        error = exception.message ?: "Failed to load top tracks"
                     )
                 }
+
+            musicRepository.getTopAlbums()
+                .onSuccess { albums ->
+                    _uiState.value = _uiState.value.copy(topAlbums = albums)
+                }
+                .onFailure { exception ->
+                }
+
+            musicRepository.getTopArtists()
+                .onSuccess { artists ->
+                    _uiState.value = _uiState.value.copy(topArtists = artists)
+                }
+                .onFailure { exception ->
+                }
+
+            _uiState.value = _uiState.value.copy(isLoading = false)
         }
     }
 }

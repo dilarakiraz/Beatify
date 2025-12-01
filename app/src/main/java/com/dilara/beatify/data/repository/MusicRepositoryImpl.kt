@@ -22,6 +22,26 @@ class MusicRepositoryImpl @Inject constructor(
         )
     }
 
+    override suspend fun getTopAlbums(): Result<List<Album>> {
+        return safeApiCall(
+            apiCall = { apiService.getTopAlbums() },
+            transform = { response ->
+                response.albums.mapNotNull { albumDto ->
+                    albumDto.artist?.toDomain()?.let { artist ->
+                        albumDto.toDomain(artist = artist)
+                    }
+                }
+            }
+        )
+    }
+
+    override suspend fun getTopArtists(): Result<List<Artist>> {
+        return safeApiCall(
+            apiCall = { apiService.getTopArtists() },
+            transform = { response -> response.artists.map { it.toDomain() } }
+        )
+    }
+
     override suspend fun searchTracks(query: String, limit: Int, index: Int): Result<List<Track>> {
         return safeApiCall(
             apiCall = { apiService.search(query, limit, index) },

@@ -9,6 +9,8 @@ import com.dilara.beatify.data.remote.model.DeezerArtistAlbumsResponse
 import com.dilara.beatify.data.remote.model.DeezerArtistTopTracksResponse
 import com.dilara.beatify.data.remote.model.DeezerRelatedArtistsResponse
 import com.dilara.beatify.data.remote.model.DeezerArtistSearchResponse
+import com.dilara.beatify.data.remote.model.DeezerChartAlbumsResponse
+import com.dilara.beatify.data.remote.model.DeezerChartArtistsResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -25,6 +27,20 @@ interface DeezerApiService {
      */
     @GET("chart/0/tracks")
     suspend fun getTopTracks(): DeezerChartResponse
+    
+    /**
+     * Get top albums from Deezer charts
+     * GET /chart/0/albums
+     */
+    @GET("chart/0/albums")
+    suspend fun getTopAlbums(): DeezerChartAlbumsResponse
+    
+    /**
+     * Get top artists from Deezer charts
+     * GET /chart/0/artists
+     */
+    @GET("chart/0/artists")
+    suspend fun getTopArtists(): DeezerChartArtistsResponse
     
     /**
      * Search for tracks, artists, albums

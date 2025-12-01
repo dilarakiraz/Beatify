@@ -88,15 +88,15 @@ fun TrackCard(
             gradientType = GradientType.HORIZONTAL
         )
         TrackCardStyle.HORIZONTAL -> TrackCardConfig(
-            cornerRadius = 20.dp,
-            cardAlpha = 0.8f,
-            padding = 16.dp,
-            spacing = 16.dp,
-            imageSize = 68.dp,
-            imageCornerRadius = 16.dp,
-            titleFontSize = 18.sp,
-            artistFontSize = 14.sp,
-            durationFontSize = 13.sp,
+            cornerRadius = 12.dp,
+            cardAlpha = 0.7f,
+            padding = 8.dp,
+            spacing = 8.dp,
+            imageSize = 48.dp,
+            imageCornerRadius = 10.dp,
+            titleFontSize = 15.sp,
+            artistFontSize = 13.sp,
+            durationFontSize = 12.sp,
             showAlbumTitle = true,
             gradientType = GradientType.LINEAR
         )

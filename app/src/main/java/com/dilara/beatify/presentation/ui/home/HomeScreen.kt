@@ -12,8 +12,11 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,6 +34,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.dilara.beatify.presentation.state.FavoritesUIEvent
 import com.dilara.beatify.presentation.state.HomeUIEvent
+import com.dilara.beatify.presentation.ui.components.AlbumCard
+import com.dilara.beatify.presentation.ui.components.ArtistCard
 import com.dilara.beatify.presentation.ui.components.TrackCard
 import com.dilara.beatify.presentation.ui.components.TrackCardHorizontal
 import com.dilara.beatify.presentation.ui.components.common.EmptySection
@@ -137,9 +142,67 @@ fun HomeScreen(
                     }
                 }
 
+                if (uiState.topArtists.isNotEmpty()) {
+                    item {
+                        SectionHeader(
+                            title = "En Popüler Sanatçılar",
+                        )
+                    }
+
+                    item {
+                        LazyRow(
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            contentPadding = PaddingValues(horizontal = 4.dp)
+                        ) {
+                            items(
+                                items = uiState.topArtists.take(10),
+                                key = { artist -> artist.id }
+                            ) { artist ->
+                                ArtistCard(
+                                    artist = artist,
+                                    onClick = {
+                                        viewModel.onEvent(HomeUIEvent.OnArtistClick(artist.id))
+                                        onArtistClick(artist.id)
+                                    },
+                                    size = 120.dp
+                                )
+                            }
+                        }
+                    }
+                }
+
+                if (uiState.topAlbums.isNotEmpty()) {
+                    item {
+                        SectionHeader(
+                            title = "En Popüler Albümler",
+                        )
+                    }
+
+                    item {
+                        LazyRow(
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            contentPadding = PaddingValues(horizontal = 4.dp)
+                        ) {
+                            items(
+                                items = uiState.topAlbums.take(10),
+                                key = { album -> album.id }
+                            ) { album ->
+                                AlbumCard(
+                                    album = album,
+                                    onClick = {
+                                        viewModel.onEvent(HomeUIEvent.OnAlbumClick(album.id))
+                                        onAlbumClick(album.id)
+                                    },
+                                    modifier = Modifier.size(width = 160.dp, height = 120.dp)
+                                )
+                            }
+                        }
+                    }
+                }
+
                 item {
                     SectionHeader(
-                        title = "En Popüler",
+                        title = "En Popüler Şarkılar",
                     )
                 }
 

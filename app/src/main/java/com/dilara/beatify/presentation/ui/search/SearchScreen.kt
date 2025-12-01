@@ -33,8 +33,7 @@ import com.dilara.beatify.presentation.ui.components.common.EmptySection
 import com.dilara.beatify.presentation.ui.components.common.ErrorSection
 import com.dilara.beatify.presentation.ui.components.common.SectionHeader
 import com.dilara.beatify.presentation.ui.components.common.TrackCardSkeleton
-import com.dilara.beatify.presentation.state.FavoritesUIEvent
-import com.dilara.beatify.presentation.viewmodel.FavoritesViewModel
+import com.dilara.beatify.presentation.ui.hooks.useFavoritesState
 import com.dilara.beatify.presentation.viewmodel.SearchViewModel
 import com.dilara.beatify.ui.theme.DarkBackground
 
@@ -46,8 +45,7 @@ fun SearchScreen(
     onAlbumClick: (Long) -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val favoritesViewModel: FavoritesViewModel = hiltViewModel()
-    val favoritesState by favoritesViewModel.uiState.collectAsState()
+    val favoritesState = useFavoritesState()
 
     LazyColumn(
         modifier = Modifier
@@ -167,7 +165,7 @@ fun SearchScreen(
                                     },
                                     isFavorite = favoritesState.favoriteTrackIds.contains(track.id),
                                     onFavoriteClick = {
-                                        favoritesViewModel.onEvent(FavoritesUIEvent.ToggleFavorite(track))
+                                        favoritesState.toggleFavorite(track)
                                     }
                                 )
                             }
@@ -244,7 +242,7 @@ fun SearchScreen(
                                 },
                                 isFavorite = favoritesState.favoriteTrackIds.contains(track.id),
                                 onFavoriteClick = {
-                                    favoritesViewModel.onEvent(FavoritesUIEvent.ToggleFavorite(track))
+                                    favoritesState.toggleFavorite(track)
                                 },
                                 onArtistClick = {
                                     viewModel.onEvent(SearchUIEvent.OnArtistClick(track.artist.id))

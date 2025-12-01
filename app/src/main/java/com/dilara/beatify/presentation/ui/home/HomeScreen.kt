@@ -32,7 +32,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.dilara.beatify.presentation.state.FavoritesUIEvent
 import com.dilara.beatify.presentation.state.HomeUIEvent
 import com.dilara.beatify.presentation.ui.components.AlbumCard
 import com.dilara.beatify.presentation.ui.components.ArtistCard
@@ -40,11 +39,12 @@ import com.dilara.beatify.presentation.ui.components.TrackCard
 import com.dilara.beatify.presentation.ui.components.TrackCardHorizontal
 import com.dilara.beatify.presentation.ui.components.common.EmptySection
 import com.dilara.beatify.presentation.ui.components.common.ErrorSection
+import com.dilara.beatify.presentation.ui.components.common.HorizontalItemsList
 import com.dilara.beatify.presentation.ui.components.common.SectionHeader
 import com.dilara.beatify.presentation.ui.components.common.TrackCardSkeleton
 import com.dilara.beatify.presentation.ui.components.profile.ProfileButton
 import com.dilara.beatify.presentation.ui.components.profile.ProfileDrawerContent
-import com.dilara.beatify.presentation.viewmodel.FavoritesViewModel
+import com.dilara.beatify.presentation.ui.hooks.useFavoritesState
 import com.dilara.beatify.presentation.viewmodel.HomeViewModel
 import com.dilara.beatify.ui.theme.DarkBackground
 import kotlinx.coroutines.launch
@@ -58,8 +58,7 @@ fun HomeScreen(
     onAlbumClick: (Long) -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val favoritesViewModel: FavoritesViewModel = hiltViewModel()
-    val favoritesState by favoritesViewModel.uiState.collectAsState()
+    val favoritesState = useFavoritesState()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val profileImageUri: String? = null
@@ -135,7 +134,7 @@ fun HomeScreen(
                                 },
                                 isFavorite = favoritesState.favoriteTrackIds.contains(track.id),
                                 onFavoriteClick = {
-                                    favoritesViewModel.onEvent(FavoritesUIEvent.ToggleFavorite(track))
+                                    favoritesState.toggleFavorite(track)
                                 }
                             )
                         }
@@ -150,23 +149,18 @@ fun HomeScreen(
                     }
 
                     item {
-                        LazyRow(
-                            horizontalArrangement = Arrangement.spacedBy(16.dp),
-                            contentPadding = PaddingValues(horizontal = 4.dp)
-                        ) {
-                            items(
-                                items = uiState.topArtists.take(10),
-                                key = { artist -> artist.id }
-                            ) { artist ->
-                                ArtistCard(
-                                    artist = artist,
-                                    onClick = {
-                                        viewModel.onEvent(HomeUIEvent.OnArtistClick(artist.id))
-                                        onArtistClick(artist.id)
-                                    },
-                                    size = 120.dp
-                                )
-                            }
+                        HorizontalItemsList(
+                            items = uiState.topArtists.take(10),
+                            key = { artist -> artist.id }
+                        ) { artist ->
+                            ArtistCard(
+                                artist = artist,
+                                onClick = {
+                                    viewModel.onEvent(HomeUIEvent.OnArtistClick(artist.id))
+                                    onArtistClick(artist.id)
+                                },
+                                size = 120.dp
+                            )
                         }
                     }
                 }
@@ -179,23 +173,18 @@ fun HomeScreen(
                     }
 
                     item {
-                        LazyRow(
-                            horizontalArrangement = Arrangement.spacedBy(16.dp),
-                            contentPadding = PaddingValues(horizontal = 4.dp)
-                        ) {
-                            items(
-                                items = uiState.topAlbums.take(10),
-                                key = { album -> album.id }
-                            ) { album ->
-                                AlbumCard(
-                                    album = album,
-                                    onClick = {
-                                        viewModel.onEvent(HomeUIEvent.OnAlbumClick(album.id))
-                                        onAlbumClick(album.id)
-                                    },
-                                    modifier = Modifier.size(width = 160.dp, height = 120.dp)
-                                )
-                            }
+                        HorizontalItemsList(
+                            items = uiState.topAlbums.take(10),
+                            key = { album -> album.id }
+                        ) { album ->
+                            AlbumCard(
+                                album = album,
+                                onClick = {
+                                    viewModel.onEvent(HomeUIEvent.OnAlbumClick(album.id))
+                                    onAlbumClick(album.id)
+                                },
+                                modifier = Modifier.size(width = 160.dp, height = 120.dp)
+                            )
                         }
                     }
                 }
@@ -248,7 +237,7 @@ fun HomeScreen(
                                     },
                                     isFavorite = favoritesState.favoriteTrackIds.contains(track.id),
                                     onFavoriteClick = {
-                                        favoritesViewModel.onEvent(FavoritesUIEvent.ToggleFavorite(track))
+                                        favoritesState.toggleFavorite(track)
                                     }
                                 )
                             }

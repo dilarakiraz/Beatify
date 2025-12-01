@@ -22,11 +22,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.Image
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,7 +43,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.dilara.beatify.R
 import com.dilara.beatify.domain.model.Track
+import com.dilara.beatify.presentation.state.RepeatMode
 import com.dilara.beatify.ui.theme.DarkSurface
 import com.dilara.beatify.ui.theme.NeonCyan
 import com.dilara.beatify.ui.theme.NeonPink
@@ -52,7 +57,11 @@ import com.dilara.beatify.ui.theme.NeonTextSecondary
 fun MiniPlayer(
     track: Track?,
     isPlaying: Boolean,
+    repeatMode: RepeatMode = RepeatMode.OFF,
+    isShuffleEnabled: Boolean = false,
     onPlayPauseClick: () -> Unit,
+    onRepeatClick: () -> Unit = {},
+    onShuffleClick: () -> Unit = {},
     onExpandClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -150,6 +159,22 @@ fun MiniPlayer(
                     }
 
                     IconButton(
+                        onClick = { 
+                            onShuffleClick()
+                        },
+                        modifier = Modifier.size(36.dp)
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_shuffle),
+                            contentDescription = "Shuffle",
+                            modifier = Modifier.size(20.dp),
+                            colorFilter = ColorFilter.tint(
+                                if (isShuffleEnabled) NeonCyan else NeonTextSecondary.copy(alpha = 0.6f)
+                            )
+                        )
+                    }
+
+                    IconButton(
                         onClick = { onPlayPauseClick() },
                         modifier = Modifier
                             .size(48.dp)
@@ -191,6 +216,28 @@ fun MiniPlayer(
                                 modifier = Modifier.size(28.dp)
                             )
                         }
+                    }
+
+                    IconButton(
+                        onClick = { 
+                            onRepeatClick()
+                        },
+                        modifier = Modifier.size(36.dp)
+                    ) {
+                        Image(
+                            painter = painterResource(
+                                id = when (repeatMode) {
+                                    RepeatMode.OFF -> R.drawable.ic_repeat
+                                    RepeatMode.ALL -> R.drawable.ic_repeat
+                                    RepeatMode.ONE -> R.drawable.ic_repeat_one
+                                }
+                            ),
+                            contentDescription = "Repeat",
+                            modifier = Modifier.size(20.dp),
+                            colorFilter = ColorFilter.tint(
+                                if (repeatMode != RepeatMode.OFF) NeonCyan else NeonTextSecondary.copy(alpha = 0.6f)
+                            )
+                        )
                     }
                 }
             }

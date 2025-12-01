@@ -28,7 +28,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.dilara.beatify.core.navigation.BeatifyRoutes
 import com.dilara.beatify.core.navigation.NavigationAnimations
-import com.dilara.beatify.presentation.state.FavoritesUIEvent
 import com.dilara.beatify.presentation.state.PlayerUIEvent
 import com.dilara.beatify.presentation.ui.components.BeatifyBottomNavigationBar
 import com.dilara.beatify.presentation.ui.components.player.FullScreenPlayer
@@ -37,10 +36,10 @@ import com.dilara.beatify.presentation.ui.album.AlbumDetailScreen
 import com.dilara.beatify.presentation.ui.artist.ArtistDetailScreen
 import com.dilara.beatify.presentation.ui.favorites.FavoritesScreen
 import com.dilara.beatify.presentation.ui.home.HomeScreen
+import com.dilara.beatify.presentation.ui.hooks.useFavoritesState
 import com.dilara.beatify.presentation.ui.playlists.PlaylistDetailScreen
 import com.dilara.beatify.presentation.ui.playlists.PlaylistsScreen
 import com.dilara.beatify.presentation.ui.search.SearchScreen
-import com.dilara.beatify.presentation.viewmodel.FavoritesViewModel
 import com.dilara.beatify.presentation.viewmodel.PlayerViewModel
 
 @Composable
@@ -51,25 +50,14 @@ fun BeatifyNavigation(
     val playerViewModel: PlayerViewModel = hiltViewModel()
     val playerState by playerViewModel.uiState.collectAsState()
     
-    val favoritesViewModel: FavoritesViewModel = hiltViewModel()
+    val favoritesState = useFavoritesState()
     
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     
     // Check if current track is favorite
     val currentTrackId = playerState.currentTrack?.id
-    var isCurrentTrackFavorite by remember { mutableStateOf(false) }
-    
-    LaunchedEffect(currentTrackId) {
-        if (currentTrackId != null) {
-            favoritesViewModel.isFavorite(currentTrackId)
-                .collect { isFavorite ->
-                    isCurrentTrackFavorite = isFavorite
-                }
-        } else {
-            isCurrentTrackFavorite = false
-        }
-    }
+    val isCurrentTrackFavorite = currentTrackId != null && favoritesState.favoriteTrackIds.contains(currentTrackId)
 
     val showBottomBar = currentRoute in listOf(
         BeatifyRoutes.Home.route,
@@ -86,8 +74,16 @@ fun BeatifyNavigation(
                         MiniPlayer(
                             track = playerState.currentTrack,
                             isPlaying = playerState.isPlaying,
+                            repeatMode = playerState.repeatMode,
+                            isShuffleEnabled = playerState.isShuffleEnabled,
                             onPlayPauseClick = {
                                 playerViewModel.onEvent(PlayerUIEvent.PlayPause)
+                            },
+                            onRepeatClick = {
+                                playerViewModel.onEvent(PlayerUIEvent.ToggleRepeat)
+                            },
+                            onShuffleClick = {
+                                playerViewModel.onEvent(PlayerUIEvent.ToggleShuffle)
                             },
                             onExpandClick = {
                                 playerViewModel.onEvent(PlayerUIEvent.Expand)
@@ -325,7 +321,7 @@ fun BeatifyNavigation(
                     },
                     onFavoriteClick = {
                         playerState.currentTrack?.let { track ->
-                            favoritesViewModel.onEvent(FavoritesUIEvent.ToggleFavorite(track))
+                            favoritesState.toggleFavorite(track)
                         }
                     },
                     onDismiss = {

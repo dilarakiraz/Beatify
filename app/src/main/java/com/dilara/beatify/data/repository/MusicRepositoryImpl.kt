@@ -58,11 +58,15 @@ class MusicRepositoryImpl @Inject constructor(
     }
     
     override suspend fun getArtistAlbums(artistId: Long, limit: Int, index: Int): Result<List<Album>> {
+        val artistResult = getArtistById(artistId)
+        val artist = artistResult.getOrNull()
+            ?: return Result.failure(Exception("Artist not found"))
+        
         return safeApiCall(
             apiCall = { apiService.getArtistAlbums(artistId, limit, index) },
             transform = { response ->
                 response.albums.map { albumDto ->
-                    albumDto.toDomain(artist = albumDto.artist.toDomain())
+                    albumDto.toDomain(artist = artist)
                 }
             }
         )

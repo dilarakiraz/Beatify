@@ -33,6 +33,7 @@ import com.dilara.beatify.presentation.state.PlayerUIEvent
 import com.dilara.beatify.presentation.ui.components.BeatifyBottomNavigationBar
 import com.dilara.beatify.presentation.ui.components.player.FullScreenPlayer
 import com.dilara.beatify.presentation.ui.components.player.MiniPlayer
+import com.dilara.beatify.presentation.ui.album.AlbumDetailScreen
 import com.dilara.beatify.presentation.ui.artist.ArtistDetailScreen
 import com.dilara.beatify.presentation.ui.favorites.FavoritesScreen
 import com.dilara.beatify.presentation.ui.home.HomeScreen
@@ -265,8 +266,29 @@ fun BeatifyNavigation(
                     )
                 }
 
-                composable(route = BeatifyRoutes.AlbumDetail.route) {
-                    AlbumDetailPlaceholder()
+                composable(
+                    route = BeatifyRoutes.AlbumDetail.route,
+                    arguments = listOf(
+                        navArgument("albumId") { type = NavType.LongType }
+                    ),
+                    enterTransition = NavigationAnimations.bottomNavScreenTransitions().first,
+                    exitTransition = NavigationAnimations.bottomNavScreenTransitions().second,
+                    popEnterTransition = NavigationAnimations.bottomNavScreenPopTransitions().first,
+                    popExitTransition = NavigationAnimations.bottomNavScreenPopTransitions().second
+                ) { backStackEntry ->
+                    val albumId = backStackEntry.arguments?.getLong("albumId") ?: return@composable
+                    AlbumDetailScreen(
+                        albumId = albumId,
+                        onTrackClick = { track, playlist ->
+                            playerViewModel.onEvent(PlayerUIEvent.PlayTrack(track, playlist))
+                        },
+                        onArtistClick = { artistId ->
+                            navController.navigate(BeatifyRoutes.ArtistDetail.createRoute(artistId))
+                        },
+                        onNavigateBack = {
+                            navController.popBackStack()
+                        }
+                    )
                 }
             }
             
@@ -358,7 +380,3 @@ fun ArtistDetailPlaceholder() {
     Text("Artist Detail Screen - Coming Soon")
 }
 
-@Composable
-fun AlbumDetailPlaceholder() {
-    Text("Album Detail Screen - Coming Soon")
-}

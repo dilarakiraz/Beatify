@@ -1,4 +1,4 @@
-package com.dilara.beatify.presentation.ui.artist
+package com.dilara.beatify.presentation.ui.album
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,12 +11,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,16 +34,15 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.dilara.beatify.domain.model.Track
-import com.dilara.beatify.presentation.state.ArtistDetailUIEvent
+import com.dilara.beatify.presentation.state.AlbumDetailUIEvent
 import com.dilara.beatify.presentation.state.FavoritesUIEvent
-import com.dilara.beatify.presentation.ui.components.AlbumCard
 import com.dilara.beatify.presentation.ui.components.TrackCard
 import com.dilara.beatify.presentation.ui.components.common.BackButton
 import com.dilara.beatify.presentation.ui.components.common.EmptySection
 import com.dilara.beatify.presentation.ui.components.common.ErrorSection
 import com.dilara.beatify.presentation.ui.components.common.SectionHeader
 import com.dilara.beatify.presentation.ui.components.common.TrackCardSkeleton
-import com.dilara.beatify.presentation.viewmodel.ArtistDetailViewModel
+import com.dilara.beatify.presentation.viewmodel.AlbumDetailViewModel
 import com.dilara.beatify.presentation.viewmodel.FavoritesViewModel
 import com.dilara.beatify.ui.theme.DarkBackground
 import com.dilara.beatify.ui.theme.DarkSurface
@@ -54,11 +50,10 @@ import com.dilara.beatify.ui.theme.NeonTextPrimary
 import com.dilara.beatify.ui.theme.NeonTextSecondary
 
 @Composable
-fun ArtistDetailScreen(
-    artistId: Long,
-    viewModel: ArtistDetailViewModel = hiltViewModel(),
+fun AlbumDetailScreen(
+    albumId: Long,
+    viewModel: AlbumDetailViewModel = hiltViewModel(),
     onTrackClick: (Track, List<Track>) -> Unit = { _, _ -> },
-    onAlbumClick: (Long) -> Unit = {},
     onArtistClick: (Long) -> Unit = {},
     onNavigateBack: () -> Unit = {}
 ) {
@@ -66,23 +61,23 @@ fun ArtistDetailScreen(
     val favoritesViewModel: FavoritesViewModel = hiltViewModel()
     val favoritesState by favoritesViewModel.uiState.collectAsState()
 
-    LaunchedEffect(artistId) {
-        viewModel.onEvent(ArtistDetailUIEvent.LoadArtist(artistId))
+    LaunchedEffect(albumId) {
+        viewModel.onEvent(AlbumDetailUIEvent.LoadAlbum(albumId))
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        val artist = uiState.artist
+        val album = uiState.album
         
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(320.dp)
         ) {
-            if (artist != null) {
-                if (artist.pictureXl != null || artist.pictureBig != null || artist.pictureMedium != null) {
+            if (album != null) {
+                if (album.coverXl != null || album.coverBig != null || album.coverMedium != null) {
                     AsyncImage(
-                        model = artist.pictureXl ?: artist.pictureBig ?: artist.pictureMedium,
-                        contentDescription = artist.name,
+                        model = album.coverXl ?: album.coverBig ?: album.coverMedium,
+                        contentDescription = album.title,
                         modifier = Modifier
                             .fillMaxSize()
                             .clip(RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp)),
@@ -135,7 +130,7 @@ fun ArtistDetailScreen(
                         .padding(24.dp)
                 ) {
                     Text(
-                        text = artist.name,
+                        text = album.title,
                         fontSize = 32.sp,
                         fontWeight = FontWeight.Bold,
                         color = NeonTextPrimary,
@@ -145,9 +140,21 @@ fun ArtistDetailScreen(
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    if (uiState.topTracks.isNotEmpty()) {
+                    Text(
+                        text = album.artist.name,
+                        fontSize = 18.sp,
+                        color = NeonTextSecondary,
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.clickable {
+                            onArtistClick(album.artist.id)
+                        }
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    if (uiState.tracks.isNotEmpty()) {
                         Text(
-                            text = "${uiState.topTracks.size} popüler şarkı",
+                            text = "${uiState.tracks.size} şarkı",
                             fontSize = 16.sp,
                             color = NeonTextSecondary,
                             fontWeight = FontWeight.Medium
@@ -197,13 +204,13 @@ fun ArtistDetailScreen(
                         item {
                             ErrorSection(
                                 message = uiState.error ?: "Bilinmeyen hata",
-                                onRetry = { viewModel.onEvent(ArtistDetailUIEvent.LoadArtist(artistId)) }
+                                onRetry = { viewModel.onEvent(AlbumDetailUIEvent.LoadAlbum(albumId)) }
                             )
                         }
                     }
                 }
 
-                artist == null -> {
+                album == null -> {
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
@@ -216,7 +223,7 @@ fun ArtistDetailScreen(
                         )
                     ) {
                         item {
-                            EmptySection(message = "Sanatçı bulunamadı")
+                            EmptySection(message = "Albüm bulunamadı")
                         }
                     }
                 }
@@ -234,21 +241,22 @@ fun ArtistDetailScreen(
                         ),
                         verticalArrangement = Arrangement.spacedBy(24.dp)
                     ) {
-                        if (uiState.topTracks.isNotEmpty()) {
+                        if (uiState.tracks.isNotEmpty()) {
                             item {
                                 SectionHeader(
-                                    title = "Popüler Şarkılar",
+                                    title = "Şarkılar",
+                                    subtitle = "${uiState.tracks.size} şarkı"
                                 )
                             }
                             
                             items(
-                                items = uiState.topTracks,
+                                items = uiState.tracks,
                                 key = { track -> track.id }
                             ) { track ->
                                 TrackCard(
                                     track = track,
                                     onClick = {
-                                        onTrackClick(track, uiState.topTracks)
+                                        onTrackClick(track, uiState.tracks)
                                     },
                                     isFavorite = favoritesState.favoriteTrackIds.contains(track.id),
                                     onFavoriteClick = {
@@ -259,133 +267,16 @@ fun ArtistDetailScreen(
                                     }
                                 )
                             }
-                        }
-
-                        item {
-                            SectionHeader(
-                                title = "Albümler",
-                                subtitle = if (uiState.albums.isNotEmpty()) "${uiState.albums.size} albüm" else "Albüm bulunamadı"
-                            )
-                        }
-
-                        if (uiState.albums.isNotEmpty()) {
-                            item {
-                                LazyRow(
-                                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                                    contentPadding = PaddingValues(horizontal = 4.dp)
-                                ) {
-                                    items(
-                                        items = uiState.albums,
-                                        key = { album -> album.id }
-                                    ) { album ->
-                                        AlbumCard(
-                                            album = album,
-                                            onClick = { onAlbumClick(album.id) },
-                                            modifier = Modifier.size(width = 160.dp, height = 120.dp)
-                                        )
-                                    }
-                                }
-                            }
                         } else {
                             item {
                                 EmptySection(
-                                    message = "Bu sanatçının albümü bulunamadı"
-                                )
-                            }
-                        }
-
-                        if (uiState.relatedArtists.isNotEmpty()) {
-                            item {
-                                SectionHeader(
-                                    title = "İlgili Sanatçılar",
-                                    subtitle = "${uiState.relatedArtists.size} sanatçı"
-                                )
-                            }
-
-                            item {
-                                LazyRow(
-                                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                                    contentPadding = PaddingValues(horizontal = 4.dp)
-                                ) {
-                                    items(
-                                        items = uiState.relatedArtists,
-                                        key = { artist -> artist.id }
-                                    ) { relatedArtist ->
-                                        RelatedArtistCard(
-                                            artist = relatedArtist,
-                                            onClick = { onArtistClick(relatedArtist.id) }
-                                        )
-                                    }
-                                }
-                            }
-                        }
-
-                        if (uiState.topTracks.isEmpty() && uiState.albums.isEmpty() && uiState.relatedArtists.isEmpty()) {
-                            item {
-                                EmptySection(
-                                    message = "Bu sanatçı hakkında henüz içerik bulunamadı"
+                                    message = "Bu albümde henüz şarkı bulunamadı"
                                 )
                             }
                         }
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun RelatedArtistCard(
-    artist: com.dilara.beatify.domain.model.Artist,
-    onClick: () -> Unit
-) {
-    Box(
-        modifier = Modifier
-            .size(120.dp)
-            .clip(CircleShape)
-            .background(DarkSurface.copy(alpha = 0.6f))
-            .clickable(onClick = onClick)
-    ) {
-        if (artist.pictureBig != null || artist.pictureMedium != null) {
-            AsyncImage(
-                model = artist.pictureBig ?: artist.pictureMedium,
-                contentDescription = artist.name,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
-            )
-        }
-
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    brush = Brush.radialGradient(
-                        colors = listOf(
-                            Color.Transparent,
-                            Color.Black.copy(alpha = 0.5f)
-                        )
-                    )
-                )
-        )
-
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .padding(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = artist.name,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Medium,
-                color = NeonTextPrimary,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center
-            )
         }
     }
 }

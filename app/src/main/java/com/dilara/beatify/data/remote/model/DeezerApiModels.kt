@@ -109,7 +109,7 @@ data class DeezerAlbumDto(
     @SerializedName("cover_xl")
     val coverXl: String?,
     @SerializedName("artist")
-    val artist: DeezerArtistDto
+    val artist: DeezerArtistDto? = null
 )
 
 // Album Response (single)

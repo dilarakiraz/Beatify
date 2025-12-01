@@ -44,8 +44,8 @@ fun CircularSearchHistoryChip(
 ) {
     Box(
         modifier = modifier
-            .size(140.dp)
-            .clip(RoundedCornerShape(20.dp))
+            .size(110.dp)
+            .clip(RoundedCornerShape(16.dp))
             .background(
                 Brush.verticalGradient(
                     colors = listOf(
@@ -66,7 +66,7 @@ fun CircularSearchHistoryChip(
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxSize()
-                    .clip(RoundedCornerShape(20.dp)),
+                    .clip(RoundedCornerShape(16.dp)),
                 contentScale = ContentScale.Crop
             )
             
@@ -89,7 +89,7 @@ fun CircularSearchHistoryChip(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(12.dp),
+                    .padding(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
@@ -101,18 +101,18 @@ fun CircularSearchHistoryChip(
                 ) {
                     Text(
                         text = track.title,
-                        fontSize = 12.sp,
+                        fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
                         color = NeonTextPrimary,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                         textAlign = TextAlign.Center,
-                        lineHeight = 14.sp
+                        lineHeight = 12.sp
                     )
                     
                     Text(
                         text = track.artist.name,
-                        fontSize = 10.sp,
+                        fontSize = 9.sp,
                         fontWeight = FontWeight.Normal,
                         color = NeonTextSecondary.copy(alpha = 0.8f),
                         maxLines = 1,
@@ -126,9 +126,9 @@ fun CircularSearchHistoryChip(
             Box(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(8.dp)
-                    .size(28.dp)
-                    .clip(RoundedCornerShape(8.dp))
+                    .padding(6.dp)
+                    .size(24.dp)
+                    .clip(RoundedCornerShape(6.dp))
                     .background(
                         Brush.horizontalGradient(
                             colors = listOf(
@@ -144,7 +144,7 @@ fun CircularSearchHistoryChip(
                     contentDescription = "Sil",
                     tint = Color.White,
                     modifier = Modifier
-                        .size(16.dp)
+                        .size(14.dp)
                         .align(Alignment.Center)
                 )
             }

@@ -112,11 +112,6 @@ class SearchViewModel @Inject constructor(
             is SearchUIEvent.OnSearchHistoryClick -> {
                 updateSearchQuery(event.query)
             }
-            
-            is SearchUIEvent.OnSearchHistoryTrackClick -> {
-                val trackTitle = event.track.title
-                updateSearchQuery(trackTitle)
-            }
 
             is SearchUIEvent.OnSearchFocusChanged -> {
                 _uiState.value = _uiState.value.copy(
@@ -138,6 +133,8 @@ class SearchViewModel @Inject constructor(
             is SearchUIEvent.DeleteSearchHistory -> {
                 deleteSearchHistory(event.searchHistoryId)
             }
+
+            else -> {}
         }
     }
 
@@ -202,6 +199,7 @@ class SearchViewModel @Inject constructor(
         val currentState = _uiState.value
         return currentState.tracks.find { it.id == trackId }
             ?: currentState.suggestedTracks.find { it.id == trackId }
+            ?: currentState.searchHistory.find { it.track.id == trackId }?.track
     }
 }
 

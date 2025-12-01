@@ -115,8 +115,8 @@ fun SearchScreen(
                         
                         item {
                             LazyRow(
-                                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
                             ) {
                                 items(
                                     items = uiState.searchHistory,
@@ -125,7 +125,8 @@ fun SearchScreen(
                                     CircularSearchHistoryChip(
                                         track = history.track,
                                         onClick = {
-                                            viewModel.onEvent(SearchUIEvent.OnSearchHistoryTrackClick(history.track))
+                                            viewModel.onEvent(SearchUIEvent.OnTrackClick(history.track.id))
+                                            onTrackClick(history.track)
                                         },
                                         onDelete = {
                                             viewModel.onEvent(SearchUIEvent.DeleteSearchHistory(history.id))

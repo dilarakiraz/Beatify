@@ -1,53 +1,30 @@
 package com.dilara.beatify.presentation.ui.components.player
 
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Transparent
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
-import com.dilara.beatify.R
 import com.dilara.beatify.domain.model.Track
 import com.dilara.beatify.presentation.state.RepeatMode
 import com.dilara.beatify.presentation.ui.components.common.FavoriteButton
@@ -134,7 +111,7 @@ fun FullScreenPlayer(
                     .padding(horizontal = 24.dp, vertical = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-            AlbumCoverWithSpin(
+            VinylRecordCover(
                 coverUrl = track.album.coverBig ?: track.album.cover,
                 isPlaying = isPlaying,
                 modifier = Modifier
@@ -193,7 +170,7 @@ fun FullScreenPlayer(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                SeekBar(
+                PlayerSeekBar(
                     position = position,
                     duration = duration,
                     onSeekTo = onSeekTo,
@@ -202,99 +179,17 @@ fun FullScreenPlayer(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    IconButton(onClick = onShuffleClick) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_shuffle),
-                            contentDescription = "Shuffle",
-                            modifier = Modifier.size(28.dp),
-                            colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(
-                                if (isShuffleEnabled) NeonCyan else NeonTextSecondary
-                            )
-                        )
-                    }
-
-                    IconButton(onClick = onPreviousClick) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_skip_previous),
-                            contentDescription = "Previous",
-                            modifier = Modifier.size(32.dp),
-                            colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(NeonPink)
-                        )
-                    }
-
-                    IconButton(
-                        onClick = onPlayPauseClick,
-                        modifier = Modifier
-                            .size(72.dp)
-                            .background(
-                                brush = Brush.radialGradient(
-                                    colors = listOf(
-                                        NeonCyan.copy(alpha = 0.4f),
-                                        NeonPurple.copy(alpha = 0.2f)
-                                    )
-                                ),
-                                shape = CircleShape
-                            )
-                    ) {
-                        if (isPlaying) {
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Box(
-                                    modifier = Modifier
-                                        .width(8.dp)
-                                        .height(28.dp)
-                                        .background(NeonCyan, RoundedCornerShape(2.dp))
-                                )
-                                Box(
-                                    modifier = Modifier
-                                        .width(8.dp)
-                                        .height(28.dp)
-                                        .background(NeonCyan, RoundedCornerShape(2.dp))
-                                )
-                            }
-                        } else {
-                            Icon(
-                                imageVector = Icons.Default.PlayArrow,
-                                contentDescription = "Play",
-                                tint = NeonPink,
-                                modifier = Modifier.size(36.dp)
-                            )
-                        }
-                    }
-
-                    IconButton(onClick = onNextClick) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_skip_next),
-                            contentDescription = "Next",
-                            modifier = Modifier.size(32.dp),
-                            colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(NeonPink)
-                        )
-                    }
-
-                    IconButton(onClick = onRepeatClick) {
-                        Image(
-                            painter = painterResource(
-                                id = when (repeatMode) {
-                                    RepeatMode.OFF -> R.drawable.ic_repeat
-                                    RepeatMode.ALL -> R.drawable.ic_repeat
-                                    RepeatMode.ONE -> R.drawable.ic_repeat_one
-                                }
-                            ),
-                            contentDescription = "Repeat",
-                            modifier = Modifier.size(28.dp),
-                            colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(
-                                if (repeatMode != RepeatMode.OFF) NeonCyan else NeonTextSecondary
-                            )
-                        )
-                    }
-                }
+                PlayerControls(
+                    isPlaying = isPlaying,
+                    repeatMode = repeatMode,
+                    isShuffleEnabled = isShuffleEnabled,
+                    onPlayPauseClick = onPlayPauseClick,
+                    onNextClick = onNextClick,
+                    onPreviousClick = onPreviousClick,
+                    onRepeatClick = onRepeatClick,
+                    onShuffleClick = onShuffleClick,
+                    modifier = Modifier.fillMaxWidth()
+                )
 
                 Spacer(modifier = Modifier.height(32.dp))
             }
@@ -302,169 +197,4 @@ fun FullScreenPlayer(
     }
 }
 
-@Composable
-fun AlbumCoverWithSpin(
-    coverUrl: String?,
-    isPlaying: Boolean,
-    modifier: Modifier = Modifier
-) {
-    val infiniteTransition = rememberInfiniteTransition(label = "spin")
-    val rotationAngle by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(10000, easing = LinearEasing),
-            repeatMode = androidx.compose.animation.core.RepeatMode.Restart
-        ),
-        label = "rotation"
-    )
-
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.Center
-    ) {
-        AsyncImage(
-            model = coverUrl,
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxSize()
-                .clip(CircleShape)
-                .rotate(if (isPlaying) rotationAngle else 0f),
-            contentScale = ContentScale.Crop
-        )
-
-        if (isPlaying) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        brush = Brush.radialGradient(
-                            colors = listOf(
-                                NeonCyan.copy(alpha = 0.2f),
-                                NeonPurple.copy(alpha = 0.1f),
-                                Transparent
-                            )
-                        ),
-                        shape = CircleShape
-                    )
-            )
-        }
-    }
-}
-
-@Composable
-fun SeekBar(
-    position: Long,
-    duration: Long,
-    onSeekTo: (Long) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val progress = if (duration > 0) (position.toFloat() / duration.toFloat()).coerceIn(0f, 1f) else 0f
-
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = formatTime(position),
-                fontSize = 13.sp,
-                fontWeight = FontWeight.Medium,
-                color = NeonCyan
-            )
-            Text(
-                text = formatTime(duration),
-                fontSize = 13.sp,
-                fontWeight = FontWeight.Medium,
-                color = NeonTextSecondary
-            )
-        }
-
-        BoxWithConstraints(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(40.dp),
-            contentAlignment = Alignment.CenterStart
-        ) {
-            val trackWidth = maxWidth
-
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .pointerInput(Unit) {
-                        detectTapGestures { tapOffset ->
-                            if (duration > 0 && constraints.maxWidth > 0) {
-                                val newProgress = (tapOffset.x / constraints.maxWidth).coerceIn(0f, 1f)
-                                val newPosition = (newProgress * duration).toLong()
-                                onSeekTo(newPosition)
-                            }
-                        }
-                    }
-            )
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(5.dp)
-                    .clip(RoundedCornerShape(2.5.dp))
-                    .background(DarkSurface.copy(alpha = 0.4f))
-            )
-
-            Box(
-                modifier = Modifier
-                    .height(5.dp)
-                    .width((trackWidth * progress).coerceAtMost(trackWidth))
-                    .clip(RoundedCornerShape(2.5.dp))
-                    .background(
-                        brush = Brush.horizontalGradient(
-                            colors = listOf(
-                                NeonCyan.copy(alpha = 0.7f),
-                                NeonCyan.copy(alpha = 0.85f),
-                                NeonCyan.copy(alpha = 0.7f)
-                            )
-                        )
-                    )
-            )
-
-            Box(
-                modifier = Modifier
-                    .offset(x = (trackWidth * progress - 10.dp).coerceAtLeast(0.dp).coerceAtMost(trackWidth - 20.dp))
-                    .size(20.dp)
-                    .clip(CircleShape)
-                    .background(
-                        brush = Brush.radialGradient(
-                            colors = listOf(
-                                NeonCyan.copy(alpha = 0.8f),
-                                NeonCyan.copy(alpha = 0.6f)
-                            )
-                        )
-                    )
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(CircleShape)
-                        .background(
-                            brush = Brush.radialGradient(
-                                colors = listOf(
-                                    Color.White.copy(alpha = 0.3f),
-                                    Transparent
-                                )
-                            )
-                        )
-                )
-            }
-        }
-    }
-}
-
-fun formatTime(milliseconds: Long): String {
-    val totalSeconds = milliseconds / 1000
-    val minutes = totalSeconds / 60
-    val seconds = totalSeconds % 60
-    return String.format("%d:%02d", minutes, seconds)
-}
 

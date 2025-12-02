@@ -3,7 +3,6 @@
 
     <style name="Theme.Beatify" parent="android:Theme.Material.Light.NoActionBar" />
     
-    <!-- Splash Screen Theme - Dark background for neon effect -->
     <style name="Theme.Beatify.Splash" parent="android:Theme.Material.NoActionBar">
         <item name="android:windowBackground">@color/splash_background</item>
         <item name="android:statusBarColor">@color/splash_background</item>

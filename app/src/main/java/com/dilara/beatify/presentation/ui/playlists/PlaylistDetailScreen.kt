@@ -58,11 +58,14 @@ import com.dilara.beatify.presentation.ui.components.common.ErrorSection
 import com.dilara.beatify.presentation.ui.components.common.FloatingActionButton
 import com.dilara.beatify.presentation.ui.components.common.TrackCardSkeleton
 import com.dilara.beatify.presentation.viewmodel.PlaylistDetailViewModel
-import com.dilara.beatify.ui.theme.DarkBackground
+import com.dilara.beatify.ui.theme.themeBackground
 import com.dilara.beatify.ui.theme.DarkSurface
+import com.dilara.beatify.ui.theme.LightSurface
 import com.dilara.beatify.ui.theme.NeonCyan
 import com.dilara.beatify.ui.theme.NeonTextPrimary
 import com.dilara.beatify.ui.theme.NeonTextSecondary
+import com.dilara.beatify.ui.theme.isDarkTheme
+import com.dilara.beatify.ui.theme.themeTextPrimary
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -95,34 +98,40 @@ fun PlaylistDetailScreen(
                 .fillMaxWidth()
                 .height(320.dp)
         ) {
-                    if (playlist != null && playlist.coverUrl != null) {
-                        AsyncImage(
-                            model = playlist.coverUrl,
-                            contentDescription = playlist.name,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .clip(RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp)),
-                            contentScale = ContentScale.Crop
-                        )
-                    } else {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(
-                                    brush = Brush.horizontalGradient(
-                                        colors = listOf(
-                                            DarkSurface.copy(alpha = 0.8f),
-                                            DarkSurface.copy(alpha = 0.6f)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp))
+                    ) {
+                        if (playlist != null && playlist.coverUrl != null) {
+                            AsyncImage(
+                                model = playlist.coverUrl,
+                                contentDescription = playlist.name,
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(
+                                        brush = Brush.horizontalGradient(
+                                            colors = listOf(
+                                                if (isDarkTheme) DarkSurface.copy(alpha = 0.8f)
+                                                else LightSurface.copy(alpha = 0.9f),
+                                                if (isDarkTheme) DarkSurface.copy(alpha = 0.6f)
+                                                else LightSurface.copy(alpha = 0.7f)
+                                            )
                                         )
                                     )
-                                )
-                                .clip(RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp))
-                        )
+                            )
+                        }
                     }
 
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
+                            .clip(RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp))
                             .background(
                                 brush = Brush.verticalGradient(
                                     colors = listOf(
@@ -161,12 +170,20 @@ fun PlaylistDetailScreen(
                                     onValueChange = { editedName = it },
                                     modifier = Modifier.weight(1f),
                                     colors = TextFieldDefaults.colors(
-                                        focusedContainerColor = DarkSurface.copy(alpha = 0.9f),
-                                        unfocusedContainerColor = DarkSurface.copy(alpha = 0.9f),
-                                        focusedIndicatorColor = NeonCyan,
+                                        focusedContainerColor = if (isDarkTheme) {
+                                            DarkSurface.copy(alpha = 0.9f)
+                                        } else {
+                                            LightSurface.copy(alpha = 0.95f)
+                                        },
+                                        unfocusedContainerColor = if (isDarkTheme) {
+                                            DarkSurface.copy(alpha = 0.9f)
+                                        } else {
+                                            LightSurface.copy(alpha = 0.9f)
+                                        },
+                                        focusedIndicatorColor = if (isDarkTheme) NeonCyan else com.dilara.beatify.ui.theme.LightPrimary,
                                         unfocusedIndicatorColor = Color.Transparent,
-                                        focusedTextColor = NeonTextPrimary,
-                                        unfocusedTextColor = NeonTextPrimary
+                                        focusedTextColor = themeTextPrimary,
+                                        unfocusedTextColor = themeTextPrimary
                                     ),
                                     shape = RoundedCornerShape(12.dp),
                                     singleLine = true,
@@ -210,7 +227,7 @@ fun PlaylistDetailScreen(
                                                 Icon(
                                                     imageVector = Icons.Default.Check,
                                                     contentDescription = "Kaydet",
-                                                    tint = NeonCyan
+                                                    tint = if (isDarkTheme) NeonCyan else com.dilara.beatify.ui.theme.LightPrimary
                                                 )
                                             }
                                             IconButton(
@@ -222,7 +239,7 @@ fun PlaylistDetailScreen(
                                                 Icon(
                                                     imageVector = Icons.Default.Clear,
                                                     contentDescription = "İptal",
-                                                    tint = NeonTextSecondary
+                                                    tint = if (isDarkTheme) NeonTextSecondary else com.dilara.beatify.ui.theme.LightTextSecondary
                                                 )
                                             }
                                         }
@@ -239,23 +256,15 @@ fun PlaylistDetailScreen(
                                     modifier = Modifier.weight(1f)
                                 )
                                 
-                                IconButton(
+                                com.dilara.beatify.presentation.ui.components.common.GlassIconButton(
+                                    icon = Icons.Default.Edit,
                                     onClick = {
                                         editedName = uiState.playlist?.name ?: ""
                                         isEditingName = true
                                     },
-                                    modifier = Modifier
-                                        .size(48.dp)
-                                        .clip(RoundedCornerShape(12.dp))
-                                        .background(DarkSurface.copy(alpha = 0.8f))
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Edit,
-                                        contentDescription = "Düzenle",
-                                        tint = NeonCyan,
-                                        modifier = Modifier.size(24.dp)
-                                    )
-                                }
+                                    style = com.dilara.beatify.presentation.ui.components.common.GlassIconButtonStyle.PRIMARY,
+                                    contentDescription = "Düzenle"
+                                )
                             }
                         }
 
@@ -280,7 +289,7 @@ fun PlaylistDetailScreen(
                     androidx.compose.foundation.lazy.LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(DarkBackground),
+                            .background(themeBackground),
                         contentPadding = PaddingValues(
                             start = 20.dp,
                             end = 20.dp,
@@ -299,7 +308,7 @@ fun PlaylistDetailScreen(
                     androidx.compose.foundation.lazy.LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(DarkBackground),
+                            .background(themeBackground),
                         contentPadding = PaddingValues(
                             start = 20.dp,
                             end = 20.dp,
@@ -320,7 +329,7 @@ fun PlaylistDetailScreen(
                     androidx.compose.foundation.lazy.LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(DarkBackground),
+                            .background(themeBackground),
                         contentPadding = PaddingValues(
                             start = 20.dp,
                             end = 20.dp,
@@ -344,7 +353,7 @@ fun PlaylistDetailScreen(
                         },
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(DarkBackground),
+                            .background(themeBackground),
                         contentPadding = PaddingValues(
                             start = 20.dp,
                             end = 20.dp,
@@ -357,7 +366,7 @@ fun PlaylistDetailScreen(
                                 text = "Şarkılar",
                                 fontSize = 22.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = NeonTextPrimary,
+                                color = themeTextPrimary,
                                 modifier = Modifier.padding(bottom = 8.dp)
                             )
                         }

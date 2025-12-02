@@ -32,10 +32,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.dilara.beatify.presentation.ui.navigation.model.BottomNavItem
 import com.dilara.beatify.ui.theme.DarkSurface
+import com.dilara.beatify.ui.theme.LightPrimary
+import com.dilara.beatify.ui.theme.LightSecondary
+import com.dilara.beatify.ui.theme.LightSurface
+import com.dilara.beatify.ui.theme.LightTertiary
 import com.dilara.beatify.ui.theme.NeonCyan
 import com.dilara.beatify.ui.theme.NeonPurple
 import com.dilara.beatify.ui.theme.NeonPink
 import com.dilara.beatify.ui.theme.NeonTextSecondary
+import com.dilara.beatify.ui.theme.isDarkTheme
 
 @Composable
 fun BeatifyBottomNavigationBar(
@@ -54,12 +59,21 @@ fun BeatifyBottomNavigationBar(
             .height(64.dp + bottomPadding)
             .padding(bottom = bottomPadding)
             .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        DarkSurface.copy(alpha = 0.85f),
-                        DarkSurface.copy(alpha = 0.95f)
+                brush = if (isDarkTheme) {
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            DarkSurface.copy(alpha = 0.85f),
+                            DarkSurface.copy(alpha = 0.95f)
+                        )
                     )
-                )
+                } else {
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            LightSurface.copy(alpha = 0.98f),
+                            LightSurface.copy(alpha = 1f)
+                        )
+                    )
+                }
             )
             .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
     ) {
@@ -67,13 +81,23 @@ fun BeatifyBottomNavigationBar(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    brush = Brush.horizontalGradient(
-                        colors = listOf(
-                            NeonPurple.copy(alpha = 0.1f),
-                            NeonCyan.copy(alpha = 0.05f),
-                            NeonPink.copy(alpha = 0.1f)
+                    brush = if (isDarkTheme) {
+                        Brush.horizontalGradient(
+                            colors = listOf(
+                                NeonPurple.copy(alpha = 0.1f),
+                                NeonCyan.copy(alpha = 0.05f),
+                                NeonPink.copy(alpha = 0.1f)
+                            )
                         )
-                    )
+                    } else {
+                        Brush.horizontalGradient(
+                            colors = listOf(
+                                LightPrimary.copy(alpha = 0.08f),
+                                LightTertiary.copy(alpha = 0.06f),
+                                LightSecondary.copy(alpha = 0.05f)
+                            )
+                        )
+                    }
                 )
         )
         

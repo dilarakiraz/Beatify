@@ -30,11 +30,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.dilara.beatify.ui.theme.DarkSurface
+import com.dilara.beatify.ui.theme.LightPrimary
+import com.dilara.beatify.ui.theme.LightSecondary
+import com.dilara.beatify.ui.theme.LightSurface
+import com.dilara.beatify.ui.theme.LightTertiary
 import com.dilara.beatify.ui.theme.NeonCyan
 import com.dilara.beatify.ui.theme.NeonPink
 import com.dilara.beatify.ui.theme.NeonPurple
-import com.dilara.beatify.ui.theme.NeonTextPrimary
-import com.dilara.beatify.ui.theme.NeonTextSecondary
+import com.dilara.beatify.ui.theme.isDarkTheme
+import com.dilara.beatify.ui.theme.themeTextPrimary
+import com.dilara.beatify.ui.theme.themeTextSecondary
 
 @Composable
 fun BeatifySearchBar(
@@ -56,13 +61,23 @@ fun BeatifySearchBar(
             .height(56.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(
-                brush = Brush.horizontalGradient(
-                    colors = listOf(
-                        NeonPurple.copy(alpha = 0.1f),
-                        NeonCyan.copy(alpha = 0.05f),
-                        NeonPink.copy(alpha = 0.1f)
+                brush = if (isDarkTheme) {
+                    Brush.horizontalGradient(
+                        colors = listOf(
+                            NeonPurple.copy(alpha = 0.1f),
+                            NeonCyan.copy(alpha = 0.05f),
+                            NeonPink.copy(alpha = 0.1f)
+                        )
                     )
-                )
+                } else {
+                    Brush.horizontalGradient(
+                        colors = listOf(
+                            LightPrimary.copy(alpha = 0.12f),
+                            LightTertiary.copy(alpha = 0.08f),
+                            LightSecondary.copy(alpha = 0.06f)
+                        )
+                    )
+                }
             )
             .padding(2.dp)
     ) {
@@ -82,14 +97,14 @@ fun BeatifySearchBar(
                 placeholder = {
                     Text(
                         text = placeholder,
-                        color = NeonTextSecondary.copy(alpha = 0.7f)
+                        color = themeTextSecondary.copy(alpha = 0.7f)
                     )
                 },
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Search,
                         contentDescription = "Search",
-                        tint = NeonCyan,
+                        tint = if (isDarkTheme) NeonCyan else LightPrimary,
                         modifier = Modifier.size(22.dp)
                     )
                 },
@@ -102,22 +117,34 @@ fun BeatifySearchBar(
                             Icon(
                                 imageVector = Icons.Default.Clear,
                                 contentDescription = "Clear",
-                                tint = NeonTextSecondary,
+                                tint = themeTextSecondary,
                                 modifier = Modifier.size(18.dp)
                             )
                         }
                     }
                 },
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = DarkSurface.copy(alpha = 0.8f),
-                    unfocusedContainerColor = DarkSurface.copy(alpha = 0.6f),
+                    focusedContainerColor = if (isDarkTheme) {
+                        DarkSurface.copy(alpha = 0.8f)
+                    } else {
+                        LightSurface.copy(alpha = 0.95f)
+                    },
+                    unfocusedContainerColor = if (isDarkTheme) {
+                        DarkSurface.copy(alpha = 0.6f)
+                    } else {
+                        LightSurface.copy(alpha = 0.85f)
+                    },
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
-                    focusedTextColor = NeonTextPrimary,
-                    unfocusedTextColor = NeonTextPrimary,
-                    disabledTextColor = NeonTextSecondary,
-                    disabledContainerColor = DarkSurface.copy(alpha = 0.4f)
+                    focusedTextColor = themeTextPrimary,
+                    unfocusedTextColor = themeTextPrimary,
+                    disabledTextColor = themeTextSecondary,
+                    disabledContainerColor = if (isDarkTheme) {
+                        DarkSurface.copy(alpha = 0.4f)
+                    } else {
+                        LightSurface.copy(alpha = 0.7f)
+                    }
                 ),
                 shape = RoundedCornerShape(14.dp),
                 singleLine = true,

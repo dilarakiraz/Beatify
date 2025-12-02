@@ -24,7 +24,8 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.dilara.beatify.domain.model.Artist
 import com.dilara.beatify.ui.theme.DarkSurface
-import com.dilara.beatify.ui.theme.NeonTextPrimary
+import com.dilara.beatify.ui.theme.LightSurface
+import com.dilara.beatify.ui.theme.isDarkTheme
 
 @Composable
 fun ArtistCard(
@@ -33,11 +34,17 @@ fun ArtistCard(
     modifier: Modifier = Modifier,
     size: androidx.compose.ui.unit.Dp = 120.dp
 ) {
+    val cardColor = if (isDarkTheme) {
+        DarkSurface.copy(alpha = 0.6f)
+    } else {
+        LightSurface.copy(alpha = 0.95f)
+    }
+    
     Box(
         modifier = modifier
             .size(size)
             .clip(CircleShape)
-            .background(DarkSurface.copy(alpha = 0.6f))
+            .background(cardColor)
             .clickable(onClick = onClick)
     ) {
         if (artist.pictureBig != null || artist.pictureMedium != null) {
@@ -75,7 +82,7 @@ fun ArtistCard(
                 text = artist.name,
                 fontSize = 12.sp,
                 fontWeight = androidx.compose.ui.text.font.FontWeight.Medium,
-                color = NeonTextPrimary,
+                color = Color.White,  // Her iki temada da beyaz (overlay üzerinde)
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
                 textAlign = TextAlign.Center

@@ -56,6 +56,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.icons.extended)
     
     // Lifecycle & ViewModel
     implementation(libs.lifecycle.viewmodel.compose)
@@ -93,6 +94,9 @@ dependencies {
     
     // Splash Screen
     implementation(libs.androidx.core.splashscreen)
+    
+    // DataStore
+    implementation(libs.androidx.datastore.preferences)
     
     // Testing
     testImplementation(libs.junit)

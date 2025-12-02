@@ -1,5 +1,10 @@
 package com.dilara.beatify.presentation.ui.components.player
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,8 +23,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.text.font.FontWeight
@@ -28,13 +35,18 @@ import androidx.compose.ui.unit.sp
 import com.dilara.beatify.domain.model.Track
 import com.dilara.beatify.presentation.state.RepeatMode
 import com.dilara.beatify.presentation.ui.components.common.FavoriteButton
+import com.dilara.beatify.ui.theme.BeatifyGradients
 import com.dilara.beatify.ui.theme.DarkBackground
 import com.dilara.beatify.ui.theme.DarkSurface
+import com.dilara.beatify.ui.theme.LightBackground
+import com.dilara.beatify.ui.theme.LightPrimary
+import com.dilara.beatify.ui.theme.LightSurface
 import com.dilara.beatify.ui.theme.NeonCyan
 import com.dilara.beatify.ui.theme.NeonPink
 import com.dilara.beatify.ui.theme.NeonPurple
-import com.dilara.beatify.ui.theme.NeonTextPrimary
-import com.dilara.beatify.ui.theme.NeonTextSecondary
+import com.dilara.beatify.ui.theme.isDarkTheme
+import com.dilara.beatify.ui.theme.themeTextPrimary
+import com.dilara.beatify.ui.theme.themeTextSecondary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,7 +83,8 @@ fun FullScreenPlayer(
                     .height(4.dp)
                     .padding(vertical = 12.dp)
                     .background(
-                        NeonCyan.copy(alpha = 0.6f),
+                        if (isDarkTheme) NeonCyan.copy(alpha = 0.6f)
+                        else LightPrimary.copy(alpha = 0.7f),
                         RoundedCornerShape(2.dp)
                     )
             )
@@ -81,27 +94,49 @@ fun FullScreenPlayer(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            DarkBackground.copy(alpha = 0.98f),
-                            DarkSurface.copy(alpha = 0.96f),
-                            DarkBackground.copy(alpha = 0.98f)
+                    brush = if (isDarkTheme) {
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                DarkBackground.copy(alpha = 0.98f),
+                                DarkSurface.copy(alpha = 0.96f),
+                                DarkBackground.copy(alpha = 0.98f)
+                            )
                         )
-                    )
+                    } else {
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                LightBackground.copy(alpha = 1f),
+                                LightSurface.copy(alpha = 0.98f),
+                                LightBackground.copy(alpha = 1f)
+                            )
+                        )
+                    }
                 )
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(
-                        brush = Brush.radialGradient(
+                        brush = if (isDarkTheme) {
+                            Brush.radialGradient(
+                                colors = listOf(
+                                    NeonPurple.copy(alpha = 0.08f),
+                                    NeonCyan.copy(alpha = 0.05f),
+                                    Transparent
+                                ),
+                                radius = 800f
+                            )
+                        } else {
+                        Brush.radialGradient(
                             colors = listOf(
-                                NeonPurple.copy(alpha = 0.08f),
-                                NeonCyan.copy(alpha = 0.05f),
+                                LightPrimary.copy(alpha = 0.15f),
+                                com.dilara.beatify.ui.theme.LightTertiary.copy(alpha = 0.12f),
+                                com.dilara.beatify.ui.theme.LightSecondary.copy(alpha = 0.08f),
                                 Transparent
                             ),
-                            radius = 800f
+                            radius = 900f
                         )
+                        }
                     )
             )
 
@@ -111,13 +146,57 @@ fun FullScreenPlayer(
                     .padding(horizontal = 24.dp, vertical = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-            VinylRecordCover(
-                coverUrl = track.album.coverBig ?: track.album.cover,
-                isPlaying = isPlaying,
+            // Modern album cover with pulse glow (plak görünümü yok)
+            Box(
                 modifier = Modifier
                     .size(180.dp)
-                    .padding(vertical = 8.dp)
-            )
+                    .padding(vertical = 12.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                // Pulse glow when playing
+                if (isPlaying) {
+                    val infiniteTransition = rememberInfiniteTransition(label = "pulse")
+                    val pulseAlpha by infiniteTransition.animateFloat(
+                        initialValue = 0.4f,
+                        targetValue = 0.15f,
+                        animationSpec = infiniteRepeatable(
+                            animation = tween(1800, easing = LinearEasing),
+                            repeatMode = androidx.compose.animation.core.RepeatMode.Reverse
+                        ),
+                        label = "pulse"
+                    )
+                    
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(androidx.compose.foundation.shape.RoundedCornerShape(24.dp))
+                            .background(
+                                brush = BeatifyGradients.radialGlow(
+                                    isDarkTheme,
+                                    alpha = pulseAlpha
+                                )
+                            )
+                    )
+                }
+                
+                // Album cover
+                androidx.compose.foundation.layout.Box(
+                    modifier = Modifier
+                        .size(160.dp)
+                        .clip(androidx.compose.foundation.shape.RoundedCornerShape(18.dp))
+                        .background(
+                            if (isDarkTheme) DarkSurface.copy(alpha = 0.5f)
+                            else LightSurface.copy(alpha = 0.8f)
+                        )
+                ) {
+                    coil.compose.AsyncImage(
+                        model = track.album.coverBig ?: track.album.cover,
+                        contentDescription = track.album.title,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = androidx.compose.ui.layout.ContentScale.Crop
+                    )
+                }
+            }
 
                 Spacer(modifier = Modifier.height(12.dp))
                 Row(
@@ -132,13 +211,13 @@ fun FullScreenPlayer(
                             text = track.title,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
-                            color = NeonTextPrimary
+                            color = themeTextPrimary
                         )
                         Spacer(modifier = Modifier.height(6.dp))
-                        Text(
-                            text = track.artist.name,
-                            fontSize = 16.sp,
-                            color = NeonTextSecondary,
+                    Text(
+                        text = track.artist.name,
+                        fontSize = 16.sp,
+                        color = themeTextSecondary,
                             modifier = Modifier
                                 .then(
                                     if (onArtistClick != null) {

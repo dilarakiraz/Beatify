@@ -5,6 +5,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -22,22 +23,21 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.Image
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color.Companion.Transparent
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -46,12 +46,15 @@ import coil.compose.AsyncImage
 import com.dilara.beatify.R
 import com.dilara.beatify.domain.model.Track
 import com.dilara.beatify.presentation.state.RepeatMode
+import com.dilara.beatify.ui.theme.BeatifyGradients
 import com.dilara.beatify.ui.theme.DarkSurface
+import com.dilara.beatify.ui.theme.LightSurface
 import com.dilara.beatify.ui.theme.NeonCyan
 import com.dilara.beatify.ui.theme.NeonPink
-import com.dilara.beatify.ui.theme.NeonPurple
-import com.dilara.beatify.ui.theme.NeonTextPrimary
 import com.dilara.beatify.ui.theme.NeonTextSecondary
+import com.dilara.beatify.ui.theme.isDarkTheme
+import com.dilara.beatify.ui.theme.themeTextPrimary
+import com.dilara.beatify.ui.theme.themeTextSecondary
 
 @Composable
 fun MiniPlayer(
@@ -78,27 +81,28 @@ fun MiniPlayer(
                 .height(72.dp)
                 .clip(RoundedCornerShape(20.dp))
                 .background(
-                    brush = Brush.horizontalGradient(
-                        colors = listOf(
-                            DarkSurface.copy(alpha = 0.95f),
-                            DarkSurface.copy(alpha = 0.9f)
+                    brush = if (isDarkTheme) {
+                        Brush.horizontalGradient(
+                            colors = listOf(
+                                DarkSurface.copy(alpha = 0.95f),
+                                DarkSurface.copy(alpha = 0.9f)
+                            )
                         )
-                    )
+                    } else {
+                        Brush.horizontalGradient(
+                            colors = listOf(
+                                LightSurface.copy(alpha = 1f),
+                                LightSurface.copy(alpha = 0.98f)
+                            )
+                        )
+                    }
                 )
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(RoundedCornerShape(20.dp))
-                    .background(
-                        brush = Brush.horizontalGradient(
-                            colors = listOf(
-                                NeonPurple.copy(alpha = 0.15f),
-                                NeonCyan.copy(alpha = 0.1f),
-                                NeonPink.copy(alpha = 0.15f)
-                            )
-                        )
-                    )
+                    .background(brush = BeatifyGradients.miniPlayerGradient(isDarkTheme))
             )
 
             Box(
@@ -142,7 +146,7 @@ fun MiniPlayer(
                             text = track.title,
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Bold,
-                            color = NeonTextPrimary,
+                            color = themeTextPrimary,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -152,7 +156,7 @@ fun MiniPlayer(
                         Text(
                             text = track.artist.name,
                             fontSize = 12.sp,
-                            color = NeonTextSecondary,
+                            color = themeTextSecondary,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )

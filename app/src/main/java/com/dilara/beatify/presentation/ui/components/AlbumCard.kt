@@ -26,8 +26,8 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.dilara.beatify.domain.model.Album
 import com.dilara.beatify.ui.theme.DarkSurface
-import com.dilara.beatify.ui.theme.NeonTextPrimary
-import com.dilara.beatify.ui.theme.NeonTextSecondary
+import com.dilara.beatify.ui.theme.LightSurface
+import com.dilara.beatify.ui.theme.isDarkTheme
 
 @Composable
 fun AlbumCard(
@@ -35,6 +35,12 @@ fun AlbumCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val cardColor = if (isDarkTheme) {
+        DarkSurface.copy(alpha = 0.6f)
+    } else {
+        LightSurface.copy(alpha = 0.95f)
+    }
+    
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -42,7 +48,7 @@ fun AlbumCard(
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = DarkSurface.copy(alpha = 0.6f)
+            containerColor = cardColor
         ),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 0.dp,
@@ -71,7 +77,8 @@ fun AlbumCard(
                         .fillMaxWidth()
                         .height(120.dp)
                         .background(
-                            DarkSurface.copy(alpha = 0.5f)
+                            if (isDarkTheme) DarkSurface.copy(alpha = 0.5f)
+                            else LightSurface.copy(alpha = 0.8f)
                         )
                 )
             }
@@ -101,7 +108,7 @@ fun AlbumCard(
                     text = album.title,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    color = NeonTextPrimary,
+                    color = Color.White,  // Her iki temada da beyaz (overlay üzerinde)
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -109,7 +116,7 @@ fun AlbumCard(
                 Text(
                     text = album.artist.name,
                     fontSize = 14.sp,
-                    color = NeonTextSecondary,
+                    color = Color.White.copy(alpha = 0.9f),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )

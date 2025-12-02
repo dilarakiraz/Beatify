@@ -46,7 +46,7 @@ import com.dilara.beatify.presentation.ui.components.profile.ProfileButton
 import com.dilara.beatify.presentation.ui.components.profile.ProfileDrawerContent
 import com.dilara.beatify.presentation.ui.hooks.useFavoritesState
 import com.dilara.beatify.presentation.viewmodel.HomeViewModel
-import com.dilara.beatify.ui.theme.DarkBackground
+import com.dilara.beatify.ui.theme.themeBackground
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -83,7 +83,7 @@ fun HomeScreen(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(DarkBackground),
+                    .background(themeBackground),
                 contentPadding = PaddingValues(
                     horizontal = 16.dp,
                     vertical = 8.dp

@@ -25,7 +25,7 @@ import com.dilara.beatify.presentation.ui.components.common.FloatingActionButton
 import com.dilara.beatify.presentation.ui.components.common.ScreenStateWrapper
 import com.dilara.beatify.presentation.ui.components.common.SectionHeader
 import com.dilara.beatify.presentation.viewmodel.PlaylistsViewModel
-import com.dilara.beatify.ui.theme.DarkBackground
+import com.dilara.beatify.ui.theme.themeBackground
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -62,7 +62,7 @@ fun PlaylistsScreen(
                 },
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(DarkBackground),
+                    .background(themeBackground),
                 contentPadding = PaddingValues(
                     start = 16.dp,
                     end = 16.dp,

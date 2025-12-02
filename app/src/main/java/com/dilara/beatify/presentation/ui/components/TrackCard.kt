@@ -1,8 +1,11 @@
 package com.dilara.beatify.presentation.ui.components
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,27 +19,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color.Companion.Transparent
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -46,12 +43,13 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.dilara.beatify.domain.model.Track
 import com.dilara.beatify.presentation.ui.components.common.FavoriteButton
+import com.dilara.beatify.ui.theme.BeatifyGradients
 import com.dilara.beatify.ui.theme.DarkSurface
-import com.dilara.beatify.ui.theme.NeonCyan
+import com.dilara.beatify.ui.theme.LightSurface
 import com.dilara.beatify.ui.theme.NeonPink
-import com.dilara.beatify.ui.theme.NeonPurple
-import com.dilara.beatify.ui.theme.NeonTextPrimary
-import com.dilara.beatify.ui.theme.NeonTextSecondary
+import com.dilara.beatify.ui.theme.isDarkTheme
+import com.dilara.beatify.ui.theme.themeTextPrimary
+import com.dilara.beatify.ui.theme.themeTextSecondary
 
 enum class TrackCardStyle {
     VERTICAL,
@@ -85,7 +83,7 @@ fun TrackCard(
             artistFontSize = 13.sp,
             durationFontSize = 12.sp,
             showAlbumTitle = false,
-            gradientType = GradientType.HORIZONTAL
+            gradientType = GradientType.LINEAR  // LINEAR daha belirgin
         )
         TrackCardStyle.HORIZONTAL -> TrackCardConfig(
             cornerRadius = 12.dp,
@@ -102,13 +100,19 @@ fun TrackCard(
         )
     }
 
+    val cardColor = if (isDarkTheme) {
+        DarkSurface.copy(alpha = config.cardAlpha)
+    } else {
+        LightSurface.copy(alpha = 0.95f)  // Açık tema: neredeyse opak beyaz
+    }
+    
     Card(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(config.cornerRadius)),
         shape = RoundedCornerShape(config.cornerRadius),
         colors = CardDefaults.cardColors(
-            containerColor = DarkSurface.copy(alpha = config.cardAlpha)
+            containerColor = cardColor
         ),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 0.dp,
@@ -122,20 +126,8 @@ fun TrackCard(
                 .fillMaxWidth()
                 .background(
                     brush = when (config.gradientType) {
-                        GradientType.HORIZONTAL -> Brush.horizontalGradient(
-                            colors = listOf(
-                                NeonPurple.copy(alpha = 0.05f),
-                                Transparent,
-                                NeonCyan.copy(alpha = 0.05f)
-                            )
-                        )
-                        GradientType.LINEAR -> Brush.linearGradient(
-                            colors = listOf(
-                                NeonPurple.copy(alpha = 0.1f),
-                                Transparent,
-                                NeonCyan.copy(alpha = 0.1f)
-                            )
-                        )
+                        GradientType.HORIZONTAL -> BeatifyGradients.cardGradientHorizontal(isDarkTheme)
+                        GradientType.LINEAR -> BeatifyGradients.cardGradientLinear(isDarkTheme)
                     }
                 )
         ) {
@@ -189,7 +181,7 @@ fun TrackCard(
                             text = track.title,
                             fontSize = config.titleFontSize,
                             fontWeight = FontWeight.Bold,
-                            color = NeonTextPrimary,
+                            color = themeTextPrimary,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -200,7 +192,7 @@ fun TrackCard(
                             text = track.artist.name,
                             fontSize = config.artistFontSize,
                             fontWeight = FontWeight.Normal,
-                            color = NeonTextSecondary,
+                            color = themeTextSecondary,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier
@@ -222,7 +214,7 @@ fun TrackCard(
                             Text(
                                 text = track.album.title,
                                 fontSize = 12.sp,
-                                color = NeonTextSecondary.copy(alpha = 0.7f),
+                                color = themeTextSecondary.copy(alpha = 0.7f),
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )
@@ -233,7 +225,7 @@ fun TrackCard(
                         Text(
                             text = formatDuration(track.duration),
                             fontSize = config.durationFontSize,
-                            color = NeonTextSecondary,
+                            color = themeTextSecondary,
                             fontWeight = if (style == TrackCardStyle.HORIZONTAL) FontWeight.Medium else FontWeight.Normal,
                             modifier = if (style == TrackCardStyle.VERTICAL) Modifier.padding(end = 8.dp) else Modifier
                         )

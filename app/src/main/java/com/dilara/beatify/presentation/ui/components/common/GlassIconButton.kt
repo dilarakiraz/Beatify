@@ -18,10 +18,15 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.dilara.beatify.ui.theme.DarkSurface
+import com.dilara.beatify.ui.theme.LightPrimary
+import com.dilara.beatify.ui.theme.LightSecondary
+import com.dilara.beatify.ui.theme.LightSurface
+import com.dilara.beatify.ui.theme.LightTertiary
 import com.dilara.beatify.ui.theme.NeonCyan
 import com.dilara.beatify.ui.theme.NeonPink
 import com.dilara.beatify.ui.theme.NeonPurple
 import com.dilara.beatify.ui.theme.NeonTextPrimary
+import com.dilara.beatify.ui.theme.isDarkTheme
 
 enum class GlassIconButtonStyle {
     PRIMARY, // Cyan-Purple (BackButton style)
@@ -39,30 +44,60 @@ fun GlassIconButton(
     iconTint: Color = NeonTextPrimary,
     contentDescription: String? = null
 ) {
-    val gradientColors = when (style) {
-        GlassIconButtonStyle.PRIMARY -> listOf(
-            NeonCyan.copy(alpha = 0.7f),
-            NeonPurple.copy(alpha = 0.6f),
-            NeonCyan.copy(alpha = 0.7f)
-        )
-        GlassIconButtonStyle.DANGER -> listOf(
-            NeonPink.copy(alpha = 0.7f),
-            NeonPurple.copy(alpha = 0.6f),
-            NeonPink.copy(alpha = 0.7f)
-        )
+    val gradientColors = if (isDarkTheme) {
+        when (style) {
+            GlassIconButtonStyle.PRIMARY -> listOf(
+                NeonCyan.copy(alpha = 0.7f),
+                NeonPurple.copy(alpha = 0.6f),
+                NeonCyan.copy(alpha = 0.7f)
+            )
+            GlassIconButtonStyle.DANGER -> listOf(
+                NeonPink.copy(alpha = 0.7f),
+                NeonPurple.copy(alpha = 0.6f),
+                NeonPink.copy(alpha = 0.7f)
+            )
+        }
+    } else {
+        when (style) {
+            GlassIconButtonStyle.PRIMARY -> listOf(
+                LightPrimary.copy(alpha = 0.8f),
+                LightTertiary.copy(alpha = 0.7f),
+                LightPrimary.copy(alpha = 0.8f)
+            )
+            GlassIconButtonStyle.DANGER -> listOf(
+                LightSecondary.copy(alpha = 0.8f),
+                LightPrimary.copy(alpha = 0.7f),
+                LightSecondary.copy(alpha = 0.8f)
+            )
+        }
     }
     
-    val glowColors = when (style) {
-        GlassIconButtonStyle.PRIMARY -> listOf(
-            NeonCyan.copy(alpha = 0.2f),
-            NeonPurple.copy(alpha = 0.15f),
-            Color.Transparent
-        )
-        GlassIconButtonStyle.DANGER -> listOf(
-            NeonPink.copy(alpha = 0.2f),
-            NeonPink.copy(alpha = 0.15f),
-            Color.Transparent
-        )
+    val glowColors = if (isDarkTheme) {
+        when (style) {
+            GlassIconButtonStyle.PRIMARY -> listOf(
+                NeonCyan.copy(alpha = 0.2f),
+                NeonPurple.copy(alpha = 0.15f),
+                Color.Transparent
+            )
+            GlassIconButtonStyle.DANGER -> listOf(
+                NeonPink.copy(alpha = 0.2f),
+                NeonPink.copy(alpha = 0.15f),
+                Color.Transparent
+            )
+        }
+    } else {
+        when (style) {
+            GlassIconButtonStyle.PRIMARY -> listOf(
+                LightPrimary.copy(alpha = 0.3f),
+                LightTertiary.copy(alpha = 0.2f),
+                Color.Transparent
+            )
+            GlassIconButtonStyle.DANGER -> listOf(
+                LightSecondary.copy(alpha = 0.35f),
+                LightSecondary.copy(alpha = 0.2f),
+                Color.Transparent
+            )
+        }
     }
     
     Box(
@@ -74,12 +109,21 @@ fun GlassIconButton(
             )
             .padding(2.dp)
             .background(
-                brush = Brush.radialGradient(
-                    colors = listOf(
-                        DarkSurface.copy(alpha = 0.9f),
-                        DarkSurface.copy(alpha = 0.75f)
+                brush = if (isDarkTheme) {
+                    Brush.radialGradient(
+                        colors = listOf(
+                            DarkSurface.copy(alpha = 0.9f),
+                            DarkSurface.copy(alpha = 0.75f)
+                        )
                     )
-                ),
+                } else {
+                    Brush.radialGradient(
+                        colors = listOf(
+                            LightSurface.copy(alpha = 0.95f),
+                            LightSurface.copy(alpha = 0.85f)
+                        )
+                    )
+                },
                 shape = CircleShape
             )
             .clickable(onClick = onClick),
@@ -100,9 +144,16 @@ fun GlassIconButton(
         Icon(
             imageVector = icon,
             contentDescription = contentDescription,
-            tint = when (style) {
-                GlassIconButtonStyle.PRIMARY -> iconTint
-                GlassIconButtonStyle.DANGER -> NeonPink.copy(alpha = 0.9f)
+            tint = if (isDarkTheme) {
+                when (style) {
+                    GlassIconButtonStyle.PRIMARY -> iconTint
+                    GlassIconButtonStyle.DANGER -> NeonPink.copy(alpha = 0.9f)
+                }
+            } else {
+                when (style) {
+                    GlassIconButtonStyle.PRIMARY -> LightPrimary
+                    GlassIconButtonStyle.DANGER -> LightSecondary
+                }
             },
             modifier = Modifier.size(iconSize)
         )

@@ -4,8 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -22,8 +22,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dilara.beatify.ui.theme.DarkSurface
-import com.dilara.beatify.ui.theme.NeonTextPrimary
-import com.dilara.beatify.ui.theme.NeonTextSecondary
+import com.dilara.beatify.ui.theme.LightSurface
+import com.dilara.beatify.ui.theme.isDarkTheme
+import com.dilara.beatify.ui.theme.themeTextPrimary
+import com.dilara.beatify.ui.theme.themeTextSecondary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,7 +51,7 @@ fun CreatePlaylistDialog(
                 text = "Yeni Çalma Listesi",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
-                color = NeonTextPrimary
+                color = themeTextPrimary
             )
             
             TextField(
@@ -59,16 +61,24 @@ fun CreatePlaylistDialog(
                 placeholder = {
                     Text(
                         text = "Çalma listesi adı",
-                        color = NeonTextSecondary.copy(alpha = 0.7f)
+                        color = themeTextSecondary.copy(alpha = 0.7f)
                     )
                 },
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = DarkSurface.copy(alpha = 0.8f),
-                    unfocusedContainerColor = DarkSurface.copy(alpha = 0.6f),
+                    focusedContainerColor = if (isDarkTheme) {
+                        DarkSurface.copy(alpha = 0.8f)
+                    } else {
+                        LightSurface.copy(alpha = 0.9f)
+                    },
+                    unfocusedContainerColor = if (isDarkTheme) {
+                        DarkSurface.copy(alpha = 0.6f)
+                    } else {
+                        LightSurface.copy(alpha = 0.7f)
+                    },
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
-                    focusedTextColor = NeonTextPrimary,
-                    unfocusedTextColor = NeonTextPrimary
+                    focusedTextColor = themeTextPrimary,
+                    unfocusedTextColor = themeTextPrimary
                 ),
                 shape = RoundedCornerShape(16.dp),
                 singleLine = true,

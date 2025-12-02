@@ -24,7 +24,7 @@ import com.dilara.beatify.presentation.state.SearchUIEvent
 import com.dilara.beatify.presentation.ui.components.BeatifySearchBar
 import com.dilara.beatify.presentation.ui.components.TrackCard
 import com.dilara.beatify.presentation.viewmodel.SearchViewModel
-import com.dilara.beatify.ui.theme.NeonTextPrimary
+import com.dilara.beatify.ui.theme.themeTextPrimary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,7 +57,7 @@ fun AddTrackToPlaylistDialog(
                     text = "Şarkı Ekle",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
-                    color = NeonTextPrimary
+                    color = themeTextPrimary
                 )
             }
 

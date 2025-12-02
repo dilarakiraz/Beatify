@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -37,7 +38,9 @@ import com.dilara.beatify.domain.model.Playlist
 import com.dilara.beatify.presentation.ui.components.common.GlassIconButton
 import com.dilara.beatify.presentation.ui.components.common.GlassIconButtonStyle
 import com.dilara.beatify.ui.theme.DarkSurface
-import com.dilara.beatify.ui.theme.NeonTextPrimary
+import com.dilara.beatify.ui.theme.LightSurface
+import com.dilara.beatify.ui.theme.NeonCyan
+import com.dilara.beatify.ui.theme.isDarkTheme
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -48,6 +51,12 @@ fun PlaylistCard(
     onDelete: (() -> Unit)? = null
 ) {
     var showDeleteButton by remember { mutableStateOf(false) }
+    
+    val cardColor = if (isDarkTheme) {
+        DarkSurface.copy(alpha = 0.6f)
+    } else {
+        LightSurface.copy(alpha = 0.95f)
+    }
     
     Card(
         modifier = modifier
@@ -63,7 +72,7 @@ fun PlaylistCard(
             ),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = DarkSurface.copy(alpha = 0.6f)
+            containerColor = cardColor
         ),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 0.dp,
@@ -92,7 +101,8 @@ fun PlaylistCard(
                         .fillMaxWidth()
                         .height(120.dp)
                         .background(
-                            DarkSurface.copy(alpha = 0.5f)
+                            if (isDarkTheme) DarkSurface.copy(alpha = 0.5f)
+                            else LightSurface.copy(alpha = 0.8f)
                         )
                 )
             }
@@ -111,23 +121,71 @@ fun PlaylistCard(
                     )
             )
             
+            // Glass icon container (like FAB)
             Box(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(12.dp)
-                    .size(40.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(
-                        DarkSurface.copy(alpha = 0.7f)
-                    ),
-                contentAlignment = Alignment.Center
+                    .size(48.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Default.List,
-                    contentDescription = "Playlist",
-                    tint = Color.White,
-                    modifier = Modifier.size(24.dp)
+                // Glow effect
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(
+                            brush = if (isDarkTheme) {
+                                Brush.radialGradient(
+                                    colors = listOf(
+                                        NeonCyan.copy(alpha = 0.3f),
+                                        com.dilara.beatify.ui.theme.NeonPurple.copy(alpha = 0.2f),
+                                        Color.Transparent
+                                    )
+                                )
+                            } else {
+                                Brush.radialGradient(
+                                    colors = listOf(
+                                        com.dilara.beatify.ui.theme.LightPrimary.copy(alpha = 0.4f),
+                                        com.dilara.beatify.ui.theme.LightTertiary.copy(alpha = 0.3f),
+                                        Color.Transparent
+                                    )
+                                )
+                            }
+                        )
                 )
+                
+                // Glass container
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .size(40.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(
+                            brush = if (isDarkTheme) {
+                                Brush.linearGradient(
+                                    colors = listOf(
+                                        Color.White.copy(alpha = 0.08f),
+                                        Color.White.copy(alpha = 0.04f)
+                                    )
+                                )
+                            } else {
+                                Brush.linearGradient(
+                                    colors = listOf(
+                                        Color.White.copy(alpha = 0.95f),
+                                        Color.White.copy(alpha = 0.85f)
+                                    )
+                                )
+                            }
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.List,
+                        contentDescription = "Playlist",
+                        tint = if (isDarkTheme) Color.White else com.dilara.beatify.ui.theme.LightPrimary,
+                        modifier = Modifier.size(22.dp)
+                    )
+                }
             }
             
             if (showDeleteButton && onDelete != null) {
@@ -155,7 +213,7 @@ fun PlaylistCard(
                     text = playlist.name,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    color = NeonTextPrimary,
+                    color = Color.White,  // Her iki temada da beyaz (overlay üzerinde)
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )

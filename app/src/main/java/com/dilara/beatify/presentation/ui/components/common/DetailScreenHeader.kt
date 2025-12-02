@@ -43,14 +43,14 @@ fun DetailScreenHeader(
         modifier = modifier
             .fillMaxWidth()
             .height(height)
+            .clip(RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp))
     ) {
+        // Background image or gradient
         if (imageUrl != null) {
             AsyncImage(
                 model = imageUrl,
                 contentDescription = title,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp)),
+                modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
             )
         } else {
@@ -65,10 +65,10 @@ fun DetailScreenHeader(
                             )
                         )
                     )
-                    .clip(RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp))
             )
         }
 
+        // Gradient overlay
         Box(
             modifier = Modifier
                 .fillMaxSize()

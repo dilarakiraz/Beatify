@@ -10,7 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.dilara.beatify.ui.theme.DarkBackground
+import com.dilara.beatify.ui.theme.themeBackground
 
 @Composable
 fun DetailScreenContent(
@@ -38,7 +38,7 @@ fun DetailScreenContent(
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(DarkBackground),
+                        .background(themeBackground),
                     contentPadding = contentPadding,
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
@@ -52,7 +52,7 @@ fun DetailScreenContent(
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(DarkBackground),
+                        .background(themeBackground),
                     contentPadding = contentPadding
                 ) {
                     item {
@@ -68,7 +68,7 @@ fun DetailScreenContent(
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(DarkBackground),
+                        .background(themeBackground),
                     contentPadding = contentPadding
                 ) {
                     item {

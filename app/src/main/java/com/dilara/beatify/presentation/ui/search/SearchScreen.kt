@@ -35,7 +35,7 @@ import com.dilara.beatify.presentation.ui.components.common.SectionHeader
 import com.dilara.beatify.presentation.ui.components.common.TrackCardSkeleton
 import com.dilara.beatify.presentation.ui.hooks.useFavoritesState
 import com.dilara.beatify.presentation.viewmodel.SearchViewModel
-import com.dilara.beatify.ui.theme.DarkBackground
+import com.dilara.beatify.ui.theme.themeBackground
 
 @Composable
 fun SearchScreen(
@@ -50,7 +50,7 @@ fun SearchScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(DarkBackground),
+            .background(themeBackground),
         contentPadding = PaddingValues(
             start = 16.dp,
             end = 16.dp,
@@ -63,7 +63,7 @@ fun SearchScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(DarkBackground)
+                    .background(themeBackground)
                     .padding(horizontal = 16.dp, vertical = 8.dp)
             ) {
                 BeatifySearchBar(

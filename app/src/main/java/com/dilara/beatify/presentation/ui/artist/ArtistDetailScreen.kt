@@ -25,7 +25,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,9 +41,9 @@ import com.dilara.beatify.presentation.ui.components.common.HorizontalItemsList
 import com.dilara.beatify.presentation.ui.components.common.SectionHeader
 import com.dilara.beatify.presentation.ui.hooks.useFavoritesState
 import com.dilara.beatify.presentation.viewmodel.ArtistDetailViewModel
-import com.dilara.beatify.ui.theme.DarkBackground
 import com.dilara.beatify.ui.theme.DarkSurface
 import com.dilara.beatify.ui.theme.NeonTextPrimary
+import com.dilara.beatify.ui.theme.themeBackground
 
 @Composable
 fun ArtistDetailScreen(
@@ -84,7 +83,7 @@ fun ArtistDetailScreen(
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(DarkBackground),
+                        .background(themeBackground),
                     contentPadding = PaddingValues(
                         start = 20.dp,
                         end = 20.dp,

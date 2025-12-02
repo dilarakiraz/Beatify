@@ -8,7 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.dilara.beatify.ui.theme.DarkBackground
+import com.dilara.beatify.ui.theme.themeBackground
 
 @Composable
 fun ScreenStateWrapper(
@@ -32,7 +32,7 @@ fun ScreenStateWrapper(
             LazyColumn(
                 modifier = modifier
                     .fillMaxSize()
-                    .background(DarkBackground),
+                    .background(themeBackground),
                 contentPadding = contentPadding,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
@@ -47,7 +47,7 @@ fun ScreenStateWrapper(
             LazyColumn(
                 modifier = modifier
                     .fillMaxSize()
-                    .background(DarkBackground),
+                    .background(themeBackground),
                 contentPadding = contentPadding,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
@@ -65,7 +65,7 @@ fun ScreenStateWrapper(
             LazyColumn(
                 modifier = modifier
                     .fillMaxSize()
-                    .background(DarkBackground),
+                    .background(themeBackground),
                 contentPadding = contentPadding,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {

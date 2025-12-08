@@ -40,6 +40,8 @@ import com.dilara.beatify.ui.theme.NeonPurple
 import com.dilara.beatify.ui.theme.isDarkTheme
 import com.dilara.beatify.ui.theme.themeTextPrimary
 import com.dilara.beatify.ui.theme.themeTextSecondary
+import com.dilara.beatify.core.utils.stringResource
+import com.dilara.beatify.R
 
 @Composable
 fun BeatifySearchBar(
@@ -47,8 +49,10 @@ fun BeatifySearchBar(
     onQueryChange: (String) -> Unit,
     onClearClick: () -> Unit,
     modifier: Modifier = Modifier,
-    placeholder: String = "Şarkı, sanatçı, albüm ara..."
+    placeholder: String? = null
 ) {
+    val defaultPlaceholder = stringResource(R.string.search_placeholder)
+    val displayPlaceholder = placeholder ?: defaultPlaceholder
     val alpha by animateFloatAsState(
         targetValue = if (query.isNotEmpty()) 1f else 0.6f,
         animationSpec = tween(300),
@@ -96,14 +100,14 @@ fun BeatifySearchBar(
                     .alpha(alpha),
                 placeholder = {
                     Text(
-                        text = placeholder,
+                        text = displayPlaceholder,
                         color = themeTextSecondary.copy(alpha = 0.7f)
                     )
                 },
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Search,
-                        contentDescription = "Search",
+                        contentDescription = stringResource(R.string.cd_search),
                         tint = if (isDarkTheme) NeonCyan else LightPrimary,
                         modifier = Modifier.size(22.dp)
                     )
@@ -116,7 +120,7 @@ fun BeatifySearchBar(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Clear,
-                                contentDescription = "Clear",
+                                contentDescription = stringResource(R.string.cd_clear),
                                 tint = themeTextSecondary,
                                 modifier = Modifier.size(18.dp)
                             )

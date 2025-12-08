@@ -25,6 +25,8 @@ import com.dilara.beatify.presentation.ui.components.BeatifySearchBar
 import com.dilara.beatify.presentation.ui.components.TrackCard
 import com.dilara.beatify.presentation.viewmodel.SearchViewModel
 import com.dilara.beatify.ui.theme.themeTextPrimary
+import com.dilara.beatify.core.utils.stringResource
+import com.dilara.beatify.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,7 +56,7 @@ fun AddTrackToPlaylistDialog(
                     .padding(horizontal = 24.dp, vertical = 16.dp)
             ) {
                 Text(
-                    text = "Şarkı Ekle",
+                    text = stringResource(R.string.add_track),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     color = themeTextPrimary
@@ -78,7 +80,7 @@ fun AddTrackToPlaylistDialog(
                             SearchUIEvent.ClearSearch
                         )
                     },
-                    placeholder = "Şarkı ara..."
+                    placeholder = stringResource(R.string.search_track_hint)
                 )
             }
 
@@ -104,7 +106,7 @@ fun AddTrackToPlaylistDialog(
                     uiState.error != null -> {
                         item {
                             ErrorSection(
-                                message = uiState.error ?: "Bilinmeyen hata",
+                                message = uiState.error ?: stringResource(R.string.error_unknown),
                                 onRetry = { /* Retry search */ }
                             )
                         }
@@ -112,14 +114,14 @@ fun AddTrackToPlaylistDialog(
 
                     uiState.tracks.isEmpty() && uiState.searchQuery.isBlank() -> {
                         item {
-                            EmptySection(message = "Müzik aramak için yazmaya başlayın")
+                            EmptySection(message = stringResource(R.string.search_hint))
                         }
                     }
 
                     uiState.tracks.isEmpty() -> {
                         item {
                             EmptySection(
-                                message = "\"${uiState.searchQuery}\" için sonuç bulunamadı"
+                                message = stringResource(R.string.no_results_found, uiState.searchQuery)
                             )
                         }
                     }

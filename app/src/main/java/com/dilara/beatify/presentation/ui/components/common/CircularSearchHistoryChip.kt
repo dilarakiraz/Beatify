@@ -34,6 +34,8 @@ import com.dilara.beatify.ui.theme.NeonCyan
 import com.dilara.beatify.ui.theme.NeonPurple
 import com.dilara.beatify.ui.theme.NeonTextPrimary
 import com.dilara.beatify.ui.theme.NeonTextSecondary
+import com.dilara.beatify.core.utils.stringResource
+import com.dilara.beatify.R
 
 @Composable
 fun CircularSearchHistoryChip(
@@ -141,7 +143,7 @@ fun CircularSearchHistoryChip(
             ) {
                 Icon(
                     imageVector = Icons.Default.Close,
-                    contentDescription = "Sil",
+                    contentDescription = stringResource(R.string.cd_delete),
                     tint = Color.White,
                     modifier = Modifier
                         .size(14.dp)

@@ -1,7 +1,9 @@
 package com.dilara.beatify.presentation.viewmodel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.dilara.beatify.R
 import com.dilara.beatify.domain.repository.MusicRepository
 import com.dilara.beatify.presentation.state.GenresUIEvent
 import com.dilara.beatify.presentation.state.GenresUIState
@@ -14,8 +16,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GenresViewModel @Inject constructor(
+    application: Application,
     private val musicRepository: MusicRepository
-) : ViewModel() {
+) : AndroidViewModel(application) {
 
     private val _uiState = MutableStateFlow(GenresUIState())
     val uiState: StateFlow<GenresUIState> = _uiState.asStateFlow()
@@ -48,7 +51,7 @@ class GenresViewModel @Inject constructor(
                 }
                 .onFailure { exception ->
                     _uiState.value = _uiState.value.copy(
-                        error = exception.message ?: "Failed to load genres",
+                        error = exception.message ?: getApplication<Application>().getString(R.string.error_genres_load_failed),
                         isLoading = false
                     )
                 }

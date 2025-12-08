@@ -12,6 +12,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.shape.RoundedCornerShape
+import com.dilara.beatify.R
+import com.dilara.beatify.core.utils.stringResource
 import com.dilara.beatify.ui.theme.*
 
 @Composable
@@ -32,7 +34,7 @@ fun ErrorSection(
             fontSize = 48.sp
         )
         Text(
-            text = "Bir şeyler ters gitti",
+            text = stringResource(R.string.error_something_went_wrong),
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             color = NeonPink,
@@ -55,7 +57,7 @@ fun ErrorSection(
             modifier = Modifier.padding(top = 8.dp)
         ) {
             Text(
-                text = "Tekrar Dene",
+                text = stringResource(R.string.error_retry),
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
             )

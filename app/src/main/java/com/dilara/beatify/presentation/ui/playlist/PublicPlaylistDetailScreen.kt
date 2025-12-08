@@ -29,6 +29,8 @@ import com.dilara.beatify.presentation.ui.hooks.useFavoritesState
 import com.dilara.beatify.presentation.viewmodel.PublicPlaylistDetailViewModel
 import com.dilara.beatify.ui.theme.themeBackground
 import com.dilara.beatify.ui.theme.themeTextPrimary
+import com.dilara.beatify.core.utils.stringResource
+import com.dilara.beatify.R
 
 @Composable
 fun PublicPlaylistDetailScreen(
@@ -47,7 +49,7 @@ fun PublicPlaylistDetailScreen(
         viewModel.onEvent(PublicPlaylistDetailUIEvent.LoadPlaylist(playlistId, initialPlaylistTitle))
     }
     
-    val displayTitle = rememberedTitle ?: uiState.playlist?.title ?: "Playlist"
+    val displayTitle = rememberedTitle ?: uiState.playlist?.title ?: stringResource(R.string.playlist)
 
     Box(
         modifier = Modifier
@@ -80,7 +82,7 @@ fun PublicPlaylistDetailScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = uiState.error ?: "Bir hata oluştu",
+                            text = uiState.error ?: stringResource(R.string.error_occurred),
                             color = themeTextPrimary,
                             fontSize = 16.sp
                         )
@@ -91,7 +93,7 @@ fun PublicPlaylistDetailScreen(
             if (!uiState.isLoading || uiState.tracks.isNotEmpty()) {
                 if (uiState.tracks.isNotEmpty()) {
                     item(key = "tracks_header") {
-                        SectionHeader(title = "Şarkılar")
+                        SectionHeader(title = stringResource(R.string.tracks))
                     }
 
                     items(

@@ -30,6 +30,8 @@ import com.dilara.beatify.ui.theme.LightTertiary
 import com.dilara.beatify.ui.theme.NeonCyan
 import com.dilara.beatify.ui.theme.NeonPurple
 import com.dilara.beatify.ui.theme.isDarkTheme
+import com.dilara.beatify.core.utils.stringResource
+import com.dilara.beatify.R
 
 @Composable
 fun FloatingActionButton(
@@ -152,7 +154,7 @@ fun FloatingActionButton(
             
             Icon(
                 imageVector = Icons.Default.Add,
-                contentDescription = "Yeni çalma listesi oluştur",
+                contentDescription = stringResource(R.string.cd_create_playlist),
                 tint = if (isDarkTheme) Color(0xFFE0E0E0) else LightPrimary,
                 modifier = Modifier.size(32.dp)
             )

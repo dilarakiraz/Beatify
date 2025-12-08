@@ -24,6 +24,8 @@ import com.dilara.beatify.ui.theme.LightPrimary
 import com.dilara.beatify.ui.theme.LightTextSecondary
 import com.dilara.beatify.ui.theme.NeonTextSecondary
 import com.dilara.beatify.ui.theme.isDarkTheme
+import com.dilara.beatify.core.utils.stringResource
+import com.dilara.beatify.R
 
 /**
  * Ortak profil avatar component'i
@@ -78,7 +80,7 @@ fun ProfileAvatar(
             if (profileImageUri != null) {
                 AsyncImage(
                     model = profileImageUri,
-                    contentDescription = "Profile",
+                    contentDescription = stringResource(R.string.cd_profile),
                     modifier = Modifier
                         .fillMaxSize()
                         .clip(CircleShape),
@@ -87,7 +89,7 @@ fun ProfileAvatar(
             } else {
                 Icon(
                     imageVector = Icons.Default.Person,
-                    contentDescription = "Profile",
+                    contentDescription = stringResource(R.string.cd_profile),
                     tint = if (isDarkTheme) {
                         NeonTextSecondary.copy(alpha = 0.6f)
                     } else {

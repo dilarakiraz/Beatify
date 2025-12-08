@@ -50,6 +50,8 @@ import com.dilara.beatify.presentation.ui.components.profile.ProfileButton
 import com.dilara.beatify.presentation.ui.components.profile.ProfileDrawerContent
 import com.dilara.beatify.presentation.ui.hooks.useFavoritesState
 import com.dilara.beatify.presentation.viewmodel.HomeViewModel
+import com.dilara.beatify.R
+import com.dilara.beatify.core.utils.stringResource
 import com.dilara.beatify.ui.theme.themeBackground
 import kotlinx.coroutines.launch
 
@@ -109,7 +111,7 @@ fun HomeScreen(
                         )
 
                         SectionHeader(
-                            title = "Hoş Geldin",
+                            title = stringResource(R.string.welcome),
                         )
                     }
                 }
@@ -117,7 +119,7 @@ fun HomeScreen(
                 if (!uiState.isLoading && uiState.error == null && uiState.topTracks.isNotEmpty()) {
                     item {
                         SectionHeader(
-                            title = "Öne Çıkanlar",
+                            title = stringResource(R.string.featured),
                         )
                     }
 
@@ -151,7 +153,7 @@ fun HomeScreen(
                 if (uiState.dailyMix.isNotEmpty()) {
                     item {
                         SectionHeader(
-                            title = "Günlük Karışım",
+                            title = stringResource(R.string.daily_mix),
                         )
                     }
 
@@ -178,7 +180,7 @@ fun HomeScreen(
                 if (uiState.topArtists.isNotEmpty()) {
                     item {
                         SectionHeader(
-                            title = "En Popüler Sanatçılar",
+                            title = stringResource(R.string.top_artists),
                         )
                     }
 
@@ -202,7 +204,7 @@ fun HomeScreen(
                 if (uiState.topAlbums.isNotEmpty()) {
                     item {
                         SectionHeader(
-                            title = "En Popüler Albümler",
+                            title = stringResource(R.string.top_albums),
                         )
                     }
 
@@ -226,7 +228,7 @@ fun HomeScreen(
                 if (uiState.genres.isNotEmpty()) {
                     item {
                         SectionHeader(
-                            title = "Müzik Türleri",
+                            title = stringResource(R.string.music_genres),
                         )
                     }
 
@@ -249,7 +251,7 @@ fun HomeScreen(
                 if (uiState.radios.isNotEmpty()) {
                     item {
                         SectionHeader(
-                            title = "Radyolar",
+                            title = stringResource(R.string.radios),
                         )
                     }
 
@@ -272,7 +274,7 @@ fun HomeScreen(
                 if (uiState.topPlaylists.isNotEmpty()) {
                     item {
                         SectionHeader(
-                            title = "En Popüler Playlistler",
+                            title = stringResource(R.string.top_playlists),
                         )
                     }
 
@@ -295,7 +297,7 @@ fun HomeScreen(
                 if (uiState.recentTracks.isNotEmpty()) {
                     item {
                         SectionHeader(
-                            title = "Son Dinlenenler",
+                            title = stringResource(R.string.recently_played),
                         )
                     }
 
@@ -321,7 +323,7 @@ fun HomeScreen(
 
                 item {
                     SectionHeader(
-                        title = "En Popüler Şarkılar",
+                        title = stringResource(R.string.top_tracks),
                     )
                 }
 
@@ -335,7 +337,7 @@ fun HomeScreen(
                     uiState.error != null -> {
                         item {
                             ErrorSection(
-                                message = uiState.error ?: "Unknown error",
+                                message = uiState.error ?: stringResource(R.string.error_unknown_en),
                                 onRetry = { viewModel.onEvent(HomeUIEvent.Retry) }
                             )
                         }
@@ -343,7 +345,7 @@ fun HomeScreen(
 
                     uiState.topTracks.isEmpty() -> {
                         item {
-                            EmptySection(message = "No tracks available")
+                            EmptySection(message = stringResource(R.string.error_no_tracks))
                         }
                     }
 

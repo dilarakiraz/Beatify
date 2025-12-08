@@ -1,7 +1,9 @@
 package com.dilara.beatify.presentation.viewmodel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.dilara.beatify.R
 import com.dilara.beatify.domain.repository.MusicRepository
 import com.dilara.beatify.presentation.state.AlbumDetailUIEvent
 import com.dilara.beatify.presentation.state.AlbumDetailUIState
@@ -15,8 +17,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AlbumDetailViewModel @Inject constructor(
+    application: Application,
     private val musicRepository: MusicRepository
-) : ViewModel() {
+) : AndroidViewModel(application) {
 
     private val _uiState = MutableStateFlow(AlbumDetailUIState())
     val uiState: StateFlow<AlbumDetailUIState> = _uiState.asStateFlow()
@@ -49,7 +52,7 @@ class AlbumDetailViewModel @Inject constructor(
                 onFailure = { exception ->
                     _uiState.update { 
                         it.copy(
-                            error = exception.message ?: "Albüm bilgileri yüklenemedi",
+                            error = exception.message ?: getApplication<Application>().getString(R.string.error_album_load_failed),
                             isLoading = false
                         )
                     }

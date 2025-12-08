@@ -34,6 +34,8 @@ import com.dilara.beatify.domain.model.Playlist
 import com.dilara.beatify.ui.theme.DarkSurface
 import com.dilara.beatify.ui.theme.LightSurface
 import com.dilara.beatify.ui.theme.isDarkTheme
+import com.dilara.beatify.core.utils.stringResource
+import com.dilara.beatify.R
 
 @Composable
 fun LocalPlaylistCard(
@@ -127,7 +129,7 @@ fun LocalPlaylistCard(
                     
                     if (playlist.trackCount > 0) {
                         Text(
-                            text = "${playlist.trackCount} şarkı",
+                            text = stringResource(R.string.track_count, playlist.trackCount),
                             fontSize = 14.sp,
                             color = Color.White.copy(alpha = 0.9f),
                             maxLines = 1,
@@ -142,7 +144,7 @@ fun LocalPlaylistCard(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Sil",
+                        contentDescription = stringResource(R.string.cd_delete),
                         tint = Color.White.copy(alpha = 0.9f)
                     )
                 }

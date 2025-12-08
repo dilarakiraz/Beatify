@@ -1,7 +1,9 @@
 package com.dilara.beatify.presentation.viewmodel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.dilara.beatify.R
 import com.dilara.beatify.domain.repository.MusicRepository
 import com.dilara.beatify.presentation.state.RadioDetailUIEvent
 import com.dilara.beatify.presentation.state.RadioDetailUIState
@@ -15,8 +17,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RadioDetailViewModel @Inject constructor(
+    application: Application,
     private val musicRepository: MusicRepository
-) : ViewModel() {
+) : AndroidViewModel(application) {
 
     private val _uiState = MutableStateFlow(RadioDetailUIState())
     val uiState: StateFlow<RadioDetailUIState> = _uiState.asStateFlow()
@@ -89,7 +92,7 @@ class RadioDetailViewModel @Inject constructor(
             }.onFailure { exception ->
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = exception.message ?: "Radyo yüklenirken bir hata oluştu"
+                    error = exception.message ?: getApplication<Application>().getString(R.string.error_radio_load_failed)
                 )
             }
         }

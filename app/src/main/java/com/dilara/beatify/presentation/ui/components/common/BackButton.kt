@@ -5,6 +5,8 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.dilara.beatify.ui.theme.NeonTextPrimary
+import com.dilara.beatify.core.utils.stringResource
+import com.dilara.beatify.R
 
 @Composable
 fun BackButton(
@@ -17,7 +19,7 @@ fun BackButton(
         modifier = modifier,
         style = GlassIconButtonStyle.PRIMARY,
         iconTint = NeonTextPrimary,
-        contentDescription = "Geri"
+        contentDescription = stringResource(R.string.cd_back)
     )
 }
 

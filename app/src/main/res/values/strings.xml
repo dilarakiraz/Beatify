@@ -1,3 +1,165 @@
 <resources>
     <string name="app_name">Beatify</string>
+
+    <!-- Theme -->
+    <string name="dark_theme">Koyu Tema</string>
+    <string name="light_theme">Açık Tema</string>
+
+    <!-- Home Screen -->
+    <string name="welcome">Hoş Geldin</string>
+    <string name="featured">Öne Çıkanlar</string>
+    <string name="daily_mix">Günlük Karışım</string>
+    <string name="top_artists">En Popüler Sanatçılar</string>
+    <string name="top_albums">En Popüler Albümler</string>
+    <string name="music_genres">Müzik Türleri</string>
+    <string name="radios">Radyolar</string>
+    <string name="top_playlists">En Popüler Playlistler</string>
+    <string name="recently_played">Son Dinlenenler</string>
+    <string name="top_tracks">En Popüler Şarkılar</string>
+
+    <!-- Search Screen -->
+    <string name="search_all">Tümü</string>
+    <string name="search_tracks">Şarkılar</string>
+    <string name="search_artists">Sanatçılar</string>
+    <string name="search_albums">Albümler</string>
+    <string name="search_playlists">Playlistler</string>
+    <string name="recent_searches">Son Aramalarım</string>
+    <string name="recommended_for_you">Sizin İçin Önerilenler</string>
+    <string name="search_hint">Müzik aramak için yazmaya başlayın</string>
+    <string name="search_placeholder">Şarkı, sanatçı, albüm ara…</string>
+    <string name="no_results_found">"%s" için sonuç bulunamadı</string>
+    <string name="artists_found">%d sanatçı bulundu</string>
+    <string name="albums_found">%d albüm bulundu</string>
+    <string name="playlists_found">%d playlist bulundu</string>
+    <string name="tracks_found">%d şarkı bulundu</string>
+
+    <!-- Error Messages -->
+    <string name="error_something_went_wrong">Bir şeyler ters gitti</string>
+    <string name="error_retry">Tekrar Dene</string>
+    <string name="error_occurred">Bir hata oluştu</string>
+    <string name="error_unknown">Bilinmeyen hata</string>
+    <string name="error_unknown_en">Unknown error</string>
+    <string name="error_no_tracks">No tracks available</string>
+    <string name="error_failed_load_tracks">Failed to load top tracks</string>
+    <string name="error_genre_not_available">Bu tür mevcut değil</string>
+    <string name="error_genre_content_not_found">Bu tür için içerik bulunamadı</string>
+    <string name="error_track_preview_not_found">Şarkı önizlemesi bulunamadı</string>
+    <string name="error_playback">Oynatma hatası: %s</string>
+    <string name="error_playback_en">Playback error: %s</string>
+    <string name="error_search_failed">Arama başarısız</string>
+    <string name="error_search_history_delete_failed">Arama geçmişi silinemedi</string>
+    <string name="error_playlist_load_failed">Playlistler yüklenemedi</string>
+    <string name="error_playlist_create_failed">Playlist oluşturulamadı</string>
+    <string name="error_radio_load_failed">Radyo yüklenirken bir hata oluştu</string>
+    <string name="error_playlist_load_failed_detail">Playlist yüklenirken bir hata oluştu</string>
+    <string name="error_playlist_tracks_load_failed">Playlist şarkıları yüklenirken bir hata oluştu</string>
+
+    <!-- Genre Detail -->
+    <string name="popular_artists">Popüler Sanatçılar</string>
+    <string name="radio_mix">Radio Mix</string>
+    <string name="genre">Genre</string>
+
+    <!-- Playlist -->
+    <string name="my_playlists">Çalma Listelerim</string>
+    <string name="no_playlists_yet">Henüz çalma listeniz yok</string>
+    <string name="add_track">Şarkı Ekle</string>
+    <string name="search_track_hint">Şarkı ara…</string>
+    <string name="playlist">Playlist</string>
+    <string name="tracks">Şarkılar</string>
+    <string name="track_count">%d şarkı</string>
+    <string name="save">Kaydet</string>
+    <string name="delete">Sil</string>
+
+    <!-- Radio -->
+    <string name="radio">Radyo</string>
+
+    <!-- Genre Names -->
+    <string name="genre_pop">Pop</string>
+    <string name="genre_rap_hiphop">Rap/Hip Hop</string>
+    <string name="genre_rock">Rock</string>
+    <string name="genre_dance">Dance</string>
+    <string name="genre_rnb">R&amp;B</string>
+    <string name="genre_alternative">Alternative</string>
+    <string name="genre_electro">Electro</string>
+    <string name="genre_folk">Folk</string>
+    <string name="genre_reggae">Reggae</string>
+    <string name="genre_jazz">Jazz</string>
+    <string name="genre_blues">Blues</string>
+    <string name="genre_classical">Classical</string>
+    <string name="genre_country">Country</string>
+    <string name="genre_metal">Metal</string>
+    <string name="genre_soul_funk">Soul &amp; Funk</string>
+    <string name="genre_films_games">Films/Games</string>
+
+    <!-- Popular Tracks -->
+    <string name="popular_tracks">En Popüler Şarkılar</string>
+
+    <!-- Artist Detail -->
+    <string name="artist_not_found">Sanatçı bulunamadı</string>
+    <string name="popular_songs">Popüler Şarkılar</string>
+    <string name="popular_songs_count">%d popüler şarkı</string>
+    <string name="albums">Albümler</string>
+    <string name="album_count">%d albüm</string>
+    <string name="album_not_found">Albüm bulunamadı</string>
+    <string name="artist_albums_not_found">Bu sanatçının albümü bulunamadı</string>
+    <string name="related_artists">İlgili Sanatçılar</string>
+    <string name="related_artists_count">%d sanatçı</string>
+    <string name="artist_content_not_found">Bu sanatçı hakkında henüz içerik bulunamadı</string>
+
+    <!-- Album Detail -->
+    <string name="album_not_found_detail">Albüm bulunamadı</string>
+    <string name="songs">Şarkılar</string>
+    <string name="song_count">%d şarkı</string>
+    <string name="album_tracks_not_found">Bu albümde henüz şarkı bulunamadı</string>
+
+    <!-- Playlist Detail -->
+    <string name="cancel">İptal</string>
+    <string name="edit">Düzenle</string>
+    <string name="playlist_name_placeholder">Çalma Listesi</string>
+
+    <!-- Create Playlist Dialog -->
+    <string name="new_playlist">Yeni Çalma Listesi</string>
+    <string name="playlist_name_hint">Çalma listesi adı</string>
+    <string name="create">Oluştur</string>
+
+    <!-- Content Descriptions -->
+    <string name="cd_delete">Sil</string>
+    <string name="cd_search">Ara</string>
+    <string name="cd_clear">Temizle</string>
+    <string name="cd_profile">Profil</string>
+    <string name="cd_shuffle">Karıştır</string>
+    <string name="cd_previous">Önceki</string>
+    <string name="cd_play">Oynat</string>
+    <string name="cd_pause">Duraklat</string>
+    <string name="cd_next">Sonraki</string>
+    <string name="cd_repeat">Tekrar</string>
+    <string name="cd_create_playlist">Yeni çalma listesi oluştur</string>
+
+    <!-- ViewModel Errors -->
+    <string name="error_artist_load_failed">Sanatçı bilgileri yüklenemedi</string>
+    <string name="error_album_load_failed">Albüm bilgileri yüklenemedi</string>
+    <string name="error_genres_load_failed">Türler yüklenemedi</string>
+    <string name="error_playback_failed">Oynatma hatası: %s</string>
+    <string name="error_playlist_not_found">Çalma listesi bulunamadı</string>
+    <string name="error_track_add_failed">Şarkı eklenemedi</string>
+    <string name="error_track_remove_failed">Şarkı kaldırılamadı</string>
+    <string name="error_playlist_delete_failed">Çalma listesi silinemedi</string>
+    <string name="error_playlist_name_update_failed">Çalma listesi adı güncellenemedi</string>
+    <string name="error_reorder_failed">Sıralama değiştirilemedi</string>
+    <string name="error_favorites_load_failed">Favoriler yüklenemedi</string>
+    <string name="error_favorite_toggle_failed">Favori durumu değiştirilemedi</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Ana Sayfa</string>
+    <string name="nav_search">Ara</string>
+    <string name="nav_favorites">Favoriler</string>
+    <string name="nav_playlists">Listeler</string>
+    <string name="cd_back">Geri</string>
+
+    <!-- Favorites -->
+    <string name="my_list">Listem</string>
+    <string name="no_favorites_yet">Henüz favori şarkınız yok</string>
+
+    <!-- Playlist Detail -->
+    <string name="playlist_empty_message">Bu çalma listesinde henüz şarkı yok. Şarkı eklemek için + butonuna tıklayın.</string>
 </resources>

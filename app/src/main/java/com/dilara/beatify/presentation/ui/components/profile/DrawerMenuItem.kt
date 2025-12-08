@@ -27,9 +27,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.dilara.beatify.R
+import com.dilara.beatify.core.utils.stringResource
 import com.dilara.beatify.ui.theme.BeatifyColors
 import com.dilara.beatify.ui.theme.BeatifyGradients
 import com.dilara.beatify.ui.theme.LightPrimary
+import com.dilara.beatify.ui.theme.LightTextSecondary
+import com.dilara.beatify.ui.theme.NeonCyan
+import com.dilara.beatify.ui.theme.NeonTextSecondary
 
 /**
  * Reusable drawer menu item with modern design
@@ -102,13 +107,19 @@ fun ThemeSwitcherMenuItem(
     onToggle: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val title = if (isDarkTheme) {
+        stringResource(R.string.dark_theme)
+    } else {
+        stringResource(R.string.light_theme)
+    }
+    
     DrawerMenuItem(
         icon = if (isDarkTheme) {
             androidx.compose.material.icons.Icons.Default.DarkMode
         } else {
             androidx.compose.material.icons.Icons.Default.LightMode
         },
-        title = if (isDarkTheme) "Koyu Tema" else "Açık Tema",
+        title = title,
         isDarkTheme = isDarkTheme,
         onClick = onToggle,
         modifier = modifier,
@@ -119,24 +130,24 @@ fun ThemeSwitcherMenuItem(
                 modifier = Modifier.scale(0.75f),
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = if (isDarkTheme) {
-                        com.dilara.beatify.ui.theme.NeonCyan
+                        NeonCyan
                     } else {
                         androidx.compose.ui.graphics.Color.White
                     },
                     checkedTrackColor = if (isDarkTheme) {
-                        com.dilara.beatify.ui.theme.NeonCyan.copy(alpha = 0.4f)
+                        NeonCyan.copy(alpha = 0.4f)
                     } else {
                         LightPrimary
                     },
                     uncheckedThumbColor = if (isDarkTheme) {
-                        com.dilara.beatify.ui.theme.NeonTextSecondary
+                        NeonTextSecondary
                     } else {
-                        com.dilara.beatify.ui.theme.LightTextSecondary
+                        LightTextSecondary
                     },
                     uncheckedTrackColor = if (isDarkTheme) {
-                        com.dilara.beatify.ui.theme.NeonTextSecondary.copy(alpha = 0.3f)
+                        NeonTextSecondary.copy(alpha = 0.3f)
                     } else {
-                        com.dilara.beatify.ui.theme.LightTextSecondary.copy(alpha = 0.35f)
+                        LightTextSecondary.copy(alpha = 0.35f)
                     }
                 )
             )

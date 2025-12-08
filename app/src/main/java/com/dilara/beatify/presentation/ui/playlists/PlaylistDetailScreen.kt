@@ -66,6 +66,8 @@ import com.dilara.beatify.ui.theme.NeonTextPrimary
 import com.dilara.beatify.ui.theme.NeonTextSecondary
 import com.dilara.beatify.ui.theme.isDarkTheme
 import com.dilara.beatify.ui.theme.themeTextPrimary
+import com.dilara.beatify.core.utils.stringResource
+import com.dilara.beatify.R
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -226,7 +228,7 @@ fun PlaylistDetailScreen(
                                             ) {
                                                 Icon(
                                                     imageVector = Icons.Default.Check,
-                                                    contentDescription = "Kaydet",
+                                                    contentDescription = stringResource(R.string.save),
                                                     tint = if (isDarkTheme) NeonCyan else com.dilara.beatify.ui.theme.LightPrimary
                                                 )
                                             }
@@ -238,7 +240,7 @@ fun PlaylistDetailScreen(
                                             ) {
                                                 Icon(
                                                     imageVector = Icons.Default.Clear,
-                                                    contentDescription = "İptal",
+                                                    contentDescription = stringResource(R.string.cancel),
                                                     tint = if (isDarkTheme) NeonTextSecondary else com.dilara.beatify.ui.theme.LightTextSecondary
                                                 )
                                             }
@@ -247,7 +249,7 @@ fun PlaylistDetailScreen(
                                 )
                             } else {
                                 Text(
-                                    text = uiState.playlist?.name ?: "Çalma Listesi",
+                                    text = uiState.playlist?.name ?: stringResource(R.string.playlist_name_placeholder),
                                     fontSize = 32.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = NeonTextPrimary,
@@ -263,7 +265,7 @@ fun PlaylistDetailScreen(
                                         isEditingName = true
                                     },
                                     style = com.dilara.beatify.presentation.ui.components.common.GlassIconButtonStyle.PRIMARY,
-                                    contentDescription = "Düzenle"
+                                    contentDescription = stringResource(R.string.edit)
                                 )
                             }
                         }
@@ -271,7 +273,7 @@ fun PlaylistDetailScreen(
                         Spacer(modifier = Modifier.height(8.dp))
 
                         Text(
-                            text = "${uiState.tracks.size} şarkı",
+                            text = stringResource(R.string.track_count, uiState.tracks.size),
                             fontSize = 16.sp,
                             color = NeonTextSecondary,
                             fontWeight = FontWeight.Medium
@@ -318,7 +320,7 @@ fun PlaylistDetailScreen(
                     ) {
                         item {
                             ErrorSection(
-                                message = uiState.error ?: "Bilinmeyen hata",
+                                message = uiState.error ?: stringResource(R.string.error_unknown),
                                 onRetry = { viewModel.onEvent(PlaylistDetailUIEvent.LoadPlaylist(playlistId)) }
                             )
                         }
@@ -339,7 +341,7 @@ fun PlaylistDetailScreen(
                     ) {
                         item {
                             EmptySection(
-                                message = "Bu çalma listesinde henüz şarkı yok. Şarkı eklemek için + butonuna tıklayın."
+                                message = stringResource(R.string.playlist_empty_message)
                             )
                         }
                     }
@@ -363,7 +365,7 @@ fun PlaylistDetailScreen(
                         key = { track -> track.id },
                         headerContent = {
                             Text(
-                                text = "Şarkılar",
+                                text = stringResource(R.string.tracks),
                                 fontSize = 22.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = themeTextPrimary,

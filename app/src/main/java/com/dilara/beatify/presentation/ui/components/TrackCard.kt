@@ -50,6 +50,8 @@ import com.dilara.beatify.ui.theme.NeonPink
 import com.dilara.beatify.ui.theme.isDarkTheme
 import com.dilara.beatify.ui.theme.themeTextPrimary
 import com.dilara.beatify.ui.theme.themeTextSecondary
+import com.dilara.beatify.core.utils.stringResource
+import com.dilara.beatify.R
 
 enum class TrackCardStyle {
     VERTICAL,
@@ -307,7 +309,7 @@ fun TrackCard(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Close,
-                                contentDescription = "Sil",
+                                contentDescription = stringResource(R.string.cd_delete),
                                 tint = NeonPink.copy(alpha = if (isDeletePressed) 1f else 0.9f),
                                 modifier = Modifier.size(20.dp)
                             )

@@ -24,6 +24,8 @@ import com.dilara.beatify.presentation.ui.components.common.SectionHeader
 import com.dilara.beatify.presentation.ui.hooks.useFavoritesState
 import com.dilara.beatify.presentation.viewmodel.AlbumDetailViewModel
 import com.dilara.beatify.ui.theme.themeBackground
+import com.dilara.beatify.core.utils.stringResource
+import com.dilara.beatify.R
 
 @Composable
 fun AlbumDetailScreen(
@@ -55,7 +57,7 @@ fun AlbumDetailScreen(
             isLoading = uiState.isLoading,
             error = uiState.error,
             isEmpty = album == null && !uiState.isLoading && uiState.error == null,
-            emptyMessage = "Albüm bulunamadı",
+            emptyMessage = stringResource(R.string.album_not_found_detail),
             onRetry = { viewModel.onEvent(AlbumDetailUIEvent.LoadAlbum(albumId)) },
             modifier = Modifier.fillMaxSize()
         ) {
@@ -75,8 +77,8 @@ fun AlbumDetailScreen(
                         if (uiState.tracks.isNotEmpty()) {
                             item {
                                 SectionHeader(
-                                    title = "Şarkılar",
-                                    subtitle = "${uiState.tracks.size} şarkı"
+                                    title = stringResource(R.string.songs),
+                                    subtitle = stringResource(R.string.song_count, uiState.tracks.size)
                                 )
                             }
                             
@@ -101,7 +103,7 @@ fun AlbumDetailScreen(
                         } else {
                             item {
                                 EmptySection(
-                                    message = "Bu albümde henüz şarkı bulunamadı"
+                                    message = stringResource(R.string.album_tracks_not_found)
                                 )
                             }
                         }

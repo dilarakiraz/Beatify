@@ -1,7 +1,9 @@
 package com.dilara.beatify.presentation.viewmodel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.dilara.beatify.R
 import com.dilara.beatify.domain.model.Track
 import com.dilara.beatify.domain.repository.FavoritesRepository
 import com.dilara.beatify.presentation.state.FavoritesUIEvent
@@ -19,8 +21,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FavoritesViewModel @Inject constructor(
+    application: Application,
     private val favoritesRepository: FavoritesRepository
-) : ViewModel() {
+) : AndroidViewModel(application) {
     
     private val _uiState = MutableStateFlow(FavoritesUIState())
     val uiState: StateFlow<FavoritesUIState> = _uiState.asStateFlow()
@@ -55,7 +58,7 @@ class FavoritesViewModel @Inject constructor(
             .catch { exception ->
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = exception.message ?: "Favoriler yüklenemedi"
+                    error = exception.message ?: getApplication<Application>().getString(R.string.error_favorites_load_failed)
                 )
             }
             .onEach { tracks ->
@@ -75,7 +78,7 @@ class FavoritesViewModel @Inject constructor(
                 onSuccess = { /* Automatically updated via Flow */ },
                 onFailure = { exception ->
                     _uiState.value = _uiState.value.copy(
-                        error = exception.message ?: "Favori durumu değiştirilemedi"
+                        error = exception.message ?: getApplication<Application>().getString(R.string.error_favorite_toggle_failed)
                     )
                 }
             )
@@ -97,7 +100,7 @@ class FavoritesViewModel @Inject constructor(
                 onFailure = { exception ->
                     loadFavorites()
                     _uiState.value = _uiState.value.copy(
-                        error = exception.message ?: "Sıralama değiştirilemedi"
+                        error = exception.message ?: getApplication<Application>().getString(R.string.error_reorder_failed)
                     )
                 }
             )

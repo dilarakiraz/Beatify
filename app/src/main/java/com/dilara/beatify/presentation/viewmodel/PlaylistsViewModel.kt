@@ -1,7 +1,9 @@
 package com.dilara.beatify.presentation.viewmodel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.dilara.beatify.R
 import com.dilara.beatify.domain.repository.PlaylistRepository
 import com.dilara.beatify.presentation.state.PlaylistsUIEvent
 import com.dilara.beatify.presentation.state.PlaylistsUIState
@@ -18,8 +20,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PlaylistsViewModel @Inject constructor(
+    application: Application,
     private val playlistRepository: PlaylistRepository
-) : ViewModel() {
+) : AndroidViewModel(application) {
     
     private val _uiState = MutableStateFlow(PlaylistsUIState())
     val uiState: StateFlow<PlaylistsUIState> = _uiState.asStateFlow()
@@ -44,7 +47,7 @@ class PlaylistsViewModel @Inject constructor(
             .catch { exception ->
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = exception.message ?: "Playlistler yüklenemedi"
+                    error = exception.message ?: getApplication<Application>().getString(R.string.error_playlist_load_failed)
                 )
             }
             .onEach { playlists ->
@@ -65,7 +68,7 @@ class PlaylistsViewModel @Inject constructor(
                 onSuccess = { /* Playlist will be reloaded automatically */ },
                 onFailure = { exception ->
                     _uiState.value = _uiState.value.copy(
-                        error = exception.message ?: "Playlist oluşturulamadı"
+                        error = exception.message ?: getApplication<Application>().getString(R.string.error_playlist_create_failed)
                     )
                 }
             )
@@ -78,7 +81,7 @@ class PlaylistsViewModel @Inject constructor(
                 onSuccess = { /* Playlist will be reloaded automatically */ },
                 onFailure = { exception ->
                     _uiState.value = _uiState.value.copy(
-                        error = exception.message ?: "Playlist silinemedi"
+                        error = exception.message ?: getApplication<Application>().getString(R.string.error_playlist_delete_failed)
                     )
                 }
             )
@@ -99,7 +102,7 @@ class PlaylistsViewModel @Inject constructor(
                 onFailure = { exception ->
                     loadPlaylists()
                     _uiState.value = _uiState.value.copy(
-                        error = exception.message ?: "Sıralama değiştirilemedi"
+                        error = exception.message ?: getApplication<Application>().getString(R.string.error_reorder_failed)
                     )
                 }
             )

@@ -1,7 +1,9 @@
 package com.dilara.beatify.presentation.viewmodel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.dilara.beatify.R
 import com.dilara.beatify.core.utils.Constants
 import com.dilara.beatify.domain.repository.MusicRepository
 import com.dilara.beatify.domain.repository.SearchHistoryRepository
@@ -23,9 +25,10 @@ import javax.inject.Inject
 @OptIn(FlowPreview::class)
 @HiltViewModel
 class SearchViewModel @Inject constructor(
+    application: Application,
     private val musicRepository: MusicRepository,
     private val searchHistoryRepository: SearchHistoryRepository
-) : ViewModel() {
+) : AndroidViewModel(application) {
 
     private val _uiState = MutableStateFlow(SearchUIState())
     val uiState: StateFlow<SearchUIState> = _uiState.asStateFlow()
@@ -176,7 +179,7 @@ class SearchViewModel @Inject constructor(
                     val error = when {
                         tracksResult.isFailure && artistsResult.isFailure && 
                         albumsResult.isFailure && playlistsResult.isFailure -> 
-                            tracksResult.exceptionOrNull()?.message ?: "Arama başarısız"
+                            tracksResult.exceptionOrNull()?.message ?: getApplication<Application>().getString(R.string.error_search_failed)
                         else -> null
                     }
 
@@ -272,7 +275,7 @@ class SearchViewModel @Inject constructor(
                 onSuccess = { },
                 onFailure = { exception ->
                     _uiState.value = _uiState.value.copy(
-                        error = exception.message ?: "Arama geçmişi silinemedi"
+                        error = exception.message ?: getApplication<Application>().getString(R.string.error_search_history_delete_failed)
                     )
                 }
             )

@@ -1,7 +1,9 @@
 package com.dilara.beatify.presentation.viewmodel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.dilara.beatify.R
 import com.dilara.beatify.domain.repository.MusicRepository
 import com.dilara.beatify.domain.repository.RecentTracksRepository
 import com.dilara.beatify.presentation.state.HomeUIEvent
@@ -17,9 +19,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
+    application: Application,
     private val musicRepository: MusicRepository,
     private val recentTracksRepository: RecentTracksRepository
-) : ViewModel() {
+) : AndroidViewModel(application) {
 
     private val _uiState = MutableStateFlow(HomeUIState())
     val uiState: StateFlow<HomeUIState> = _uiState.asStateFlow()
@@ -121,7 +124,7 @@ class HomeViewModel @Inject constructor(
                 }
                 .onFailure { exception ->
                     _uiState.value = _uiState.value.copy(
-                        error = exception.message ?: "Failed to load top tracks"
+                        error = exception.message ?: getApplication<Application>().getString(R.string.error_failed_load_tracks)
                     )
                 }
 

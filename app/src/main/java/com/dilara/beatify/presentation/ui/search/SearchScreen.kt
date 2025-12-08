@@ -58,6 +58,8 @@ import com.dilara.beatify.ui.theme.NeonTextPrimary
 import com.dilara.beatify.ui.theme.NeonTextSecondary
 import com.dilara.beatify.ui.theme.isDarkTheme
 import com.dilara.beatify.ui.theme.themeBackground
+import com.dilara.beatify.core.utils.stringResource
+import com.dilara.beatify.R
 
 @Composable
 fun SearchScreen(
@@ -71,11 +73,11 @@ fun SearchScreen(
     val favoritesState = useFavoritesState()
     
     val searchTypes = listOf(
-        SearchType.ALL to "Tümü",
-        SearchType.TRACKS to "Şarkılar",
-        SearchType.ARTISTS to "Sanatçılar",
-        SearchType.ALBUMS to "Albümler",
-        SearchType.PLAYLISTS to "Playlistler"
+        SearchType.ALL to stringResource(R.string.search_all),
+        SearchType.TRACKS to stringResource(R.string.search_tracks),
+        SearchType.ARTISTS to stringResource(R.string.search_artists),
+        SearchType.ALBUMS to stringResource(R.string.search_albums),
+        SearchType.PLAYLISTS to stringResource(R.string.search_playlists)
     )
 
     LazyColumn(
@@ -201,7 +203,7 @@ fun SearchScreen(
             uiState.error != null -> {
                 item {
                     ErrorSection(
-                        message = uiState.error ?: "Bilinmeyen hata",
+                        message = uiState.error ?: stringResource(R.string.error_unknown),
                         onRetry = {
                             if (uiState.searchQuery.isNotBlank()) {
                                 viewModel.onEvent(SearchUIEvent.OnQueryChange(uiState.searchQuery))
@@ -220,7 +222,7 @@ fun SearchScreen(
                     if (uiState.searchHistory.isNotEmpty()) {
                         item {
                             SectionHeader(
-                                title = "Son Aramalarım"
+                                title = stringResource(R.string.recent_searches)
                             )
                         }
                         
@@ -255,7 +257,7 @@ fun SearchScreen(
                     if (uiState.suggestedTracks.isNotEmpty()) {
                         item {
                             SectionHeader(
-                                title = "Sizin İçin Önerilenler"
+                                title = stringResource(R.string.recommended_for_you)
                             )
                         }
                         
@@ -285,7 +287,7 @@ fun SearchScreen(
                         }
                     } else if (uiState.searchHistory.isEmpty()) {
                         item {
-                            EmptySection(message = "Müzik aramak için yazmaya başlayın")
+                            EmptySection(message = stringResource(R.string.search_hint))
                         }
                     }
                 }
@@ -294,7 +296,7 @@ fun SearchScreen(
             uiState.tracks.isEmpty() && uiState.artists.isEmpty() && 
             uiState.albums.isEmpty() && uiState.playlists.isEmpty() -> {
                 item {
-                    EmptySection(message = "\"${uiState.searchQuery}\" için sonuç bulunamadı")
+                    EmptySection(message = stringResource(R.string.no_results_found, uiState.searchQuery))
                 }
             }
 
@@ -304,8 +306,8 @@ fun SearchScreen(
                         if (uiState.artists.isNotEmpty()) {
                             item {
                                 SectionHeader(
-                                    title = "Sanatçılar",
-                                    subtitle = "${uiState.artists.size} sanatçı bulundu"
+                                    title = stringResource(R.string.search_artists),
+                                    subtitle = stringResource(R.string.artists_found, uiState.artists.size)
                                 )
                             }
 
@@ -334,8 +336,8 @@ fun SearchScreen(
                         if (uiState.albums.isNotEmpty()) {
                             item {
                                 SectionHeader(
-                                    title = "Albümler",
-                                    subtitle = "${uiState.albums.size} albüm bulundu"
+                                    title = stringResource(R.string.search_albums),
+                                    subtitle = stringResource(R.string.albums_found, uiState.albums.size)
                                 )
                             }
 
@@ -364,8 +366,8 @@ fun SearchScreen(
                         if (uiState.playlists.isNotEmpty()) {
                             item {
                                 SectionHeader(
-                                    title = "Playlistler",
-                                    subtitle = "${uiState.playlists.size} playlist bulundu"
+                                    title = stringResource(R.string.search_playlists),
+                                    subtitle = stringResource(R.string.playlists_found, uiState.playlists.size)
                                 )
                             }
 
@@ -394,8 +396,8 @@ fun SearchScreen(
                         if (uiState.tracks.isNotEmpty()) {
                             item {
                                 SectionHeader(
-                                    title = "Şarkılar",
-                                    subtitle = "${uiState.tracks.size} şarkı bulundu"
+                                    title = stringResource(R.string.search_tracks),
+                                    subtitle = stringResource(R.string.tracks_found, uiState.tracks.size)
                                 )
                             }
 

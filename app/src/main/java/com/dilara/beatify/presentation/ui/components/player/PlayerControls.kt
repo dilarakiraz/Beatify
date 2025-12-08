@@ -28,6 +28,7 @@ import com.dilara.beatify.ui.theme.NeonCyan
 import com.dilara.beatify.ui.theme.NeonPink
 import com.dilara.beatify.ui.theme.NeonPurple
 import com.dilara.beatify.ui.theme.NeonTextSecondary
+import com.dilara.beatify.core.utils.stringResource
 
 @Composable
 fun PlayerControls(
@@ -49,7 +50,7 @@ fun PlayerControls(
         IconButton(onClick = onShuffleClick) {
             Image(
                 painter = painterResource(id = R.drawable.ic_shuffle),
-                contentDescription = "Shuffle",
+                contentDescription = stringResource(R.string.cd_shuffle),
                 modifier = Modifier.size(28.dp),
                 colorFilter = ColorFilter.tint(
                     if (isShuffleEnabled) NeonCyan else NeonTextSecondary
@@ -60,7 +61,7 @@ fun PlayerControls(
         IconButton(onClick = onPreviousClick) {
             Image(
                 painter = painterResource(id = R.drawable.ic_skip_previous),
-                contentDescription = "Previous",
+                contentDescription = stringResource(R.string.cd_previous),
                 modifier = Modifier.size(32.dp),
                 colorFilter = ColorFilter.tint(NeonPink)
             )
@@ -101,7 +102,7 @@ fun PlayerControls(
             } else {
                 Icon(
                     imageVector = Icons.Default.PlayArrow,
-                    contentDescription = "Play",
+                    contentDescription = stringResource(R.string.cd_play),
                     tint = NeonPink,
                     modifier = Modifier.size(36.dp)
                 )
@@ -111,7 +112,7 @@ fun PlayerControls(
         IconButton(onClick = onNextClick) {
             Image(
                 painter = painterResource(id = R.drawable.ic_skip_next),
-                contentDescription = "Next",
+                contentDescription = stringResource(R.string.cd_next),
                 modifier = Modifier.size(32.dp),
                 colorFilter = ColorFilter.tint(NeonPink)
             )
@@ -126,7 +127,7 @@ fun PlayerControls(
                         RepeatMode.ONE -> R.drawable.ic_repeat_one
                     }
                 ),
-                contentDescription = "Repeat",
+                contentDescription = stringResource(R.string.cd_repeat),
                 modifier = Modifier.size(28.dp),
                 colorFilter = ColorFilter.tint(
                     if (repeatMode != RepeatMode.OFF) NeonCyan else NeonTextSecondary

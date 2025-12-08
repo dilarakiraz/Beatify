@@ -95,7 +95,7 @@ fun BeatifyNavigation(
                     }
                     
                     BeatifyBottomNavigationBar(
-                        items = BottomNavItems.items,
+                        items = BottomNavItems.getItems(),
                         selectedRoute = currentRoute ?: BeatifyRoutes.Home.route,
                         onItemClick = { route ->
                             navController.navigate(route) {

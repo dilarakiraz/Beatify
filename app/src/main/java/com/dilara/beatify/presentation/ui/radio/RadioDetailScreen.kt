@@ -29,6 +29,8 @@ import com.dilara.beatify.presentation.ui.hooks.useFavoritesState
 import com.dilara.beatify.presentation.viewmodel.RadioDetailViewModel
 import com.dilara.beatify.ui.theme.themeBackground
 import com.dilara.beatify.ui.theme.themeTextPrimary
+import com.dilara.beatify.core.utils.stringResource
+import com.dilara.beatify.R
 
 @Composable
 fun RadioDetailScreen(
@@ -48,7 +50,7 @@ fun RadioDetailScreen(
         viewModel.onEvent(RadioDetailUIEvent.LoadRadio(radioId, initialRadioTitle))
     }
     
-    val displayTitle = rememberedTitle ?: uiState.radio?.title ?: "Radyo"
+    val displayTitle = rememberedTitle ?: uiState.radio?.title ?: stringResource(R.string.radio)
 
     Box(
         modifier = Modifier
@@ -81,7 +83,7 @@ fun RadioDetailScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = uiState.error ?: "Bir hata oluştu",
+                            text = uiState.error ?: stringResource(R.string.error_occurred),
                             color = themeTextPrimary,
                             fontSize = 16.sp
                         )
@@ -92,7 +94,7 @@ fun RadioDetailScreen(
             if (!uiState.isLoading || uiState.tracks.isNotEmpty()) {
                 if (uiState.tracks.isNotEmpty()) {
                     item(key = "tracks_header") {
-                        SectionHeader(title = "Şarkılar")
+                        SectionHeader(title = stringResource(R.string.tracks))
                     }
 
                     items(

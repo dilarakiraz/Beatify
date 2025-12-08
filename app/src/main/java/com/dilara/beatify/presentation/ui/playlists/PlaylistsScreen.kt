@@ -26,6 +26,8 @@ import com.dilara.beatify.presentation.ui.components.common.ScreenStateWrapper
 import com.dilara.beatify.presentation.ui.components.common.SectionHeader
 import com.dilara.beatify.presentation.viewmodel.PlaylistsViewModel
 import com.dilara.beatify.ui.theme.themeBackground
+import com.dilara.beatify.core.utils.stringResource
+import com.dilara.beatify.R
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -43,10 +45,10 @@ fun PlaylistsScreen(
             isLoading = uiState.isLoading,
             error = uiState.error,
             isEmpty = uiState.playlists.isEmpty(),
-            emptyMessage = "Henüz çalma listeniz yok",
+            emptyMessage = stringResource(R.string.no_playlists_yet),
             onRetry = { viewModel.onEvent(PlaylistsUIEvent.LoadPlaylists) },
             headerContent = {
-                SectionHeader(title = "Çalma Listelerim")
+                SectionHeader(title = stringResource(R.string.my_playlists))
             },
             contentPadding = PaddingValues(
                 start = 16.dp,
@@ -71,7 +73,7 @@ fun PlaylistsScreen(
                 ),
                 key = { playlist -> playlist.id },
                 headerContent = {
-                    SectionHeader(title = "Çalma Listelerim")
+                    SectionHeader(title = stringResource(R.string.my_playlists))
                 }
             ) { _, playlist, _ ->
                 LocalPlaylistCard(

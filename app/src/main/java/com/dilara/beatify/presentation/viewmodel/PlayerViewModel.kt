@@ -1,7 +1,9 @@
 package com.dilara.beatify.presentation.viewmodel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.dilara.beatify.R
 import com.dilara.beatify.core.player.PlayerStateHolder
 import com.dilara.beatify.domain.model.Track
 import com.dilara.beatify.domain.repository.MusicRepository
@@ -20,10 +22,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
+    application: Application,
     private val playerStateHolder: PlayerStateHolder,
     private val musicRepository: MusicRepository,
     private val recentTracksRepository: RecentTracksRepository
-) : ViewModel() {
+) : AndroidViewModel(application) {
 
     private val _uiState = MutableStateFlow(PlayerUIState())
     val uiState: StateFlow<PlayerUIState> = _uiState.asStateFlow()
@@ -88,7 +91,7 @@ class PlayerViewModel @Inject constructor(
             
             if (url.isNullOrBlank()) {
                 _uiState.value = _uiState.value.copy(
-                    error = "Şarkı önizlemesi bulunamadı",
+                    error = getApplication<Application>().getString(R.string.error_track_preview_not_found),
                     isLoading = false,
                     isPlaying = false
                 )
@@ -163,7 +166,7 @@ class PlayerViewModel @Inject constructor(
             }
         } catch (e: Exception) {
             _uiState.value = _uiState.value.copy(
-                error = "Oynatma hatası: ${e.message}",
+                error = getApplication<Application>().getString(R.string.error_playback_failed, e.message ?: ""),
                 isLoading = false,
                 isPlaying = false
             )

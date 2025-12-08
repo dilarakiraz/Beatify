@@ -1,7 +1,9 @@
 package com.dilara.beatify.presentation.viewmodel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.dilara.beatify.R
 import com.dilara.beatify.domain.model.Genre
 import com.dilara.beatify.domain.repository.MusicRepository
 import com.dilara.beatify.presentation.state.GenreDetailUIEvent
@@ -15,8 +17,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GenreDetailViewModel @Inject constructor(
+    application: Application,
     private val musicRepository: MusicRepository
-) : ViewModel() {
+) : AndroidViewModel(application) {
 
     private val _uiState = MutableStateFlow(GenreDetailUIState())
     val uiState: StateFlow<GenreDetailUIState> = _uiState.asStateFlow()
@@ -48,7 +51,7 @@ class GenreDetailViewModel @Inject constructor(
             if (genreId == 0L) {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = "Bu tür mevcut değil"
+                    error = getApplication<Application>().getString(R.string.error_genre_not_available)
                 )
                 return@launch
             }
@@ -87,7 +90,7 @@ class GenreDetailViewModel @Inject constructor(
 
             if (!hasContent) {
                 _uiState.value = _uiState.value.copy(
-                    error = "Bu tür için içerik bulunamadı",
+                    error = getApplication<Application>().getString(R.string.error_genre_content_not_found),
                     isLoading = false
                 )
             } else {
@@ -98,24 +101,25 @@ class GenreDetailViewModel @Inject constructor(
     
     private fun getGenreName(genreId: Long): String {
         // Common Deezer genre IDs
+        val context = getApplication<Application>()
         return when (genreId) {
-            132L -> "Pop"
-            116L -> "Rap/Hip Hop"
-            152L -> "Rock"
-            113L -> "Dance"
-            165L -> "R&B"
-            85L -> "Alternative"
-            106L -> "Electro"
-            466L -> "Folk"
-            144L -> "Reggae"
-            129L -> "Jazz"
-            173L -> "Blues"
-            98L -> "Classical"
-            97L -> "Country"
-            464L -> "Metal"
-            169L -> "Soul & Funk"
-            2L -> "Films/Games"
-            else -> "Genre"
+            132L -> context.getString(R.string.genre_pop)
+            116L -> context.getString(R.string.genre_rap_hiphop)
+            152L -> context.getString(R.string.genre_rock)
+            113L -> context.getString(R.string.genre_dance)
+            165L -> context.getString(R.string.genre_rnb)
+            85L -> context.getString(R.string.genre_alternative)
+            106L -> context.getString(R.string.genre_electro)
+            466L -> context.getString(R.string.genre_folk)
+            144L -> context.getString(R.string.genre_reggae)
+            129L -> context.getString(R.string.genre_jazz)
+            173L -> context.getString(R.string.genre_blues)
+            98L -> context.getString(R.string.genre_classical)
+            97L -> context.getString(R.string.genre_country)
+            464L -> context.getString(R.string.genre_metal)
+            169L -> context.getString(R.string.genre_soul_funk)
+            2L -> context.getString(R.string.genre_films_games)
+            else -> context.getString(R.string.genre)
         }
     }
 }

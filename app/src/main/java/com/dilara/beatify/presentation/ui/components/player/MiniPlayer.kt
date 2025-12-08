@@ -47,6 +47,7 @@ import com.dilara.beatify.R
 import com.dilara.beatify.domain.model.Track
 import com.dilara.beatify.presentation.state.RepeatMode
 import com.dilara.beatify.ui.theme.BeatifyGradients
+import com.dilara.beatify.core.utils.stringResource
 import com.dilara.beatify.ui.theme.DarkSurface
 import com.dilara.beatify.ui.theme.LightSurface
 import com.dilara.beatify.ui.theme.NeonCyan
@@ -170,7 +171,7 @@ fun MiniPlayer(
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.ic_shuffle),
-                            contentDescription = "Shuffle",
+                            contentDescription = stringResource(R.string.cd_shuffle),
                             modifier = Modifier.size(20.dp),
                             colorFilter = ColorFilter.tint(
                                 if (isShuffleEnabled) NeonCyan else NeonTextSecondary.copy(alpha = 0.6f)
@@ -215,7 +216,7 @@ fun MiniPlayer(
                         } else {
                             Icon(
                                 imageVector = Icons.Default.PlayArrow,
-                                contentDescription = "Play",
+                                contentDescription = stringResource(R.string.cd_play),
                                 tint = NeonPink,
                                 modifier = Modifier.size(28.dp)
                             )
@@ -236,7 +237,7 @@ fun MiniPlayer(
                                     RepeatMode.ONE -> R.drawable.ic_repeat_one
                                 }
                             ),
-                            contentDescription = "Repeat",
+                            contentDescription = stringResource(R.string.cd_repeat),
                             modifier = Modifier.size(20.dp),
                             colorFilter = ColorFilter.tint(
                                 if (repeatMode != RepeatMode.OFF) NeonCyan else NeonTextSecondary.copy(alpha = 0.6f)

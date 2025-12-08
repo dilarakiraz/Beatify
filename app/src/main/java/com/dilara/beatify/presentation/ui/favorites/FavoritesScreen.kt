@@ -17,6 +17,8 @@ import com.dilara.beatify.presentation.ui.components.common.ScreenStateWrapper
 import com.dilara.beatify.presentation.ui.components.common.SectionHeader
 import com.dilara.beatify.presentation.viewmodel.FavoritesViewModel
 import com.dilara.beatify.ui.theme.themeBackground
+import com.dilara.beatify.core.utils.stringResource
+import com.dilara.beatify.R
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -32,10 +34,10 @@ fun FavoritesScreen(
         isLoading = uiState.isLoading,
         error = uiState.error,
         isEmpty = uiState.favoriteTracks.isEmpty(),
-        emptyMessage = "Henüz favori şarkınız yok",
+        emptyMessage = stringResource(R.string.no_favorites_yet),
         onRetry = { viewModel.onEvent(FavoritesUIEvent.LoadFavorites) },
         headerContent = {
-            SectionHeader(title = "Listem")
+            SectionHeader(title = stringResource(R.string.my_list))
         },
         contentPadding = PaddingValues(
             start = 16.dp,
@@ -60,7 +62,7 @@ fun FavoritesScreen(
             ),
             key = { track -> track.id },
             headerContent = {
-                SectionHeader(title = "Listem")
+                SectionHeader(title = stringResource(R.string.my_list))
             }
         ) { _, track, isDragging ->
             TrackCard(

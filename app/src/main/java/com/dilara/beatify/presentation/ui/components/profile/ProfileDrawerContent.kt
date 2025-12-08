@@ -18,12 +18,23 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.dilara.beatify.presentation.ui.components.common.GlassCard
+import com.dilara.beatify.presentation.ui.components.profile.AppLanguage
+import com.dilara.beatify.presentation.viewmodel.LanguageViewModel
 import com.dilara.beatify.presentation.viewmodel.ThemeViewModel
+import com.dilara.beatify.ui.theme.DarkBackground
+import com.dilara.beatify.ui.theme.DarkSurface
+import com.dilara.beatify.ui.theme.DarkSurfaceVariant
+import com.dilara.beatify.ui.theme.LightBackground
+import com.dilara.beatify.ui.theme.LightSurface
+import com.dilara.beatify.ui.theme.LightSurfaceVariant
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,6 +45,8 @@ fun ProfileDrawerContent(
     modifier: Modifier = Modifier
 ) {
     val isThemeDark by themeViewModel.isDarkTheme.collectAsState()
+    val languageViewModel: LanguageViewModel = hiltViewModel()
+    val selectedLanguage by languageViewModel.currentLanguage.collectAsState()
     val scrollState = rememberScrollState()
 
     Box(
@@ -43,17 +56,17 @@ fun ProfileDrawerContent(
                 if (isThemeDark) {
                     androidx.compose.ui.graphics.Brush.verticalGradient(
                         colors = listOf(
-                            com.dilara.beatify.ui.theme.DarkBackground,
-                            com.dilara.beatify.ui.theme.DarkSurface,
-                            com.dilara.beatify.ui.theme.DarkSurfaceVariant
+                            DarkBackground,
+                            DarkSurface,
+                            DarkSurfaceVariant
                         )
                     )
                 } else {
                     androidx.compose.ui.graphics.Brush.verticalGradient(
                         colors = listOf(
-                            com.dilara.beatify.ui.theme.LightBackground,
-                            com.dilara.beatify.ui.theme.LightSurface,
-                            com.dilara.beatify.ui.theme.LightSurfaceVariant.copy(alpha = 0.5f)
+                            LightBackground,
+                            LightSurface,
+                            LightSurfaceVariant.copy(alpha = 0.5f)
                         )
                     )
                 }
@@ -76,18 +89,36 @@ fun ProfileDrawerContent(
                 ProfileAvatar(
                     profileImageUri = profileImageUri,
                     onClick = onDismiss,
-                    size = 64.dp,
-                    glowSize = 80.dp,
-                    iconSize = 36.dp
+                    size = 72.dp,
+                    glowSize = 88.dp,
+                    iconSize = 40.dp
                 )
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-            Spacer(modifier = Modifier.height(20.dp))
+            AnimatedVisibility(
+                visible = true,
+                enter = fadeIn(animationSpec = tween(500, delayMillis = 100)) + slideInVertically(
+                    initialOffsetY = { it / 2 },
+                    animationSpec = tween(500, delayMillis = 100)
+                )
+            ) {
+                GlassCard(
+                    isDarkTheme = isThemeDark,
+                    modifier = Modifier.fillMaxWidth(),
+                    cornerRadius = 10.dp,
+                    glowSize = 2.dp
+                ) {
+                    LanguageSelector(
+                        selectedLanguage = selectedLanguage,
+                        onLanguageChange = { languageViewModel.setLanguage(it) },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
 
-
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             AnimatedVisibility(
                 visible = true,

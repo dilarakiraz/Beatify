@@ -31,6 +31,8 @@ import com.dilara.beatify.presentation.ui.hooks.useFavoritesState
 import com.dilara.beatify.presentation.viewmodel.GenreDetailViewModel
 import com.dilara.beatify.ui.theme.themeBackground
 import com.dilara.beatify.ui.theme.themeTextPrimary
+import com.dilara.beatify.core.utils.stringResource
+import com.dilara.beatify.R
 
 @Composable
 fun GenreDetailScreen(
@@ -79,7 +81,7 @@ fun GenreDetailScreen(
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         Text(
-                            text = uiState.error ?: "Bir hata oluştu",
+                            text = uiState.error ?: stringResource(R.string.error_occurred),
                             color = themeTextPrimary,
                             fontSize = 16.sp
                         )
@@ -90,7 +92,7 @@ fun GenreDetailScreen(
             if (!uiState.isLoading || uiState.artists.isNotEmpty() || uiState.radioTracks.isNotEmpty()) {
                 if (uiState.artists.isNotEmpty()) {
                     item(key = "artists_header") {
-                        SectionHeader(title = "Popüler Sanatçılar")
+                        SectionHeader(title = stringResource(R.string.popular_artists))
                     }
 
                     item(key = "artists_list") {
@@ -112,7 +114,7 @@ fun GenreDetailScreen(
 
                 if (uiState.radioTracks.isNotEmpty()) {
                     item(key = "radio_header") {
-                        SectionHeader(title = "Radio Mix")
+                        SectionHeader(title = stringResource(R.string.radio_mix))
                     }
 
                     items(
@@ -136,7 +138,7 @@ fun GenreDetailScreen(
         }
         
         SimpleDetailHeader(
-            title = uiState.genre?.name ?: "Genre",
+            title = uiState.genre?.name ?: stringResource(R.string.genre),
             onNavigateBack = onNavigateBack
         )
     }

@@ -1,7 +1,9 @@
 package com.dilara.beatify.presentation.viewmodel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.dilara.beatify.R
 import com.dilara.beatify.domain.repository.MusicRepository
 import com.dilara.beatify.presentation.state.PublicPlaylistDetailUIEvent
 import com.dilara.beatify.presentation.state.PublicPlaylistDetailUIState
@@ -15,8 +17,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PublicPlaylistDetailViewModel @Inject constructor(
+    application: Application,
     private val musicRepository: MusicRepository
-) : ViewModel() {
+) : AndroidViewModel(application) {
 
     private val _uiState = MutableStateFlow(PublicPlaylistDetailUIState())
     val uiState: StateFlow<PublicPlaylistDetailUIState> = _uiState.asStateFlow()
@@ -81,7 +84,7 @@ class PublicPlaylistDetailViewModel @Inject constructor(
                 _uiState.value = _uiState.value.copy(playlist = playlist)
             }.onFailure { exception ->
                 _uiState.value = _uiState.value.copy(
-                    error = exception.message ?: "Playlist yüklenirken bir hata oluştu"
+                    error = exception.message ?: getApplication<Application>().getString(R.string.error_playlist_load_failed_detail)
                 )
             }
 
@@ -93,7 +96,7 @@ class PublicPlaylistDetailViewModel @Inject constructor(
             }.onFailure { exception ->
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = exception.message ?: "Playlist şarkıları yüklenirken bir hata oluştu"
+                    error = exception.message ?: getApplication<Application>().getString(R.string.error_playlist_tracks_load_failed)
                 )
             }
         }

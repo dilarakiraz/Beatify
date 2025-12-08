@@ -1,0 +1,166 @@
+<resources>
+    <string name="app_name">Beatify</string>
+    
+    <!-- Theme -->
+    <string name="dark_theme">Dark Theme</string>
+    <string name="light_theme">Light Theme</string>
+    
+    <!-- Home Screen -->
+    <string name="welcome">Welcome</string>
+    <string name="featured">Featured</string>
+    <string name="daily_mix">Daily Mix</string>
+    <string name="top_artists">Top Artists</string>
+    <string name="top_albums">Top Albums</string>
+    <string name="music_genres">Music Genres</string>
+    <string name="radios">Radios</string>
+    <string name="top_playlists">Top Playlists</string>
+    <string name="recently_played">Recently Played</string>
+    <string name="top_tracks">Top Tracks</string>
+    
+    <!-- Search Screen -->
+    <string name="search_all">All</string>
+    <string name="search_tracks">Tracks</string>
+    <string name="search_artists">Artists</string>
+    <string name="search_albums">Albums</string>
+    <string name="search_playlists">Playlists</string>
+    <string name="recent_searches">Recent Searches</string>
+    <string name="recommended_for_you">Recommended For You</string>
+    <string name="search_hint">Start typing to search music</string>
+    <string name="search_placeholder">Search tracks, artists, albums…</string>
+    <string name="no_results_found">No results found for "%s"</string>
+    <string name="artists_found">%d artists found</string>
+    <string name="albums_found">%d albums found</string>
+    <string name="playlists_found">%d playlists found</string>
+    <string name="tracks_found">%d tracks found</string>
+    
+    <!-- Error Messages -->
+    <string name="error_something_went_wrong">Something went wrong</string>
+    <string name="error_retry">Retry</string>
+    <string name="error_occurred">An error occurred</string>
+    <string name="error_unknown">Unknown error</string>
+    <string name="error_unknown_en">Unknown error</string>
+    <string name="error_no_tracks">No tracks available</string>
+    <string name="error_failed_load_tracks">Failed to load top tracks</string>
+    <string name="error_genre_not_available">This genre is not available</string>
+    <string name="error_genre_content_not_found">Content not found for this genre</string>
+    <string name="error_track_preview_not_found">Track preview not found</string>
+    <string name="error_playback">Playback error: %s</string>
+    <string name="error_playback_en">Playback error: %s</string>
+    <string name="error_search_failed">Search failed</string>
+    <string name="error_search_history_delete_failed">Failed to delete search history</string>
+    <string name="error_playlist_load_failed">Failed to load playlists</string>
+    <string name="error_playlist_create_failed">Failed to create playlist</string>
+    <string name="error_radio_load_failed">An error occurred while loading radio</string>
+    <string name="error_playlist_load_failed_detail">An error occurred while loading playlist</string>
+    <string name="error_playlist_tracks_load_failed">An error occurred while loading playlist tracks</string>
+    
+    <!-- Genre Detail -->
+    <string name="popular_artists">Popular Artists</string>
+    <string name="radio_mix">Radio Mix</string>
+    <string name="genre">Genre</string>
+    
+    <!-- Playlist -->
+    <string name="my_playlists">My Playlists</string>
+    <string name="no_playlists_yet">You don\'t have any playlists yet</string>
+    <string name="add_track">Add Track</string>
+    <string name="search_track_hint">Search track…</string>
+    <string name="playlist">Playlist</string>
+    <string name="tracks">Tracks</string>
+    <string name="track_count">%d tracks</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    
+    <!-- Radio -->
+    <string name="radio">Radio</string>
+    
+    <!-- Genre Names -->
+    <string name="genre_pop">Pop</string>
+    <string name="genre_rap_hiphop">Rap/Hip Hop</string>
+    <string name="genre_rock">Rock</string>
+    <string name="genre_dance">Dance</string>
+    <string name="genre_rnb">R&amp;B</string>
+    <string name="genre_alternative">Alternative</string>
+    <string name="genre_electro">Electro</string>
+    <string name="genre_folk">Folk</string>
+    <string name="genre_reggae">Reggae</string>
+    <string name="genre_jazz">Jazz</string>
+    <string name="genre_blues">Blues</string>
+    <string name="genre_classical">Classical</string>
+    <string name="genre_country">Country</string>
+    <string name="genre_metal">Metal</string>
+    <string name="genre_soul_funk">Soul &amp; Funk</string>
+    <string name="genre_films_games">Films/Games</string>
+    
+    <!-- Popular Tracks -->
+    <string name="popular_tracks">Popular Tracks</string>
+    
+    <!-- Artist Detail -->
+    <string name="artist_not_found">Artist not found</string>
+    <string name="popular_songs">Popular Songs</string>
+    <string name="popular_songs_count">%d popular songs</string>
+    <string name="albums">Albums</string>
+    <string name="album_count">%d albums</string>
+    <string name="album_not_found">Album not found</string>
+    <string name="artist_albums_not_found">No albums found for this artist</string>
+    <string name="related_artists">Related Artists</string>
+    <string name="related_artists_count">%d artists</string>
+    <string name="artist_content_not_found">No content found for this artist yet</string>
+    
+    <!-- Album Detail -->
+    <string name="album_not_found_detail">Album not found</string>
+    <string name="songs">Songs</string>
+    <string name="song_count">%d songs</string>
+    <string name="album_tracks_not_found">No tracks found in this album yet</string>
+    
+    <!-- Playlist Detail -->
+    <string name="cancel">Cancel</string>
+    <string name="edit">Edit</string>
+    <string name="playlist_name_placeholder">Playlist</string>
+    
+    <!-- Create Playlist Dialog -->
+    <string name="new_playlist">New Playlist</string>
+    <string name="playlist_name_hint">Playlist name</string>
+    <string name="create">Create</string>
+    
+    <!-- Content Descriptions -->
+    <string name="cd_delete">Delete</string>
+    <string name="cd_search">Search</string>
+    <string name="cd_clear">Clear</string>
+    <string name="cd_profile">Profile</string>
+    <string name="cd_shuffle">Shuffle</string>
+    <string name="cd_previous">Previous</string>
+    <string name="cd_play">Play</string>
+    <string name="cd_pause">Pause</string>
+    <string name="cd_next">Next</string>
+    <string name="cd_repeat">Repeat</string>
+    <string name="cd_create_playlist">Create new playlist</string>
+    
+    <!-- ViewModel Errors -->
+    <string name="error_artist_load_failed">Failed to load artist information</string>
+    <string name="error_album_load_failed">Failed to load album information</string>
+    <string name="error_genres_load_failed">Failed to load genres</string>
+    <string name="error_playback_failed">Playback error: %s</string>
+    <string name="error_playlist_not_found">Playlist not found</string>
+    <string name="error_track_add_failed">Failed to add track</string>
+    <string name="error_track_remove_failed">Failed to remove track</string>
+    <string name="error_playlist_delete_failed">Failed to delete playlist</string>
+    <string name="error_playlist_name_update_failed">Failed to update playlist name</string>
+    <string name="error_reorder_failed">Failed to change order</string>
+    <string name="error_favorites_load_failed">Failed to load favorites</string>
+    <string name="error_favorite_toggle_failed">Failed to change favorite status</string>
+    
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_search">Search</string>
+    <string name="nav_favorites">Favorites</string>
+    <string name="nav_playlists">Playlists</string>
+    <string name="cd_back">Back</string>
+    
+    <!-- Favorites -->
+    <string name="my_list">My List</string>
+    <string name="no_favorites_yet">You don\'t have any favorite tracks yet</string>
+    
+    <!-- Playlist Detail -->
+    <string name="playlist_empty_message">This playlist is empty. Click the + button to add tracks.</string>
+</resources>
+

@@ -44,6 +44,8 @@ import com.dilara.beatify.presentation.viewmodel.ArtistDetailViewModel
 import com.dilara.beatify.ui.theme.DarkSurface
 import com.dilara.beatify.ui.theme.NeonTextPrimary
 import com.dilara.beatify.ui.theme.themeBackground
+import com.dilara.beatify.core.utils.stringResource
+import com.dilara.beatify.R
 
 @Composable
 fun ArtistDetailScreen(
@@ -67,7 +69,7 @@ fun ArtistDetailScreen(
         DetailScreenHeader(
             imageUrl = artist?.pictureXl ?: artist?.pictureBig ?: artist?.pictureMedium,
             title = artist?.name ?: "",
-            subtitle = if (uiState.topTracks.isNotEmpty()) "${uiState.topTracks.size} popüler şarkı" else null,
+            subtitle = if (uiState.topTracks.isNotEmpty()) stringResource(R.string.popular_songs_count, uiState.topTracks.size) else null,
             onNavigateBack = onNavigateBack
         )
 
@@ -75,7 +77,7 @@ fun ArtistDetailScreen(
             isLoading = uiState.isLoading,
             error = uiState.error,
             isEmpty = artist == null && !uiState.isLoading && uiState.error == null,
-            emptyMessage = "Sanatçı bulunamadı",
+            emptyMessage = stringResource(R.string.artist_not_found),
             onRetry = { viewModel.onEvent(ArtistDetailUIEvent.LoadArtist(artistId)) },
             modifier = Modifier.fillMaxSize()
         ) {
@@ -95,7 +97,8 @@ fun ArtistDetailScreen(
                         if (uiState.topTracks.isNotEmpty()) {
                             item {
                                 SectionHeader(
-                                    title = "Popüler Şarkılar",
+                                    title = stringResource(R.string.popular_songs),
+                                    subtitle = stringResource(R.string.popular_songs_count, uiState.topTracks.size)
                                 )
                             }
                             
@@ -121,8 +124,8 @@ fun ArtistDetailScreen(
 
                         item {
                             SectionHeader(
-                                title = "Albümler",
-                                subtitle = if (uiState.albums.isNotEmpty()) "${uiState.albums.size} albüm" else "Albüm bulunamadı"
+                                title = stringResource(R.string.albums),
+                                subtitle = if (uiState.albums.isNotEmpty()) stringResource(R.string.album_count, uiState.albums.size) else stringResource(R.string.album_not_found)
                             )
                         }
 
@@ -142,7 +145,7 @@ fun ArtistDetailScreen(
                         } else {
                             item {
                                 EmptySection(
-                                    message = "Bu sanatçının albümü bulunamadı"
+                                    message = stringResource(R.string.artist_albums_not_found)
                                 )
                             }
                         }
@@ -150,8 +153,8 @@ fun ArtistDetailScreen(
                         if (uiState.relatedArtists.isNotEmpty()) {
                             item {
                                 SectionHeader(
-                                    title = "İlgili Sanatçılar",
-                                    subtitle = "${uiState.relatedArtists.size} sanatçı"
+                                    title = stringResource(R.string.related_artists),
+                                    subtitle = stringResource(R.string.related_artists_count, uiState.relatedArtists.size)
                                 )
                             }
 
@@ -171,7 +174,7 @@ fun ArtistDetailScreen(
                         if (uiState.topTracks.isEmpty() && uiState.albums.isEmpty() && uiState.relatedArtists.isEmpty()) {
                             item {
                                 EmptySection(
-                                    message = "Bu sanatçı hakkında henüz içerik bulunamadı"
+                                    message = stringResource(R.string.artist_content_not_found)
                                 )
                             }
                         }

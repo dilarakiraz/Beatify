@@ -26,6 +26,8 @@ import com.dilara.beatify.ui.theme.LightSurface
 import com.dilara.beatify.ui.theme.isDarkTheme
 import com.dilara.beatify.ui.theme.themeTextPrimary
 import com.dilara.beatify.ui.theme.themeTextSecondary
+import com.dilara.beatify.core.utils.stringResource
+import com.dilara.beatify.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,7 +50,7 @@ fun CreatePlaylistDialog(
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             Text(
-                text = "Yeni Çalma Listesi",
+                text = stringResource(R.string.new_playlist),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = themeTextPrimary
@@ -60,7 +62,7 @@ fun CreatePlaylistDialog(
                 modifier = Modifier.fillMaxWidth(),
                 placeholder = {
                     Text(
-                        text = "Çalma listesi adı",
+                        text = stringResource(R.string.playlist_name_hint),
                         color = themeTextSecondary.copy(alpha = 0.7f)
                     )
                 },
@@ -99,14 +101,14 @@ fun CreatePlaylistDialog(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 GradientButton(
-                    text = "İptal",
+                    text = stringResource(R.string.cancel),
                     onClick = onDismiss,
                     modifier = Modifier.weight(1f),
                     isSecondary = true
                 )
                 
                 GradientButton(
-                    text = "Oluştur",
+                    text = stringResource(R.string.create),
                     onClick = {
                         if (playlistName.isNotBlank()) {
                             onConfirm()

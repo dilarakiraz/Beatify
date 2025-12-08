@@ -1,7 +1,9 @@
 package com.dilara.beatify.presentation.viewmodel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.dilara.beatify.R
 import com.dilara.beatify.domain.model.Track
 import com.dilara.beatify.domain.repository.PlaylistRepository
 import com.dilara.beatify.presentation.state.PlaylistDetailUIEvent
@@ -15,8 +17,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PlaylistDetailViewModel @Inject constructor(
+    application: Application,
     private val playlistRepository: PlaylistRepository
-) : ViewModel() {
+) : AndroidViewModel(application) {
 
     private val _uiState = MutableStateFlow(PlaylistDetailUIState())
     val uiState: StateFlow<PlaylistDetailUIState> = _uiState.asStateFlow()
@@ -50,7 +53,7 @@ class PlaylistDetailViewModel @Inject constructor(
             } else {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = "Çalma listesi bulunamadı"
+                    error = getApplication<Application>().getString(R.string.error_playlist_not_found)
                 )
             }
         }
@@ -65,7 +68,7 @@ class PlaylistDetailViewModel @Inject constructor(
                 },
                 onFailure = { exception ->
                     _uiState.value = _uiState.value.copy(
-                        error = exception.message ?: "Şarkı eklenemedi"
+                        error = exception.message ?: getApplication<Application>().getString(R.string.error_track_add_failed)
                     )
                 }
             )
@@ -81,7 +84,7 @@ class PlaylistDetailViewModel @Inject constructor(
                 },
                 onFailure = { exception ->
                     _uiState.value = _uiState.value.copy(
-                        error = exception.message ?: "Şarkı kaldırılamadı"
+                        error = exception.message ?: getApplication<Application>().getString(R.string.error_track_remove_failed)
                     )
                 }
             )
@@ -94,7 +97,7 @@ class PlaylistDetailViewModel @Inject constructor(
                 onSuccess = { /* Handled by navigation */ },
                 onFailure = { exception ->
                     _uiState.value = _uiState.value.copy(
-                        error = exception.message ?: "Çalma listesi silinemedi"
+                        error = exception.message ?: getApplication<Application>().getString(R.string.error_playlist_delete_failed)
                     )
                 }
             )
@@ -109,7 +112,7 @@ class PlaylistDetailViewModel @Inject constructor(
                 },
                 onFailure = { exception ->
                     _uiState.value = _uiState.value.copy(
-                        error = exception.message ?: "Çalma listesi adı güncellenemedi"
+                        error = exception.message ?: getApplication<Application>().getString(R.string.error_playlist_name_update_failed)
                     )
                 }
             )
@@ -132,7 +135,7 @@ class PlaylistDetailViewModel @Inject constructor(
                 onFailure = { exception ->
                     loadPlaylist(playlist.id)
                     _uiState.value = _uiState.value.copy(
-                        error = exception.message ?: "Sıralama değiştirilemedi"
+                        error = exception.message ?: getApplication<Application>().getString(R.string.error_reorder_failed)
                     )
                 }
             )

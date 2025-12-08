@@ -180,4 +180,70 @@ data class DeezerChartArtistsResponse(
     val artists: List<DeezerArtistDto>
 )
 
+// Genre DTO
+data class DeezerGenreDto(
+    @SerializedName("id")
+    val id: Long,
+    @SerializedName("name")
+    val name: String,
+    @SerializedName("picture")
+    val picture: String?,
+    @SerializedName("picture_small")
+    val pictureSmall: String?,
+    @SerializedName("picture_medium")
+    val pictureMedium: String?,
+    @SerializedName("picture_big")
+    val pictureBig: String?,
+    @SerializedName("picture_xl")
+    val pictureXl: String?
+)
+
+// Genres List Response
+data class DeezerGenresResponse(
+    @SerializedName("data")
+    val genres: List<DeezerGenreDto>
+)
+
+// Genre Artists Response
+data class DeezerGenreArtistsResponse(
+    @SerializedName("data")
+    val artists: List<DeezerArtistDto>
+)
+
+// Genre Radios Response (Radio tracks from genre)
+data class DeezerGenreRadioResponse(
+    @SerializedName("data")
+    val tracks: List<DeezerTrackDto>
+)
+
+// Radio DTO
+data class DeezerRadioDto(
+    @SerializedName("id")
+    val id: Long,
+    @SerializedName("title")
+    val title: String,
+    @SerializedName("picture")
+    val picture: String?,
+    @SerializedName("picture_small")
+    val pictureSmall: String?,
+    @SerializedName("picture_medium")
+    val pictureMedium: String?,
+    @SerializedName("picture_big")
+    val pictureBig: String?,
+    @SerializedName("picture_xl")
+    val pictureXl: String?
+)
+
+// Radios List Response
+data class DeezerRadiosResponse(
+    @SerializedName("data")
+    val radios: List<DeezerRadioDto>
+)
+
+// Radio Tracks Response
+data class DeezerRadioTracksResponse(
+    @SerializedName("data")
+    val tracks: List<DeezerTrackDto>
+)
+
 

@@ -3,6 +3,8 @@ package com.dilara.beatify.domain.repository
 import com.dilara.beatify.domain.model.Album
 import com.dilara.beatify.domain.model.Artist
 import com.dilara.beatify.domain.model.Track
+import com.dilara.beatify.domain.model.Genre
+import com.dilara.beatify.domain.model.Radio
 
 /**
  * Repository interface for music data operations
@@ -64,5 +66,30 @@ interface MusicRepository {
      * Get related artists
      */
     suspend fun getRelatedArtists(artistId: Long, limit: Int = 10): Result<List<Artist>>
+    
+    /**
+     * Get list of genres
+     */
+    suspend fun getGenres(): Result<List<Genre>>
+    
+    /**
+     * Get artists by genre
+     */
+    suspend fun getGenreArtists(genreId: Long, limit: Int = 25, index: Int = 0): Result<List<Artist>>
+    
+    /**
+     * Get radio tracks from genre
+     */
+    suspend fun getGenreRadio(genreId: Long, limit: Int = 25): Result<List<Track>>
+    
+    /**
+     * Get list of radio stations
+     */
+    suspend fun getRadios(): Result<List<Radio>>
+    
+    /**
+     * Get tracks from radio station
+     */
+    suspend fun getRadioTracks(radioId: Long, limit: Int = 40): Result<List<Track>>
 }
 

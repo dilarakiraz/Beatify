@@ -37,6 +37,10 @@ class HomeViewModel @Inject constructor(
             is HomeUIEvent.OnAlbumClick -> {
                 // TODO: Navigate to album detail
             }
+            
+            is HomeUIEvent.OnGenreClick -> {
+                // Handled by navigation
+            }
 
             is HomeUIEvent.Retry -> {
                 loadHomeData()
@@ -68,6 +72,14 @@ class HomeViewModel @Inject constructor(
             musicRepository.getTopArtists()
                 .onSuccess { artists ->
                     _uiState.value = _uiState.value.copy(topArtists = artists)
+                }
+                .onFailure { exception ->
+                }
+
+            musicRepository.getGenres()
+                .onSuccess { genres ->
+                    val filteredGenres = genres.filter { it.id != 0L }
+                    _uiState.value = _uiState.value.copy(genres = filteredGenres)
                 }
                 .onFailure { exception ->
                 }

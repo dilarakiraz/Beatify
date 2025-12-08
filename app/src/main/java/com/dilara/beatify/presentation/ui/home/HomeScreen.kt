@@ -35,6 +35,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.dilara.beatify.presentation.state.HomeUIEvent
 import com.dilara.beatify.presentation.ui.components.AlbumCard
 import com.dilara.beatify.presentation.ui.components.ArtistCard
+import com.dilara.beatify.presentation.ui.components.GenreCard
 import com.dilara.beatify.presentation.ui.components.TrackCard
 import com.dilara.beatify.presentation.ui.components.TrackCardHorizontal
 import com.dilara.beatify.presentation.ui.components.common.EmptySection
@@ -55,7 +56,8 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     onTrackClick: (com.dilara.beatify.domain.model.Track) -> Unit = {},
     onArtistClick: (Long) -> Unit = {},
-    onAlbumClick: (Long) -> Unit = {}
+    onAlbumClick: (Long) -> Unit = {},
+    onGenreClick: (Long) -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val favoritesState = useFavoritesState()
@@ -184,6 +186,29 @@ fun HomeScreen(
                                     onAlbumClick(album.id)
                                 },
                                 modifier = Modifier.size(width = 160.dp, height = 120.dp)
+                            )
+                        }
+                    }
+                }
+
+                if (uiState.genres.isNotEmpty()) {
+                    item {
+                        SectionHeader(
+                            title = "Müzik Türleri",
+                        )
+                    }
+
+                    item {
+                        HorizontalItemsList(
+                            items = uiState.genres.take(10),
+                            key = { genre -> genre.id }
+                        ) { genre ->
+                            GenreCard(
+                                genre = genre,
+                                onClick = {
+                                    viewModel.onEvent(HomeUIEvent.OnGenreClick(genre.id))
+                                    onGenreClick(genre.id)
+                                }
                             )
                         }
                     }

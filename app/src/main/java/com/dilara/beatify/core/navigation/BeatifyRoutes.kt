@@ -19,6 +19,9 @@ sealed class BeatifyRoutes(val route: String) {
     object AlbumDetail : BeatifyRoutes("album/{albumId}") {
         fun createRoute(albumId: Long) = "album/$albumId"
     }
+    object GenreDetail : BeatifyRoutes("genre/{genreId}") {
+        fun createRoute(genreId: Long) = "genre/$genreId"
+    }
 }
 
 

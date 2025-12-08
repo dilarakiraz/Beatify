@@ -6,6 +6,8 @@ import com.dilara.beatify.data.remote.api.DeezerApiService
 import com.dilara.beatify.domain.model.Album
 import com.dilara.beatify.domain.model.Artist
 import com.dilara.beatify.domain.model.Track
+import com.dilara.beatify.domain.model.Genre
+import com.dilara.beatify.domain.model.Radio
 import com.dilara.beatify.domain.repository.MusicRepository
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -18,7 +20,11 @@ class MusicRepositoryImpl @Inject constructor(
     override suspend fun getTopTracks(): Result<List<Track>> {
         return safeApiCall(
             apiCall = { apiService.getTopTracks() },
-            transform = { response -> response.tracks.map { it.toDomain() } }
+            transform = { response -> 
+                response.tracks
+                    .filter { it.previewUrl != null && it.previewUrl.isNotEmpty() }
+                    .map { it.toDomain() } 
+            }
         )
     }
 
@@ -103,6 +109,49 @@ class MusicRepositoryImpl @Inject constructor(
         return safeApiCall(
             apiCall = { apiService.getRelatedArtists(artistId, limit) },
             transform = { response -> response.artists.map { it.toDomain() } }
+        )
+    }
+    
+    override suspend fun getGenres(): Result<List<Genre>> {
+        return safeApiCall(
+            apiCall = { apiService.getGenres() },
+            transform = { response -> response.genres.map { it.toDomain() } }
+        )
+    }
+    
+    override suspend fun getGenreArtists(genreId: Long, limit: Int, index: Int): Result<List<Artist>> {
+        return safeApiCall(
+            apiCall = { apiService.getGenreArtists(genreId, limit, index) },
+            transform = { response -> response.artists.map { it.toDomain() } }
+        )
+    }
+    
+    override suspend fun getGenreRadio(genreId: Long, limit: Int): Result<List<Track>> {
+        return safeApiCall(
+            apiCall = { apiService.getGenreRadio(genreId, limit) },
+            transform = { response -> 
+                response.tracks
+                    .filter { it.previewUrl != null && it.previewUrl.isNotEmpty() }
+                    .map { it.toDomain() } 
+            }
+        )
+    }
+    
+    override suspend fun getRadios(): Result<List<Radio>> {
+        return safeApiCall(
+            apiCall = { apiService.getRadios() },
+            transform = { response -> response.radios.map { it.toDomain() } }
+        )
+    }
+    
+    override suspend fun getRadioTracks(radioId: Long, limit: Int): Result<List<Track>> {
+        return safeApiCall(
+            apiCall = { apiService.getRadioTracks(radioId, limit) },
+            transform = { response -> 
+                response.tracks
+                    .filter { it.previewUrl != null && it.previewUrl.isNotEmpty() }
+                    .map { it.toDomain() } 
+            }
         )
     }
 }

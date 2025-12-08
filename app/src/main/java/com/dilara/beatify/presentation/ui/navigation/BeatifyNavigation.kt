@@ -35,6 +35,7 @@ import com.dilara.beatify.presentation.ui.components.player.MiniPlayer
 import com.dilara.beatify.presentation.ui.album.AlbumDetailScreen
 import com.dilara.beatify.presentation.ui.artist.ArtistDetailScreen
 import com.dilara.beatify.presentation.ui.favorites.FavoritesScreen
+import com.dilara.beatify.presentation.ui.genre.GenreDetailScreen
 import com.dilara.beatify.presentation.ui.home.HomeScreen
 import com.dilara.beatify.presentation.ui.hooks.useFavoritesState
 import com.dilara.beatify.presentation.ui.playlists.PlaylistDetailScreen
@@ -155,6 +156,9 @@ fun BeatifyNavigation(
                         },
                         onAlbumClick = { albumId ->
                             navController.navigate(BeatifyRoutes.AlbumDetail.createRoute(albumId))
+                        },
+                        onGenreClick = { genreId ->
+                            navController.navigate(BeatifyRoutes.GenreDetail.createRoute(genreId))
                         }
                     )
                 }
@@ -278,6 +282,31 @@ fun BeatifyNavigation(
                     val albumId = backStackEntry.arguments?.getLong("albumId") ?: return@composable
                     AlbumDetailScreen(
                         albumId = albumId,
+                        onTrackClick = { track, playlist ->
+                            playerViewModel.onEvent(PlayerUIEvent.PlayTrack(track, playlist))
+                        },
+                        onArtistClick = { artistId ->
+                            navController.navigate(BeatifyRoutes.ArtistDetail.createRoute(artistId))
+                        },
+                        onNavigateBack = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
+
+                composable(
+                    route = BeatifyRoutes.GenreDetail.route,
+                    arguments = listOf(
+                        navArgument("genreId") { type = NavType.LongType }
+                    ),
+                    enterTransition = NavigationAnimations.bottomNavScreenTransitions().first,
+                    exitTransition = NavigationAnimations.bottomNavScreenTransitions().second,
+                    popEnterTransition = NavigationAnimations.bottomNavScreenPopTransitions().first,
+                    popExitTransition = NavigationAnimations.bottomNavScreenPopTransitions().second
+                ) { backStackEntry ->
+                    val genreId = backStackEntry.arguments?.getLong("genreId") ?: return@composable
+                    GenreDetailScreen(
+                        genreId = genreId,
                         onTrackClick = { track, playlist ->
                             playerViewModel.onEvent(PlayerUIEvent.PlayTrack(track, playlist))
                         },

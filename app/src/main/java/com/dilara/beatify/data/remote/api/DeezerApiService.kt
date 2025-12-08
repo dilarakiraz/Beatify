@@ -11,6 +11,11 @@ import com.dilara.beatify.data.remote.model.DeezerRelatedArtistsResponse
 import com.dilara.beatify.data.remote.model.DeezerArtistSearchResponse
 import com.dilara.beatify.data.remote.model.DeezerChartAlbumsResponse
 import com.dilara.beatify.data.remote.model.DeezerChartArtistsResponse
+import com.dilara.beatify.data.remote.model.DeezerGenresResponse
+import com.dilara.beatify.data.remote.model.DeezerGenreArtistsResponse
+import com.dilara.beatify.data.remote.model.DeezerGenreRadioResponse
+import com.dilara.beatify.data.remote.model.DeezerRadiosResponse
+import com.dilara.beatify.data.remote.model.DeezerRadioTracksResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -115,6 +120,51 @@ interface DeezerApiService {
         @Path("id") artistId: Long,
         @Query("limit") limit: Int = 10
     ): DeezerRelatedArtistsResponse
+    
+    /**
+     * Get list of genres
+     * GET /genre
+     */
+    @GET("genre")
+    suspend fun getGenres(): DeezerGenresResponse
+    
+    /**
+     * Get artists by genre
+     * GET /genre/{id}/artists
+     */
+    @GET("genre/{id}/artists")
+    suspend fun getGenreArtists(
+        @Path("id") genreId: Long,
+        @Query("limit") limit: Int = 25,
+        @Query("index") index: Int = 0
+    ): DeezerGenreArtistsResponse
+    
+    /**
+     * Get radio tracks from genre
+     * GET /genre/{id}/radio
+     */
+    @GET("genre/{id}/radio")
+    suspend fun getGenreRadio(
+        @Path("id") genreId: Long,
+        @Query("limit") limit: Int = 25
+    ): DeezerGenreRadioResponse
+    
+    /**
+     * Get list of radio stations
+     * GET /radio
+     */
+    @GET("radio")
+    suspend fun getRadios(): DeezerRadiosResponse
+    
+    /**
+     * Get tracks from radio station
+     * GET /radio/{id}/tracks
+     */
+    @GET("radio/{id}/tracks")
+    suspend fun getRadioTracks(
+        @Path("id") radioId: Long,
+        @Query("limit") limit: Int = 40
+    ): DeezerRadioTracksResponse
 }
 
 

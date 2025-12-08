@@ -16,6 +16,9 @@ import com.dilara.beatify.data.remote.model.DeezerGenreArtistsResponse
 import com.dilara.beatify.data.remote.model.DeezerGenreRadioResponse
 import com.dilara.beatify.data.remote.model.DeezerRadiosResponse
 import com.dilara.beatify.data.remote.model.DeezerRadioTracksResponse
+import com.dilara.beatify.data.remote.model.DeezerChartPlaylistsResponse
+import com.dilara.beatify.data.remote.model.DeezerPlaylistResponse
+import com.dilara.beatify.data.remote.model.DeezerPlaylistTracksResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -46,6 +49,13 @@ interface DeezerApiService {
      */
     @GET("chart/0/artists")
     suspend fun getTopArtists(): DeezerChartArtistsResponse
+    
+    /**
+     * Get top playlists from Deezer charts
+     * GET /chart/0/playlists
+     */
+    @GET("chart/0/playlists")
+    suspend fun getTopPlaylists(): DeezerChartPlaylistsResponse
     
     /**
      * Search for tracks, artists, albums
@@ -165,6 +175,23 @@ interface DeezerApiService {
         @Path("id") radioId: Long,
         @Query("limit") limit: Int = 40
     ): DeezerRadioTracksResponse
+    
+    /**
+     * Get playlist details
+     * GET /playlist/{id}
+     */
+    @GET("playlist/{id}")
+    suspend fun getPlaylist(@Path("id") playlistId: Long): DeezerPlaylistResponse
+    
+    /**
+     * Get tracks from playlist
+     * GET /playlist/{id}/tracks
+     */
+    @GET("playlist/{id}/tracks")
+    suspend fun getPlaylistTracks(
+        @Path("id") playlistId: Long,
+        @Query("limit") limit: Int = 100
+    ): DeezerPlaylistTracksResponse
 }
 
 

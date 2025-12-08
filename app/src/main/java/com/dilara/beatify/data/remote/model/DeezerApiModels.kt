@@ -246,4 +246,72 @@ data class DeezerRadioTracksResponse(
     val tracks: List<DeezerTrackDto>
 )
 
+// Playlist DTO
+data class DeezerPlaylistDto(
+    @SerializedName("id")
+    val id: Long,
+    @SerializedName("title")
+    val title: String,
+    @SerializedName("picture")
+    val picture: String?,
+    @SerializedName("picture_small")
+    val pictureSmall: String?,
+    @SerializedName("picture_medium")
+    val pictureMedium: String?,
+    @SerializedName("picture_big")
+    val pictureBig: String?,
+    @SerializedName("picture_xl")
+    val pictureXl: String?,
+    @SerializedName("nb_tracks")
+    val trackCount: Int,
+    @SerializedName("creator")
+    val creator: DeezerPlaylistCreatorDto? = null,
+    @SerializedName("creation_date")
+    val creationDate: String? = null
+)
+
+// Playlist Creator DTO
+data class DeezerPlaylistCreatorDto(
+    @SerializedName("id")
+    val id: Long,
+    @SerializedName("name")
+    val name: String
+)
+
+// Chart Playlists Response
+data class DeezerChartPlaylistsResponse(
+    @SerializedName("data")
+    val playlists: List<DeezerPlaylistDto>
+)
+
+// Playlist Response (single)
+data class DeezerPlaylistResponse(
+    @SerializedName("id")
+    val id: Long,
+    @SerializedName("title")
+    val title: String,
+    @SerializedName("picture")
+    val picture: String?,
+    @SerializedName("picture_small")
+    val pictureSmall: String?,
+    @SerializedName("picture_medium")
+    val pictureMedium: String?,
+    @SerializedName("picture_big")
+    val pictureBig: String?,
+    @SerializedName("picture_xl")
+    val pictureXl: String?,
+    @SerializedName("nb_tracks")
+    val trackCount: Int,
+    @SerializedName("creator")
+    val creator: DeezerPlaylistCreatorDto? = null,
+    @SerializedName("creation_date")
+    val creationDate: String? = null
+)
+
+// Playlist Tracks Response
+data class DeezerPlaylistTracksResponse(
+    @SerializedName("data")
+    val tracks: List<DeezerTrackDto>
+)
+
 

@@ -5,6 +5,7 @@ import com.dilara.beatify.domain.model.Artist
 import com.dilara.beatify.domain.model.Track
 import com.dilara.beatify.domain.model.Genre
 import com.dilara.beatify.domain.model.Radio
+import com.dilara.beatify.domain.model.PublicPlaylist
 
 /**
  * Repository interface for music data operations
@@ -26,6 +27,11 @@ interface MusicRepository {
      * Get top artists from charts
      */
     suspend fun getTopArtists(): Result<List<Artist>>
+    
+    /**
+     * Get top playlists from charts
+     */
+    suspend fun getTopPlaylists(): Result<List<PublicPlaylist>>
     
     /**
      * Search for tracks
@@ -91,5 +97,15 @@ interface MusicRepository {
      * Get tracks from radio station
      */
     suspend fun getRadioTracks(radioId: Long, limit: Int = 40): Result<List<Track>>
+    
+    /**
+     * Get public playlist details by ID
+     */
+    suspend fun getPublicPlaylist(playlistId: Long): Result<PublicPlaylist>
+    
+    /**
+     * Get tracks from public playlist
+     */
+    suspend fun getPublicPlaylistTracks(playlistId: Long, limit: Int = 100): Result<List<Track>>
 }
 

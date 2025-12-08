@@ -18,7 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.dilara.beatify.presentation.state.PlaylistsUIEvent
-import com.dilara.beatify.presentation.ui.components.PlaylistCard
+import com.dilara.beatify.presentation.ui.components.LocalPlaylistCard
 import com.dilara.beatify.presentation.ui.components.common.CreatePlaylistDialog
 import com.dilara.beatify.presentation.ui.components.common.DraggableLazyColumn
 import com.dilara.beatify.presentation.ui.components.common.FloatingActionButton
@@ -74,7 +74,7 @@ fun PlaylistsScreen(
                     SectionHeader(title = "Çalma Listelerim")
                 }
             ) { _, playlist, _ ->
-                PlaylistCard(
+                LocalPlaylistCard(
                     playlist = playlist,
                     onClick = {
                         viewModel.onEvent(PlaylistsUIEvent.OnPlaylistClick(playlist.id))

@@ -46,6 +46,10 @@ class HomeViewModel @Inject constructor(
                 // Handled by navigation
             }
 
+            is HomeUIEvent.OnPlaylistClick -> {
+                // TODO: Navigate to playlist detail
+            }
+
             is HomeUIEvent.Retry -> {
                 loadHomeData()
             }
@@ -91,6 +95,13 @@ class HomeViewModel @Inject constructor(
             musicRepository.getRadios()
                 .onSuccess { radios ->
                     _uiState.value = _uiState.value.copy(radios = radios)
+                }
+                .onFailure { exception ->
+                }
+
+            musicRepository.getTopPlaylists()
+                .onSuccess { playlists ->
+                    _uiState.value = _uiState.value.copy(topPlaylists = playlists)
                 }
                 .onFailure { exception ->
                 }

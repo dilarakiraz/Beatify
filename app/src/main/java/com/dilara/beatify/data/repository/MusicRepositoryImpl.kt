@@ -8,6 +8,7 @@ import com.dilara.beatify.domain.model.Artist
 import com.dilara.beatify.domain.model.Track
 import com.dilara.beatify.domain.model.Genre
 import com.dilara.beatify.domain.model.Radio
+import com.dilara.beatify.domain.model.PublicPlaylist
 import com.dilara.beatify.domain.repository.MusicRepository
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -45,6 +46,13 @@ class MusicRepositoryImpl @Inject constructor(
         return safeApiCall(
             apiCall = { apiService.getTopArtists() },
             transform = { response -> response.artists.map { it.toDomain() } }
+        )
+    }
+    
+    override suspend fun getTopPlaylists(): Result<List<PublicPlaylist>> {
+        return safeApiCall(
+            apiCall = { apiService.getTopPlaylists() },
+            transform = { response -> response.playlists.map { it.toDomain() } }
         )
     }
 
@@ -147,6 +155,24 @@ class MusicRepositoryImpl @Inject constructor(
     override suspend fun getRadioTracks(radioId: Long, limit: Int): Result<List<Track>> {
         return safeApiCall(
             apiCall = { apiService.getRadioTracks(radioId, limit) },
+            transform = { response -> 
+                response.tracks
+                    .filter { it.previewUrl != null && it.previewUrl.isNotEmpty() }
+                    .map { it.toDomain() } 
+            }
+        )
+    }
+    
+    override suspend fun getPublicPlaylist(playlistId: Long): Result<PublicPlaylist> {
+        return safeApiCall(
+            apiCall = { apiService.getPlaylist(playlistId) },
+            transform = { it.toDomain() }
+        )
+    }
+    
+    override suspend fun getPublicPlaylistTracks(playlistId: Long, limit: Int): Result<List<Track>> {
+        return safeApiCall(
+            apiCall = { apiService.getPlaylistTracks(playlistId, limit) },
             transform = { response -> 
                 response.tracks
                     .filter { it.previewUrl != null && it.previewUrl.isNotEmpty() }

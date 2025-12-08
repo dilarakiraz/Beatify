@@ -37,6 +37,7 @@ import com.dilara.beatify.presentation.ui.components.AlbumCard
 import com.dilara.beatify.presentation.ui.components.ArtistCard
 import com.dilara.beatify.presentation.ui.components.GenreCard
 import com.dilara.beatify.presentation.ui.components.RadioCard
+import com.dilara.beatify.presentation.ui.components.PlaylistCard
 import com.dilara.beatify.presentation.ui.components.TrackCard
 import com.dilara.beatify.presentation.ui.components.TrackCardHorizontal
 import com.dilara.beatify.presentation.ui.components.common.EmptySection
@@ -59,7 +60,8 @@ fun HomeScreen(
     onArtistClick: (Long) -> Unit = {},
     onAlbumClick: (Long) -> Unit = {},
     onGenreClick: (Long) -> Unit = {},
-    onRadioClick: (Long, String) -> Unit = { _, _ -> }
+    onRadioClick: (Long, String) -> Unit = { _, _ -> },
+    onPlaylistClick: (Long, String) -> Unit = { _, _ -> }
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val favoritesState = useFavoritesState()
@@ -233,6 +235,29 @@ fun HomeScreen(
                                 onClick = {
                                     viewModel.onEvent(HomeUIEvent.OnRadioClick(radio.id))
                                     onRadioClick(radio.id, radio.title)
+                                }
+                            )
+                        }
+                    }
+                }
+
+                if (uiState.topPlaylists.isNotEmpty()) {
+                    item {
+                        SectionHeader(
+                            title = "En Popüler Playlistler",
+                        )
+                    }
+
+                    item {
+                        HorizontalItemsList(
+                            items = uiState.topPlaylists.take(10),
+                            key = { playlist -> playlist.id }
+                        ) { playlist ->
+                            PlaylistCard(
+                                playlist = playlist,
+                                onClick = {
+                                    viewModel.onEvent(HomeUIEvent.OnPlaylistClick(playlist.id))
+                                    onPlaylistClick(playlist.id, playlist.title)
                                 }
                             )
                         }

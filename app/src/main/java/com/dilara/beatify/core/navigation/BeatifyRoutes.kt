@@ -30,6 +30,14 @@ sealed class BeatifyRoutes(val route: String) {
                 "radio/$radioId/_"
             }
     }
+    object PublicPlaylistDetail : BeatifyRoutes("public_playlist/{playlistId}/{title}") {
+        fun createRoute(playlistId: Long, playlistTitle: String? = null) = 
+            if (playlistTitle != null) {
+                "public_playlist/$playlistId/${java.net.URLEncoder.encode(playlistTitle, "UTF-8")}"
+            } else {
+                "public_playlist/$playlistId/_"
+            }
+    }
 }
 
 

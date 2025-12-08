@@ -40,6 +40,7 @@ import com.dilara.beatify.presentation.ui.home.HomeScreen
 import com.dilara.beatify.presentation.ui.radio.RadioDetailScreen
 import com.dilara.beatify.presentation.ui.hooks.useFavoritesState
 import com.dilara.beatify.presentation.ui.playlists.PlaylistDetailScreen
+import com.dilara.beatify.presentation.ui.playlist.PublicPlaylistDetailScreen
 import com.dilara.beatify.presentation.ui.playlists.PlaylistsScreen
 import com.dilara.beatify.presentation.ui.search.SearchScreen
 import com.dilara.beatify.presentation.viewmodel.PlayerViewModel
@@ -163,6 +164,9 @@ fun BeatifyNavigation(
                         },
                         onRadioClick = { radioId, radioTitle ->
                             navController.navigate(BeatifyRoutes.RadioDetail.createRoute(radioId, radioTitle))
+                        },
+                        onPlaylistClick = { playlistId, playlistTitle ->
+                            navController.navigate(BeatifyRoutes.PublicPlaylistDetail.createRoute(playlistId, playlistTitle))
                         }
                     )
                 }
@@ -346,6 +350,36 @@ fun BeatifyNavigation(
                         initialRadioTitle = radioTitle,
                         onTrackClick = { track, playlist ->
                             playerViewModel.onEvent(PlayerUIEvent.PlayTrack(track, playlist))
+                        },
+                        onNavigateBack = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
+
+                composable(
+                    route = BeatifyRoutes.PublicPlaylistDetail.route,
+                    arguments = listOf(
+                        navArgument("playlistId") { type = NavType.LongType },
+                        navArgument("title") { 
+                            type = NavType.StringType
+                            nullable = true
+                        }
+                    ),
+                    enterTransition = NavigationAnimations.bottomNavScreenTransitions().first,
+                    exitTransition = NavigationAnimations.bottomNavScreenTransitions().second,
+                    popEnterTransition = NavigationAnimations.bottomNavScreenPopTransitions().first,
+                    popExitTransition = NavigationAnimations.bottomNavScreenPopTransitions().second
+                ) { backStackEntry ->
+                    val playlistId = backStackEntry.arguments?.getLong("playlistId") ?: return@composable
+                    val playlistTitle = backStackEntry.arguments?.getString("title")?.let {
+                        if (it == "_") null else java.net.URLDecoder.decode(it, "UTF-8")
+                    }
+                    PublicPlaylistDetailScreen(
+                        playlistId = playlistId,
+                        initialPlaylistTitle = playlistTitle,
+                        onTrackClick = { track, tracks ->
+                            playerViewModel.onEvent(PlayerUIEvent.PlayTrack(track, tracks))
                         },
                         onNavigateBack = {
                             navController.popBackStack()

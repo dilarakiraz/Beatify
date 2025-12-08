@@ -5,12 +5,14 @@ import com.dilara.beatify.domain.model.Artist
 import com.dilara.beatify.domain.model.Track
 import com.dilara.beatify.domain.model.Genre
 import com.dilara.beatify.domain.model.Radio
+import com.dilara.beatify.domain.model.PublicPlaylist
 
 data class HomeUIState(
     val isLoading: Boolean = false,
     val topTracks: List<Track> = emptyList(),
     val topAlbums: List<Album> = emptyList(),
     val topArtists: List<Artist> = emptyList(),
+    val topPlaylists: List<PublicPlaylist> = emptyList(),
     val genres: List<Genre> = emptyList(),
     val radios: List<Radio> = emptyList(),
     val dailyMix: List<Track> = emptyList(),
@@ -24,6 +26,7 @@ sealed class HomeUIEvent {
     data class OnAlbumClick(val albumId: Long) : HomeUIEvent()
     data class OnGenreClick(val genreId: Long) : HomeUIEvent()
     data class OnRadioClick(val radioId: Long) : HomeUIEvent()
+    data class OnPlaylistClick(val playlistId: Long) : HomeUIEvent()
     data object Retry : HomeUIEvent()
 }
 

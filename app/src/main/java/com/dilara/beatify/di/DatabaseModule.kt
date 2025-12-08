@@ -6,6 +6,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.dilara.beatify.data.local.dao.FavoriteTrackDao
 import com.dilara.beatify.data.local.dao.PlaylistDao
+import com.dilara.beatify.data.local.dao.RecentTrackDao
 import com.dilara.beatify.data.local.dao.SearchHistoryDao
 import com.dilara.beatify.data.local.database.BeatifyDatabase
 import dagger.Module
@@ -72,6 +73,31 @@ object DatabaseModule {
         }
     }
     
+    private val MIGRATION_4_5 = object : Migration(4, 5) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            try {
+                database.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS recent_tracks (
+                        trackId INTEGER PRIMARY KEY NOT NULL,
+                        title TEXT NOT NULL,
+                        titleShort TEXT NOT NULL,
+                        duration INTEGER NOT NULL,
+                        previewUrl TEXT,
+                        artistId INTEGER NOT NULL,
+                        artistName TEXT NOT NULL,
+                        albumId INTEGER NOT NULL,
+                        albumTitle TEXT NOT NULL,
+                        albumCover TEXT,
+                        playedAt INTEGER NOT NULL
+                    )
+                    """.trimIndent()
+                )
+            } catch (_: Exception) {
+            }
+        }
+    }
+    
     @Provides
     @Singleton
     fun provideBeatifyDatabase(
@@ -82,7 +108,7 @@ object DatabaseModule {
             BeatifyDatabase::class.java,
             "beatify_database"
         )
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
             .fallbackToDestructiveMigration()
             .build()
     }
@@ -103,6 +129,12 @@ object DatabaseModule {
     @Singleton
     fun provideSearchHistoryDao(database: BeatifyDatabase): SearchHistoryDao {
         return database.searchHistoryDao()
+    }
+    
+    @Provides
+    @Singleton
+    fun provideRecentTrackDao(database: BeatifyDatabase): RecentTrackDao {
+        return database.recentTrackDao()
     }
 }
 

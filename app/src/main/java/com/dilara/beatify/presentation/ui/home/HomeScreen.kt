@@ -38,6 +38,7 @@ import com.dilara.beatify.presentation.ui.components.ArtistCard
 import com.dilara.beatify.presentation.ui.components.GenreCard
 import com.dilara.beatify.presentation.ui.components.RadioCard
 import com.dilara.beatify.presentation.ui.components.PlaylistCard
+import com.dilara.beatify.presentation.ui.components.RecentTrackCard
 import com.dilara.beatify.presentation.ui.components.TrackCard
 import com.dilara.beatify.presentation.ui.components.TrackCardHorizontal
 import com.dilara.beatify.presentation.ui.components.common.EmptySection
@@ -258,6 +259,33 @@ fun HomeScreen(
                                 onClick = {
                                     viewModel.onEvent(HomeUIEvent.OnPlaylistClick(playlist.id))
                                     onPlaylistClick(playlist.id, playlist.title)
+                                }
+                            )
+                        }
+                    }
+                }
+
+                if (uiState.recentTracks.isNotEmpty()) {
+                    item {
+                        SectionHeader(
+                            title = "Son Dinlenenler",
+                        )
+                    }
+
+                    item {
+                        HorizontalItemsList(
+                            items = uiState.recentTracks.take(10),
+                            key = { track -> track.id }
+                        ) { track ->
+                            RecentTrackCard(
+                                track = track,
+                                onClick = {
+                                    viewModel.onEvent(HomeUIEvent.OnTrackClick(track.id))
+                                    onTrackClick(track)
+                                },
+                                isFavorite = favoritesState.favoriteTrackIds.contains(track.id),
+                                onFavoriteClick = {
+                                    favoritesState.toggleFavorite(track)
                                 }
                             )
                         }

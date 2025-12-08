@@ -3,18 +3,22 @@ package com.dilara.beatify.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dilara.beatify.domain.repository.MusicRepository
+import com.dilara.beatify.domain.repository.RecentTracksRepository
 import com.dilara.beatify.presentation.state.HomeUIEvent
 import com.dilara.beatify.presentation.state.HomeUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val musicRepository: MusicRepository
+    private val musicRepository: MusicRepository,
+    private val recentTracksRepository: RecentTracksRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUIState())
@@ -22,6 +26,15 @@ class HomeViewModel @Inject constructor(
 
     init {
         loadHomeData()
+        observeRecentTracks()
+    }
+    
+    private fun observeRecentTracks() {
+        recentTracksRepository.getRecentTracks(limit = 20)
+            .onEach { tracks ->
+                _uiState.value = _uiState.value.copy(recentTracks = tracks)
+            }
+            .launchIn(viewModelScope)
     }
 
     fun onEvent(event: HomeUIEvent) {

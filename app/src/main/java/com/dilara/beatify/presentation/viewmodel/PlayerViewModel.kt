@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.dilara.beatify.core.player.PlayerStateHolder
 import com.dilara.beatify.domain.model.Track
 import com.dilara.beatify.domain.repository.MusicRepository
+import com.dilara.beatify.domain.repository.RecentTracksRepository
 import com.dilara.beatify.presentation.state.PlayerUIEvent
 import com.dilara.beatify.presentation.state.PlayerUIState
 import com.dilara.beatify.presentation.state.RepeatMode
@@ -20,7 +21,8 @@ import javax.inject.Inject
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
     private val playerStateHolder: PlayerStateHolder,
-    private val musicRepository: MusicRepository
+    private val musicRepository: MusicRepository,
+    private val recentTracksRepository: RecentTracksRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PlayerUIState())
@@ -105,6 +107,8 @@ class PlayerViewModel @Inject constructor(
                 currentIndex = index,
                 position = 0L
             )
+    
+            recentTracksRepository.addRecentTrack(trackToPlay)
     
             startPlayback(url)
         }

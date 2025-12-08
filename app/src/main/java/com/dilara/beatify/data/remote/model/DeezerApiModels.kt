@@ -168,6 +168,22 @@ data class DeezerArtistSearchResponse(
     val total: Int
 )
 
+// Album Search Response
+data class DeezerAlbumSearchResponse(
+    @SerializedName("data")
+    val albums: List<DeezerAlbumDto>,
+    @SerializedName("total")
+    val total: Int
+)
+
+// Playlist Search Response
+data class DeezerPlaylistSearchResponse(
+    @SerializedName("data")
+    val playlists: List<DeezerPlaylistDto>,
+    @SerializedName("total")
+    val total: Int
+)
+
 // Chart Albums Response
 data class DeezerChartAlbumsResponse(
     @SerializedName("data")

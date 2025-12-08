@@ -7,6 +7,7 @@ import com.dilara.beatify.domain.repository.MusicRepository
 import com.dilara.beatify.domain.repository.SearchHistoryRepository
 import com.dilara.beatify.presentation.state.SearchUIEvent
 import com.dilara.beatify.presentation.state.SearchUIState
+import com.dilara.beatify.presentation.state.SearchType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,11 +40,13 @@ class SearchViewModel @Inject constructor(
             .debounce(Constants.SEARCH_DEBOUNCE_MS)
             .onEach { query ->
                 if (query.isNotBlank()) {
-                    performSearch(query)
+                    performSearch(query, _uiState.value.searchType)
                 } else {
                     _uiState.value = _uiState.value.copy(
                         tracks = emptyList(),
                         artists = emptyList(),
+                        albums = emptyList(),
+                        playlists = emptyList(),
                         error = null,
                         isLoading = false
                     )
@@ -93,6 +96,13 @@ class SearchViewModel @Inject constructor(
                 updateSearchQuery(event.query)
             }
 
+            is SearchUIEvent.OnSearchTypeChange -> {
+                _uiState.value = _uiState.value.copy(searchType = event.searchType)
+                if (_uiState.value.searchQuery.isNotBlank()) {
+                    performSearch(_uiState.value.searchQuery, event.searchType)
+                }
+            }
+
             is SearchUIEvent.OnTrackClick -> {
                 val track = findTrackById(event.trackId)
                 track?.let {
@@ -107,6 +117,10 @@ class SearchViewModel @Inject constructor(
 
             is SearchUIEvent.OnAlbumClick -> {
                 // TODO: Navigate to album detail
+            }
+
+            is SearchUIEvent.OnPlaylistClick -> {
+                // TODO: Navigate to playlist detail
             }
 
             is SearchUIEvent.OnSearchHistoryClick -> {
@@ -124,6 +138,8 @@ class SearchViewModel @Inject constructor(
                     searchQuery = "",
                     tracks = emptyList(),
                     artists = emptyList(),
+                    albums = emptyList(),
+                    playlists = emptyList(),
                     error = null,
                     isLoading = false
                 )
@@ -138,30 +154,98 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    private fun performSearch(query: String) {
+    private fun performSearch(query: String, searchType: SearchType) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(
                 isLoading = true,
                 error = null
             )
 
-            val tracksResult = musicRepository.searchTracks(query, limit = 25)
-            val artistsResult = musicRepository.searchArtists(query, limit = 10)
+            when (searchType) {
+                SearchType.ALL -> {
+                    val tracksResult = musicRepository.searchTracks(query, limit = 25)
+                    val artistsResult = musicRepository.searchArtists(query, limit = 10)
+                    val albumsResult = musicRepository.searchAlbums(query, limit = 10)
+                    val playlistsResult = musicRepository.searchPlaylists(query, limit = 10)
 
-            val tracks = tracksResult.getOrNull() ?: emptyList()
-            val artists = artistsResult.getOrNull() ?: emptyList()
-            val error = when {
-                tracksResult.isFailure && artistsResult.isFailure -> 
-                    tracksResult.exceptionOrNull()?.message ?: "Arama başarısız"
-                else -> null
+                    val tracks = tracksResult.getOrNull() ?: emptyList()
+                    val artists = artistsResult.getOrNull() ?: emptyList()
+                    val albums = albumsResult.getOrNull() ?: emptyList()
+                    val playlists = playlistsResult.getOrNull() ?: emptyList()
+
+                    val error = when {
+                        tracksResult.isFailure && artistsResult.isFailure && 
+                        albumsResult.isFailure && playlistsResult.isFailure -> 
+                            tracksResult.exceptionOrNull()?.message ?: "Arama başarısız"
+                        else -> null
+                    }
+
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        tracks = tracks,
+                        artists = artists,
+                        albums = albums,
+                        playlists = playlists,
+                        error = error
+                    )
+                }
+                SearchType.TRACKS -> {
+                    val tracksResult = musicRepository.searchTracks(query, limit = 25)
+                    val tracks = tracksResult.getOrNull() ?: emptyList()
+                    val error = tracksResult.exceptionOrNull()?.message
+
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        tracks = tracks,
+                        artists = emptyList(),
+                        albums = emptyList(),
+                        playlists = emptyList(),
+                        error = error
+                    )
+                }
+                SearchType.ARTISTS -> {
+                    val artistsResult = musicRepository.searchArtists(query, limit = 25)
+                    val artists = artistsResult.getOrNull() ?: emptyList()
+                    val error = artistsResult.exceptionOrNull()?.message
+
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        tracks = emptyList(),
+                        artists = artists,
+                        albums = emptyList(),
+                        playlists = emptyList(),
+                        error = error
+                    )
+                }
+                SearchType.ALBUMS -> {
+                    val albumsResult = musicRepository.searchAlbums(query, limit = 25)
+                    val albums = albumsResult.getOrNull() ?: emptyList()
+                    val error = albumsResult.exceptionOrNull()?.message
+
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        tracks = emptyList(),
+                        artists = emptyList(),
+                        albums = albums,
+                        playlists = emptyList(),
+                        error = error
+                    )
+                }
+                SearchType.PLAYLISTS -> {
+                    val playlistsResult = musicRepository.searchPlaylists(query, limit = 25)
+                    val playlists = playlistsResult.getOrNull() ?: emptyList()
+                    val error = playlistsResult.exceptionOrNull()?.message
+
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        tracks = emptyList(),
+                        artists = emptyList(),
+                        albums = emptyList(),
+                        playlists = playlists,
+                        error = error
+                    )
+                }
             }
-
-            _uiState.value = _uiState.value.copy(
-                isLoading = false,
-                tracks = tracks,
-                artists = artists,
-                error = error
-            )
         }
     }
 

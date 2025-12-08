@@ -69,6 +69,26 @@ class MusicRepositoryImpl @Inject constructor(
             transform = { response -> response.artists.map { it.toDomain() } }
         )
     }
+    
+    override suspend fun searchAlbums(query: String, limit: Int, index: Int): Result<List<Album>> {
+        return safeApiCall(
+            apiCall = { apiService.searchAlbums(query, limit, index) },
+            transform = { response ->
+                response.albums.mapNotNull { albumDto ->
+                    albumDto.artist?.toDomain()?.let { artist ->
+                        albumDto.toDomain(artist = artist)
+                    }
+                }
+            }
+        )
+    }
+    
+    override suspend fun searchPlaylists(query: String, limit: Int, index: Int): Result<List<PublicPlaylist>> {
+        return safeApiCall(
+            apiCall = { apiService.searchPlaylists(query, limit, index) },
+            transform = { response -> response.playlists.map { it.toDomain() } }
+        )
+    }
 
     override suspend fun getTrackById(trackId: Long): Result<Track> {
         return safeApiCall(

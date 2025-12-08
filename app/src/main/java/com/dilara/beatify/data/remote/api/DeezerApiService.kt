@@ -9,6 +9,8 @@ import com.dilara.beatify.data.remote.model.DeezerArtistAlbumsResponse
 import com.dilara.beatify.data.remote.model.DeezerArtistTopTracksResponse
 import com.dilara.beatify.data.remote.model.DeezerRelatedArtistsResponse
 import com.dilara.beatify.data.remote.model.DeezerArtistSearchResponse
+import com.dilara.beatify.data.remote.model.DeezerAlbumSearchResponse
+import com.dilara.beatify.data.remote.model.DeezerPlaylistSearchResponse
 import com.dilara.beatify.data.remote.model.DeezerChartAlbumsResponse
 import com.dilara.beatify.data.remote.model.DeezerChartArtistsResponse
 import com.dilara.beatify.data.remote.model.DeezerGenresResponse
@@ -78,6 +80,28 @@ interface DeezerApiService {
         @Query("limit") limit: Int = 25,
         @Query("index") index: Int = 0
     ): DeezerArtistSearchResponse
+    
+    /**
+     * Search for albums
+     * GET /search/album?q={query}
+     */
+    @GET("search/album")
+    suspend fun searchAlbums(
+        @Query("q") query: String,
+        @Query("limit") limit: Int = 25,
+        @Query("index") index: Int = 0
+    ): DeezerAlbumSearchResponse
+    
+    /**
+     * Search for playlists
+     * GET /search/playlist?q={query}
+     */
+    @GET("search/playlist")
+    suspend fun searchPlaylists(
+        @Query("q") query: String,
+        @Query("limit") limit: Int = 25,
+        @Query("index") index: Int = 0
+    ): DeezerPlaylistSearchResponse
     
     /**
      * Get track details

@@ -44,6 +44,16 @@ interface MusicRepository {
     suspend fun searchArtists(query: String, limit: Int = 25, index: Int = 0): Result<List<Artist>>
     
     /**
+     * Search for albums
+     */
+    suspend fun searchAlbums(query: String, limit: Int = 25, index: Int = 0): Result<List<Album>>
+    
+    /**
+     * Search for playlists
+     */
+    suspend fun searchPlaylists(query: String, limit: Int = 25, index: Int = 0): Result<List<PublicPlaylist>>
+    
+    /**
      * Get track details by ID
      */
     suspend fun getTrackById(trackId: Long): Result<Track>

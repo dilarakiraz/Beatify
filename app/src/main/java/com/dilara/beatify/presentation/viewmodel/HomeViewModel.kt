@@ -33,8 +33,50 @@ class HomeViewModel @Inject constructor(
         recentTracksRepository.getRecentTracks(limit = 20)
             .onEach { tracks ->
                 _uiState.value = _uiState.value.copy(recentTracks = tracks)
+                // Daily Mix oluştur
+                if (tracks.isNotEmpty()) {
+                    generateDailyMix(tracks)
+                }
             }
             .launchIn(viewModelScope)
+    }
+    
+    private fun generateDailyMix(recentTracks: List<com.dilara.beatify.domain.model.Track>) {
+        viewModelScope.launch {
+            val allTracks = mutableListOf<com.dilara.beatify.domain.model.Track>()
+            
+            // Recently Played tracks'lerden unique artist'leri al
+            val uniqueArtists = recentTracks.map { it.artist }.distinctBy { it.id }
+            
+            // Her artist'in top tracks'lerini al
+            uniqueArtists.take(5).forEach { artist ->
+                musicRepository.getArtistTopTracks(artist.id, limit = 5)
+                    .onSuccess { artistTracks ->
+                        allTracks.addAll(artistTracks)
+                    }
+                
+                // Related artists'lerin top tracks'lerini de ekle
+                musicRepository.getRelatedArtists(artist.id, limit = 3)
+                    .onSuccess { relatedArtists ->
+                        relatedArtists.take(2).forEach { relatedArtist ->
+                            musicRepository.getArtistTopTracks(relatedArtist.id, limit = 3)
+                                .onSuccess { relatedTracks ->
+                                    allTracks.addAll(relatedTracks)
+                                }
+                        }
+                    }
+            }
+            
+            // Duplicate'leri kaldır, karıştır ve ilk 40'ı al
+            if (allTracks.isNotEmpty()) {
+                val uniqueTracks = allTracks
+                    .distinctBy { it.id }
+                    .shuffled()
+                    .take(40)
+                
+                _uiState.value = _uiState.value.copy(dailyMix = uniqueTracks)
+            }
+        }
     }
 
     fun onEvent(event: HomeUIEvent) {

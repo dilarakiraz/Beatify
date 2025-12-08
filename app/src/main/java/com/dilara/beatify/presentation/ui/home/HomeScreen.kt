@@ -148,6 +148,33 @@ fun HomeScreen(
                     }
                 }
 
+                if (uiState.dailyMix.isNotEmpty()) {
+                    item {
+                        SectionHeader(
+                            title = "Günlük Karışım",
+                        )
+                    }
+
+                    item {
+                        HorizontalItemsList(
+                            items = uiState.dailyMix.take(10),
+                            key = { track -> track.id }
+                        ) { track ->
+                            RecentTrackCard(
+                                track = track,
+                                onClick = {
+                                    viewModel.onEvent(HomeUIEvent.OnTrackClick(track.id))
+                                    onTrackClick(track)
+                                },
+                                isFavorite = favoritesState.favoriteTrackIds.contains(track.id),
+                                onFavoriteClick = {
+                                    favoritesState.toggleFavorite(track)
+                                }
+                            )
+                        }
+                    }
+                }
+
                 if (uiState.topArtists.isNotEmpty()) {
                     item {
                         SectionHeader(

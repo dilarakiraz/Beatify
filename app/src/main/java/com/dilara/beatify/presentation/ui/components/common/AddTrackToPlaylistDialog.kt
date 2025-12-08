@@ -97,7 +97,7 @@ fun AddTrackToPlaylistDialog(
                 when {
                     uiState.isLoading -> {
                         items(5) {
-                            TrackCardSkeleton()
+                            LoadingSkeleton()
                         }
                     }
 

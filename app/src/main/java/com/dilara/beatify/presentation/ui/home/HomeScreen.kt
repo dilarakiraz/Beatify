@@ -36,13 +36,14 @@ import com.dilara.beatify.presentation.state.HomeUIEvent
 import com.dilara.beatify.presentation.ui.components.AlbumCard
 import com.dilara.beatify.presentation.ui.components.ArtistCard
 import com.dilara.beatify.presentation.ui.components.GenreCard
+import com.dilara.beatify.presentation.ui.components.RadioCard
 import com.dilara.beatify.presentation.ui.components.TrackCard
 import com.dilara.beatify.presentation.ui.components.TrackCardHorizontal
 import com.dilara.beatify.presentation.ui.components.common.EmptySection
 import com.dilara.beatify.presentation.ui.components.common.ErrorSection
 import com.dilara.beatify.presentation.ui.components.common.HorizontalItemsList
 import com.dilara.beatify.presentation.ui.components.common.SectionHeader
-import com.dilara.beatify.presentation.ui.components.common.TrackCardSkeleton
+import com.dilara.beatify.presentation.ui.components.common.LoadingSkeleton
 import com.dilara.beatify.presentation.ui.components.profile.ProfileButton
 import com.dilara.beatify.presentation.ui.components.profile.ProfileDrawerContent
 import com.dilara.beatify.presentation.ui.hooks.useFavoritesState
@@ -57,7 +58,8 @@ fun HomeScreen(
     onTrackClick: (com.dilara.beatify.domain.model.Track) -> Unit = {},
     onArtistClick: (Long) -> Unit = {},
     onAlbumClick: (Long) -> Unit = {},
-    onGenreClick: (Long) -> Unit = {}
+    onGenreClick: (Long) -> Unit = {},
+    onRadioClick: (Long, String) -> Unit = { _, _ -> }
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val favoritesState = useFavoritesState()
@@ -214,6 +216,29 @@ fun HomeScreen(
                     }
                 }
 
+                if (uiState.radios.isNotEmpty()) {
+                    item {
+                        SectionHeader(
+                            title = "Radyolar",
+                        )
+                    }
+
+                    item {
+                        HorizontalItemsList(
+                            items = uiState.radios.take(10),
+                            key = { radio -> radio.id }
+                        ) { radio ->
+                            RadioCard(
+                                radio = radio,
+                                onClick = {
+                                    viewModel.onEvent(HomeUIEvent.OnRadioClick(radio.id))
+                                    onRadioClick(radio.id, radio.title)
+                                }
+                            )
+                        }
+                    }
+                }
+
                 item {
                     SectionHeader(
                         title = "En Popüler Şarkılar",
@@ -223,7 +248,7 @@ fun HomeScreen(
                 when {
                     uiState.isLoading -> {
                         items(5) {
-                            TrackCardSkeleton()
+                            LoadingSkeleton()
                         }
                     }
 

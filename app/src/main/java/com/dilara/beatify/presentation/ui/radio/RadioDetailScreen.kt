@@ -1,9 +1,8 @@
-package com.dilara.beatify.presentation.ui.genre
+package com.dilara.beatify.presentation.ui.radio
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,38 +13,42 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.dilara.beatify.domain.model.Track
-import com.dilara.beatify.presentation.state.GenreDetailUIEvent
-import com.dilara.beatify.presentation.ui.components.ArtistCard
+import com.dilara.beatify.presentation.state.RadioDetailUIEvent
 import com.dilara.beatify.presentation.ui.components.TrackCard
-import com.dilara.beatify.presentation.ui.components.common.HorizontalItemsList
 import com.dilara.beatify.presentation.ui.components.common.LoadingSkeleton
 import com.dilara.beatify.presentation.ui.components.common.SectionHeader
 import com.dilara.beatify.presentation.ui.components.common.SimpleDetailHeader
 import com.dilara.beatify.presentation.ui.hooks.useFavoritesState
-import com.dilara.beatify.presentation.viewmodel.GenreDetailViewModel
+import com.dilara.beatify.presentation.viewmodel.RadioDetailViewModel
 import com.dilara.beatify.ui.theme.themeBackground
 import com.dilara.beatify.ui.theme.themeTextPrimary
 
 @Composable
-fun GenreDetailScreen(
-    genreId: Long,
-    viewModel: GenreDetailViewModel = hiltViewModel(),
+fun RadioDetailScreen(
+    radioId: Long,
+    initialRadioTitle: String? = null,
+    viewModel: RadioDetailViewModel = hiltViewModel(),
     onTrackClick: (Track, List<Track>) -> Unit = { _, _ -> },
-    onArtistClick: (Long) -> Unit = {},
     onNavigateBack: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val favoritesState = useFavoritesState()
+    
+    // initialRadioTitle'ı remember ile sakla (radioId değiştiğinde güncelle)
+    val rememberedTitle = remember(radioId) { initialRadioTitle }
 
-    LaunchedEffect(genreId) {
-        viewModel.onEvent(GenreDetailUIEvent.LoadGenre(genreId))
+    LaunchedEffect(radioId) {
+        viewModel.onEvent(RadioDetailUIEvent.LoadRadio(radioId, initialRadioTitle))
     }
+    
+    val displayTitle = rememberedTitle ?: uiState.radio?.title ?: "Radyo"
 
     Box(
         modifier = Modifier
@@ -62,7 +65,7 @@ fun GenreDetailScreen(
             ),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            if (uiState.isLoading && uiState.artists.isEmpty()) {
+            if (uiState.isLoading && uiState.tracks.isEmpty()) {
                 items(
                     count = 5,
                     key = { index -> "loading_skeleton_$index" }
@@ -71,12 +74,11 @@ fun GenreDetailScreen(
                 }
             }
 
-            if (uiState.error != null && uiState.artists.isEmpty() && uiState.radioTracks.isEmpty()) {
+            if (uiState.error != null && uiState.tracks.isEmpty()) {
                 item(key = "error_section") {
-                    Column(
+                    Box(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                        contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = uiState.error ?: "Bir hata oluştu",
@@ -87,43 +89,21 @@ fun GenreDetailScreen(
                 }
             }
 
-            if (!uiState.isLoading || uiState.artists.isNotEmpty() || uiState.radioTracks.isNotEmpty()) {
-                if (uiState.artists.isNotEmpty()) {
-                    item(key = "artists_header") {
-                        SectionHeader(title = "Popüler Sanatçılar")
-                    }
-
-                    item(key = "artists_list") {
-                        HorizontalItemsList(
-                            items = uiState.artists.take(10),
-                            key = { artist -> "artist_${artist.id}" }
-                        ) { artist ->
-                            ArtistCard(
-                                artist = artist,
-                                onClick = {
-                                    viewModel.onEvent(GenreDetailUIEvent.OnArtistClick(artist.id))
-                                    onArtistClick(artist.id)
-                                },
-                                size = 120.dp
-                            )
-                        }
-                    }
-                }
-
-                if (uiState.radioTracks.isNotEmpty()) {
-                    item(key = "radio_header") {
-                        SectionHeader(title = "Radio Mix")
+            if (!uiState.isLoading || uiState.tracks.isNotEmpty()) {
+                if (uiState.tracks.isNotEmpty()) {
+                    item(key = "tracks_header") {
+                        SectionHeader(title = "Şarkılar")
                     }
 
                     items(
-                        items = uiState.radioTracks,
+                        items = uiState.tracks,
                         key = { track -> "radio_track_${track.id}" }
                     ) { track ->
                         TrackCard(
                             track = track,
                             onClick = {
-                                viewModel.onEvent(GenreDetailUIEvent.OnTrackClick(track.id))
-                                onTrackClick(track, uiState.radioTracks)
+                                viewModel.onEvent(RadioDetailUIEvent.OnTrackClick(track.id))
+                                onTrackClick(track, uiState.tracks)
                             },
                             isFavorite = favoritesState.favoriteTrackIds.contains(track.id),
                             onFavoriteClick = {
@@ -136,7 +116,7 @@ fun GenreDetailScreen(
         }
         
         SimpleDetailHeader(
-            title = uiState.genre?.name ?: "Genre",
+            title = displayTitle,
             onNavigateBack = onNavigateBack
         )
     }

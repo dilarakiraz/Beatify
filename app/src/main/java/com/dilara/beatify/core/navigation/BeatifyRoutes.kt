@@ -22,6 +22,14 @@ sealed class BeatifyRoutes(val route: String) {
     object GenreDetail : BeatifyRoutes("genre/{genreId}") {
         fun createRoute(genreId: Long) = "genre/$genreId"
     }
+    object RadioDetail : BeatifyRoutes("radio/{radioId}/{title}") {
+        fun createRoute(radioId: Long, radioTitle: String? = null) = 
+            if (radioTitle != null) {
+                "radio/$radioId/${java.net.URLEncoder.encode(radioTitle, "UTF-8")}"
+            } else {
+                "radio/$radioId/_"
+            }
+    }
 }
 
 

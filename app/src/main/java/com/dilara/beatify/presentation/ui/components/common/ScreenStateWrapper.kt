@@ -38,7 +38,7 @@ fun ScreenStateWrapper(
             ) {
                 item { headerContent() }
                 items(5) {
-                    TrackCardSkeleton()
+                    LoadingSkeleton()
                 }
             }
         }

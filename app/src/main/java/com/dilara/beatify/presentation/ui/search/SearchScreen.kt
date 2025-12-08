@@ -32,7 +32,7 @@ import com.dilara.beatify.presentation.ui.components.common.CircularSearchHistor
 import com.dilara.beatify.presentation.ui.components.common.EmptySection
 import com.dilara.beatify.presentation.ui.components.common.ErrorSection
 import com.dilara.beatify.presentation.ui.components.common.SectionHeader
-import com.dilara.beatify.presentation.ui.components.common.TrackCardSkeleton
+import com.dilara.beatify.presentation.ui.components.common.LoadingSkeleton
 import com.dilara.beatify.presentation.ui.hooks.useFavoritesState
 import com.dilara.beatify.presentation.viewmodel.SearchViewModel
 import com.dilara.beatify.ui.theme.themeBackground
@@ -81,7 +81,7 @@ fun SearchScreen(
         when {
             uiState.isLoading -> {
                 items(5) {
-                    TrackCardSkeleton()
+                    LoadingSkeleton()
                 }
             }
 
@@ -101,7 +101,7 @@ fun SearchScreen(
             uiState.searchQuery.isBlank() -> {
                 if (uiState.isLoadingSuggestions) {
                     items(5) {
-                        TrackCardSkeleton()
+                        LoadingSkeleton()
                     }
                 } else {
                     if (uiState.searchHistory.isNotEmpty()) {

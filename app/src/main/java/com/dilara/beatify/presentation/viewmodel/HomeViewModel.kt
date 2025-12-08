@@ -42,6 +42,10 @@ class HomeViewModel @Inject constructor(
                 // Handled by navigation
             }
 
+            is HomeUIEvent.OnRadioClick -> {
+                // Handled by navigation
+            }
+
             is HomeUIEvent.Retry -> {
                 loadHomeData()
             }
@@ -80,6 +84,13 @@ class HomeViewModel @Inject constructor(
                 .onSuccess { genres ->
                     val filteredGenres = genres.filter { it.id != 0L }
                     _uiState.value = _uiState.value.copy(genres = filteredGenres)
+                }
+                .onFailure { exception ->
+                }
+
+            musicRepository.getRadios()
+                .onSuccess { radios ->
+                    _uiState.value = _uiState.value.copy(radios = radios)
                 }
                 .onFailure { exception ->
                 }

@@ -11,7 +11,7 @@ data class RadioDetailUIState(
 )
 
 sealed class RadioDetailUIEvent {
-    data class LoadRadio(val radioId: Long) : RadioDetailUIEvent()
+    data class LoadRadio(val radioId: Long, val initialRadioTitle: String? = null) : RadioDetailUIEvent()
     data class OnTrackClick(val trackId: Long) : RadioDetailUIEvent()
     data object Retry : RadioDetailUIEvent()
 }

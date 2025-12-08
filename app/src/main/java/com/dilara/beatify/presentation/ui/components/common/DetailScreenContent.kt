@@ -43,7 +43,7 @@ fun DetailScreenContent(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(5) {
-                        TrackCardSkeleton()
+                        LoadingSkeleton()
                     }
                 }
             }

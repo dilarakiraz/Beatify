@@ -56,7 +56,7 @@ import com.dilara.beatify.presentation.ui.components.common.DraggableLazyColumn
 import com.dilara.beatify.presentation.ui.components.common.EmptySection
 import com.dilara.beatify.presentation.ui.components.common.ErrorSection
 import com.dilara.beatify.presentation.ui.components.common.FloatingActionButton
-import com.dilara.beatify.presentation.ui.components.common.TrackCardSkeleton
+import com.dilara.beatify.presentation.ui.components.common.LoadingSkeleton
 import com.dilara.beatify.presentation.viewmodel.PlaylistDetailViewModel
 import com.dilara.beatify.ui.theme.themeBackground
 import com.dilara.beatify.ui.theme.DarkSurface
@@ -299,7 +299,7 @@ fun PlaylistDetailScreen(
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         items(5) {
-                            TrackCardSkeleton()
+                            LoadingSkeleton()
                         }
                     }
                 }

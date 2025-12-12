@@ -100,6 +100,21 @@ dependencies {
     
     // Testing
     testImplementation(libs.junit)
+    
+    // Mockito for mocking
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
+    
+    // Coroutines testing
+    testImplementation(libs.kotlinx.coroutines.test)
+    
+    // Turbine for Flow testing
+    testImplementation(libs.turbine)
+    
+    // Truth for assertions
+    testImplementation(libs.truth)
+    
+    // Android Testing
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

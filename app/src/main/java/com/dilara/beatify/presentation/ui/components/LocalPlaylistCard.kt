@@ -33,6 +33,10 @@ import coil.compose.AsyncImage
 import com.dilara.beatify.domain.model.Playlist
 import com.dilara.beatify.ui.theme.DarkSurface
 import com.dilara.beatify.ui.theme.LightSurface
+import com.dilara.beatify.ui.theme.NeonCyan
+import com.dilara.beatify.ui.theme.NeonPurple
+import com.dilara.beatify.ui.theme.LightPrimary
+import com.dilara.beatify.ui.theme.LightTertiary
 import com.dilara.beatify.ui.theme.isDarkTheme
 import com.dilara.beatify.core.utils.stringResource
 import com.dilara.beatify.R
@@ -86,8 +90,23 @@ fun LocalPlaylistCard(
                         .fillMaxWidth()
                         .height(120.dp)
                         .background(
-                            if (isDarkTheme) DarkSurface.copy(alpha = 0.5f)
-                            else LightSurface.copy(alpha = 0.8f)
+                            brush = if (isDarkTheme) {
+                                Brush.linearGradient(
+                                    colors = listOf(
+                                        NeonPurple.copy(alpha = 0.6f),
+                                        NeonCyan.copy(alpha = 0.5f),
+                                        NeonPurple.copy(alpha = 0.45f)
+                                    )
+                                )
+                            } else {
+                                Brush.linearGradient(
+                                    colors = listOf(
+                                        LightPrimary.copy(alpha = 0.5f),
+                                        LightTertiary.copy(alpha = 0.45f),
+                                        LightPrimary.copy(alpha = 0.4f)
+                                    )
+                                )
+                            }
                         )
                 )
             }

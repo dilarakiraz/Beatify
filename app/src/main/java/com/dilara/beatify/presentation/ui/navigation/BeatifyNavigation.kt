@@ -194,8 +194,8 @@ fun BeatifyNavigation(
                     popExitTransition = NavigationAnimations.homeScreenPopTransitions().second
                 ) {
                     HomeScreen(
-                        onTrackClick = { track ->
-                            playerViewModel.onEvent(PlayerUIEvent.PlayTrack(track, emptyList()))
+                        onTrackClick = { track, playlist ->
+                            playerViewModel.onEvent(PlayerUIEvent.PlayTrack(track, playlist))
                         },
                         onArtistClick = { artistId ->
                             navController.navigate(BeatifyRoutes.ArtistDetail.createRoute(artistId))
@@ -223,8 +223,8 @@ fun BeatifyNavigation(
                     popExitTransition = NavigationAnimations.bottomNavScreenPopTransitions().second
                 ) {
                     SearchScreen(
-                        onTrackClick = { track ->
-                            playerViewModel.onEvent(PlayerUIEvent.PlayTrack(track, emptyList()))
+                        onTrackClick = { track, playlist ->
+                            playerViewModel.onEvent(PlayerUIEvent.PlayTrack(track, playlist))
                         },
                         onArtistClick = { artistId ->
                             navController.navigate(BeatifyRoutes.ArtistDetail.createRoute(artistId))
@@ -246,8 +246,8 @@ fun BeatifyNavigation(
                     popExitTransition = NavigationAnimations.bottomNavScreenPopTransitions().second
                 ) {
                     FavoritesScreen(
-                        onTrackClick = { track ->
-                            playerViewModel.onEvent(PlayerUIEvent.PlayTrack(track, emptyList()))
+                        onTrackClick = { track, playlist ->
+                            playerViewModel.onEvent(PlayerUIEvent.PlayTrack(track, playlist))
                         }
                     )
                 }

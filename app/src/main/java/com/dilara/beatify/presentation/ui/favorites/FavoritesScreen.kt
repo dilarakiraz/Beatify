@@ -24,7 +24,7 @@ import com.dilara.beatify.R
 @Composable
 fun FavoritesScreen(
     viewModel: FavoritesViewModel = hiltViewModel(),
-    onTrackClick: (com.dilara.beatify.domain.model.Track) -> Unit = {},
+    onTrackClick: (com.dilara.beatify.domain.model.Track, List<com.dilara.beatify.domain.model.Track>) -> Unit = { _, _ -> },
     onArtistClick: (Long) -> Unit = {},
     onAlbumClick: (Long) -> Unit = {}
 ) {
@@ -69,7 +69,7 @@ fun FavoritesScreen(
                 track = track,
                 onClick = {
                     viewModel.onEvent(FavoritesUIEvent.OnTrackClick(track.id))
-                    onTrackClick(track)
+                    onTrackClick(track, uiState.favoriteTracks)
                 },
                 isFavorite = true,
                 onFavoriteClick = {

@@ -11,6 +11,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import com.dilara.beatify.core.player.PlayerStateHolder
 import com.dilara.beatify.domain.model.Track
+import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.Player
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.core.graphics.drawable.toBitmap
@@ -22,6 +23,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -47,13 +49,20 @@ class MusicService : Service() {
     private val playerListener = object : Player.Listener {
         override fun onPlaybackStateChanged(playbackState: Int) {
             updatePlaybackState()
+            updateMediaMetadata(currentTrack, currentCover)
         }
         
         override fun onIsPlayingChanged(isPlaying: Boolean) {
-            // Update state immediately
             this@MusicService.isPlaying = isPlaying
-            // Update notification and playback state
             updateNotification()
+            updatePlaybackState()
+        }
+        
+        override fun onPositionDiscontinuity(
+            oldPosition: Player.PositionInfo,
+            newPosition: Player.PositionInfo,
+            reason: Int
+        ) {
             updatePlaybackState()
         }
     }
@@ -159,7 +168,17 @@ class MusicService : Service() {
     private fun setupPlayer() {
         val player = playerStateHolder.getPlayer()
         player.addListener(playerListener)
-        isPlaying = player.isPlaying
+        
+        launchOnMain {
+            isPlaying = player.isPlaying
+            
+            while (true) {
+                delay(1000)
+                if (player.isPlaying || player.playbackState == Player.STATE_READY) {
+                    updatePlaybackState()
+                }
+            }
+        }
     }
     
     fun startForegroundService(
@@ -383,27 +402,41 @@ class MusicService : Service() {
         val session = mediaSession ?: return
         val artist = track?.artist?.name ?: ""
         val title = track?.title ?: ""
+        
+        serviceScope.launch {
+            withContext(Dispatchers.Main) {
+                val player = playerStateHolder.getPlayer()
+                
+                val duration = if (player.duration > 0 && player.duration != C.TIME_UNSET) {
+                    player.duration
+                } else {
+                    0L
+                }
 
-        val metadataBuilder = MediaMetadataCompat.Builder()
-            .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
-            .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artist)
-            .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, track?.album?.title ?: "")
+                val metadataBuilder = MediaMetadataCompat.Builder()
+                    .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
+                    .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artist)
+                    .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, track?.album?.title ?: "")
 
-        if (cover != null) {
-            metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, cover)
+                if (duration > 0) {
+                    metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, duration)
+                }
+
+                if (cover != null) {
+                    metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, cover)
+                }
+
+                session.setMetadata(metadataBuilder.build())
+            }
         }
-
-        session.setMetadata(metadataBuilder.build())
     }
     
     private fun pause() {
         playerStateHolder.pause()
-        // State will be updated by playerListener.onIsPlayingChanged
     }
     
     private fun resume() {
         playerStateHolder.resume()
-        // State will be updated by playerListener.onIsPlayingChanged
     }
     
     fun getMediaSessionToken(): MediaSessionCompat.Token? {

@@ -59,7 +59,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
-    onTrackClick: (com.dilara.beatify.domain.model.Track) -> Unit = {},
+    onTrackClick: (com.dilara.beatify.domain.model.Track, List<com.dilara.beatify.domain.model.Track>) -> Unit = { _, _ -> },
     onArtistClick: (Long) -> Unit = {},
     onAlbumClick: (Long) -> Unit = {},
     onGenreClick: (Long) -> Unit = {},
@@ -139,7 +139,7 @@ fun HomeScreen(
                                 track = track,
                                 onClick = {
                                     viewModel.onEvent(HomeUIEvent.OnTrackClick(track.id))
-                                    onTrackClick(track)
+                                    onTrackClick(track, uiState.topTracks)
                                 },
                                 isFavorite = favoritesState.favoriteTrackIds.contains(track.id),
                                 onFavoriteClick = {
@@ -166,7 +166,7 @@ fun HomeScreen(
                                 track = track,
                                 onClick = {
                                     viewModel.onEvent(HomeUIEvent.OnTrackClick(track.id))
-                                    onTrackClick(track)
+                                    onTrackClick(track, uiState.dailyMix.take(10))
                                 },
                                 isFavorite = favoritesState.favoriteTrackIds.contains(track.id),
                                 onFavoriteClick = {
@@ -310,7 +310,7 @@ fun HomeScreen(
                                 track = track,
                                 onClick = {
                                     viewModel.onEvent(HomeUIEvent.OnTrackClick(track.id))
-                                    onTrackClick(track)
+                                    onTrackClick(track, uiState.recentTracks)
                                 },
                                 isFavorite = favoritesState.favoriteTrackIds.contains(track.id),
                                 onFavoriteClick = {
@@ -365,7 +365,7 @@ fun HomeScreen(
                                     track = track,
                                     onClick = {
                                         viewModel.onEvent(HomeUIEvent.OnTrackClick(track.id))
-                                        onTrackClick(track)
+                                        onTrackClick(track, uiState.topTracks)
                                     },
                                     isFavorite = favoritesState.favoriteTrackIds.contains(track.id),
                                     onFavoriteClick = {

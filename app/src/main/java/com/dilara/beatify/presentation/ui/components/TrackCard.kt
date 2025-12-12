@@ -41,6 +41,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.dilara.beatify.R
+import com.dilara.beatify.core.utils.stringResource
 import com.dilara.beatify.domain.model.Track
 import com.dilara.beatify.presentation.ui.components.common.FavoriteButton
 import com.dilara.beatify.ui.theme.BeatifyGradients
@@ -50,8 +52,6 @@ import com.dilara.beatify.ui.theme.NeonPink
 import com.dilara.beatify.ui.theme.isDarkTheme
 import com.dilara.beatify.ui.theme.themeTextPrimary
 import com.dilara.beatify.ui.theme.themeTextSecondary
-import com.dilara.beatify.core.utils.stringResource
-import com.dilara.beatify.R
 
 enum class TrackCardStyle {
     VERTICAL,
@@ -223,15 +223,20 @@ fun TrackCard(
                         }
                     }
 
-                    if (onFavoriteClick == null && onDelete == null) {
-                        Text(
-                            text = formatDuration(track.duration),
-                            fontSize = config.durationFontSize,
-                            color = themeTextSecondary,
-                            fontWeight = if (style == TrackCardStyle.HORIZONTAL) FontWeight.Medium else FontWeight.Normal,
-                            modifier = if (style == TrackCardStyle.VERTICAL) Modifier.padding(end = 8.dp) else Modifier
-                        )
-                    }
+                    Text(
+                        text = formatDuration(track.duration),
+                        fontSize = config.durationFontSize,
+                        color = themeTextSecondary,
+                        fontWeight = if (style == TrackCardStyle.HORIZONTAL) FontWeight.Medium else FontWeight.Normal,
+                        modifier = Modifier
+                            .then(
+                                if (style == TrackCardStyle.VERTICAL) {
+                                    Modifier.padding(end = if (onFavoriteClick != null || onDelete != null) 44.dp else 8.dp)
+                                } else {
+                                    Modifier
+                                }
+                            )
+                    )
                 }
             }
 

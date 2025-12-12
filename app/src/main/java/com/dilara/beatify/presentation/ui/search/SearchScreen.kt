@@ -64,7 +64,7 @@ import com.dilara.beatify.R
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel = hiltViewModel(),
-    onTrackClick: (com.dilara.beatify.domain.model.Track) -> Unit = {},
+    onTrackClick: (com.dilara.beatify.domain.model.Track, List<com.dilara.beatify.domain.model.Track>) -> Unit = { _, _ -> },
     onArtistClick: (Long) -> Unit = {},
     onAlbumClick: (Long) -> Unit = {},
     onPlaylistClick: (Long, String) -> Unit = { _, _ -> }
@@ -239,7 +239,7 @@ fun SearchScreen(
                                         track = history.track,
                                         onClick = {
                                             viewModel.onEvent(SearchUIEvent.OnTrackClick(history.track.id))
-                                            onTrackClick(history.track)
+                                            onTrackClick(history.track, listOf(history.track))
                                         },
                                         onDelete = {
                                             viewModel.onEvent(SearchUIEvent.DeleteSearchHistory(history.id))
@@ -276,7 +276,7 @@ fun SearchScreen(
                                     track = track,
                                     onClick = {
                                         viewModel.onEvent(SearchUIEvent.OnTrackClick(track.id))
-                                        onTrackClick(track)
+                                        onTrackClick(track, uiState.suggestedTracks)
                                     },
                                     isFavorite = favoritesState.favoriteTrackIds.contains(track.id),
                                     onFavoriteClick = {
@@ -416,7 +416,7 @@ fun SearchScreen(
                                         track = track,
                                         onClick = {
                                             viewModel.onEvent(SearchUIEvent.OnTrackClick(track.id))
-                                            onTrackClick(track)
+                                            onTrackClick(track, uiState.tracks)
                                         },
                                         isFavorite = favoritesState.favoriteTrackIds.contains(track.id),
                                         onFavoriteClick = {
@@ -448,7 +448,7 @@ fun SearchScreen(
                                         track = track,
                                         onClick = {
                                             viewModel.onEvent(SearchUIEvent.OnTrackClick(track.id))
-                                            onTrackClick(track)
+                                            onTrackClick(track, uiState.tracks)
                                         },
                                         isFavorite = favoritesState.favoriteTrackIds.contains(track.id),
                                         onFavoriteClick = {

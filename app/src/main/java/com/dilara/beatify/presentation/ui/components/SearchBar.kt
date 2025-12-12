@@ -96,8 +96,7 @@ fun BeatifySearchBar(
                 onValueChange = onQueryChange,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight()
-                    .alpha(alpha),
+                    .fillMaxHeight(),
                 placeholder = {
                     Text(
                         text = displayPlaceholder,
@@ -128,27 +127,16 @@ fun BeatifySearchBar(
                     }
                 },
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = if (isDarkTheme) {
-                        DarkSurface.copy(alpha = 0.8f)
-                    } else {
-                        LightSurface.copy(alpha = 0.95f)
-                    },
-                    unfocusedContainerColor = if (isDarkTheme) {
-                        DarkSurface.copy(alpha = 0.6f)
-                    } else {
-                        LightSurface.copy(alpha = 0.85f)
-                    },
+                    // Container color'u transparent yap ki arka plandaki gradient görünsün
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
                     focusedTextColor = themeTextPrimary,
                     unfocusedTextColor = themeTextPrimary,
                     disabledTextColor = themeTextSecondary,
-                    disabledContainerColor = if (isDarkTheme) {
-                        DarkSurface.copy(alpha = 0.4f)
-                    } else {
-                        LightSurface.copy(alpha = 0.7f)
-                    }
+                    disabledContainerColor = Color.Transparent
                 ),
                 shape = RoundedCornerShape(14.dp),
                 singleLine = true,

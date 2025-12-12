@@ -14,6 +14,3 @@ fun DeezerRadioDto.toDomain(): Radio {
         pictureXl = pictureXl
     )
 }
-
-
-

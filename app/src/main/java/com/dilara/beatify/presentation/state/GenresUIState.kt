@@ -12,6 +12,3 @@ sealed class GenresUIEvent {
     data class OnGenreClick(val genreId: Long) : GenresUIEvent()
     data object Retry : GenresUIEvent()
 }
-
-
-

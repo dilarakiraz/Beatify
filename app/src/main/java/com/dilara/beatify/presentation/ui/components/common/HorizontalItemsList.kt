@@ -30,6 +30,3 @@ fun <T> HorizontalItemsList(
         }
     }
 }
-
-
-

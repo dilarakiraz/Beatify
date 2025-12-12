@@ -11,5 +11,3 @@ data class Album(
     val artist: Artist,
     val tracks: List<Track> = emptyList()
 )
-
-

@@ -12,6 +12,3 @@ data class Genre(
     val pictureBig: String?,
     val pictureXl: String?
 )
-
-
-

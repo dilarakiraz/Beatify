@@ -15,4 +15,3 @@ sealed class PublicPlaylistDetailUIEvent {
     data class OnTrackClick(val trackId: Long) : PublicPlaylistDetailUIEvent()
     data object Retry : PublicPlaylistDetailUIEvent()
 }
-

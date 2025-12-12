@@ -13,7 +13,3 @@ data class PlaylistEntity(
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis()
 )
-
-
-
-

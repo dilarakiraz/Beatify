@@ -46,4 +46,3 @@ class RecentTracksRepositoryImpl @Inject constructor(
         }
     }
 }
-

@@ -8,7 +8,3 @@ data class Playlist(
     val createdAt: Long,
     val updatedAt: Long
 )
-
-
-
-

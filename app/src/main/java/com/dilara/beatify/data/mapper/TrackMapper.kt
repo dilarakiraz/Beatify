@@ -27,7 +27,3 @@ fun DeezerTrackResponse.toDomain(): Track {
         album = album.toDomain(artist = artist.toDomain())
     )
 }
-
-
-
-

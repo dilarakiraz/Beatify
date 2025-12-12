@@ -12,6 +12,3 @@ sealed class RadiosUIEvent {
     data class OnRadioClick(val radioId: Long) : RadiosUIEvent()
     data object Retry : RadiosUIEvent()
 }
-
-
-

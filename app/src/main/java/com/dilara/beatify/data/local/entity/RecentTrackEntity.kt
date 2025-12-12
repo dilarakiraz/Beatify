@@ -18,4 +18,3 @@ data class RecentTrackEntity(
     val albumCover: String?,
     val playedAt: Long = System.currentTimeMillis()
 )
-

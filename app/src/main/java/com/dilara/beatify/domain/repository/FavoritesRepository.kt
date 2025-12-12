@@ -39,7 +39,3 @@ interface FavoritesRepository {
      */
     suspend fun reorderFavorites(fromIndex: Int, toIndex: Int): Result<Unit>
 }
-
-
-
-

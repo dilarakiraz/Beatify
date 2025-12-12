@@ -12,6 +12,3 @@ data class Radio(
     val pictureBig: String?,
     val pictureXl: String?
 )
-
-
-

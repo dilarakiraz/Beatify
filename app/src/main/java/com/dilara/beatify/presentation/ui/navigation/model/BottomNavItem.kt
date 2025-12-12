@@ -8,7 +8,3 @@ data class BottomNavItem(
     val route: String,
     val selectedIcon: ImageVector = icon
 )
-
-
-
-

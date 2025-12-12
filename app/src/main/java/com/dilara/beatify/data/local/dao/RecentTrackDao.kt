@@ -31,4 +31,3 @@ interface RecentTrackDao {
     @Query("DELETE FROM recent_tracks WHERE trackId IN (SELECT trackId FROM recent_tracks ORDER BY playedAt DESC LIMIT -1 OFFSET :keepCount)")
     suspend fun keepOnlyRecent(keepCount: Int = 100)
 }
-

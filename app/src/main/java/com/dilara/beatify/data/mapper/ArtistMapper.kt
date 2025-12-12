@@ -27,7 +27,3 @@ fun DeezerArtistResponse.toDomain(): Artist {
         pictureXl = pictureXl
     )
 }
-
-
-
-

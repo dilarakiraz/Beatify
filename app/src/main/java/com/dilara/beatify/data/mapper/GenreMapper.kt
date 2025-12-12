@@ -14,6 +14,3 @@ fun DeezerGenreDto.toDomain(): Genre {
         pictureXl = pictureXl
     )
 }
-
-
-

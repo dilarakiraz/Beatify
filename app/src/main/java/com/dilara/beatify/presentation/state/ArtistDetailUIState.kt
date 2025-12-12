@@ -17,6 +17,3 @@ sealed class ArtistDetailUIEvent {
     data class LoadArtist(val artistId: Long) : ArtistDetailUIEvent()
     data class Refresh(val artistId: Long) : ArtistDetailUIEvent()
 }
-
-
-

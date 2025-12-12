@@ -15,4 +15,3 @@ data class PublicPlaylist(
     val trackCount: Int,
     val creatorName: String? = null
 )
-

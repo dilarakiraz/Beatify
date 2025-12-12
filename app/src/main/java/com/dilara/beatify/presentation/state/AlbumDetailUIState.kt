@@ -14,4 +14,3 @@ sealed class AlbumDetailUIEvent {
     data class LoadAlbum(val albumId: Long) : AlbumDetailUIEvent()
     data class Refresh(val albumId: Long) : AlbumDetailUIEvent()
 }
-

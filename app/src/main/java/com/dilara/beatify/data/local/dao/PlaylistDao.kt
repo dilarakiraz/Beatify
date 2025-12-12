@@ -63,7 +63,3 @@ interface PlaylistDao {
     @Query("UPDATE playlists SET position = :newPosition WHERE id = :playlistId")
     suspend fun updatePlaylistPosition(playlistId: Long, newPosition: Int)
 }
-
-
-
-

@@ -24,4 +24,3 @@ interface RecentTracksRepository {
      */
     suspend fun clearRecentTracks(): Result<Unit>
 }
-

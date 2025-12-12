@@ -9,5 +9,3 @@ data class Artist(
     val pictureBig: String?,
     val pictureXl: String?
 )
-
-

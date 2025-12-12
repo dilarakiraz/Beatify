@@ -1,5 +1,6 @@
 package com.dilara.beatify.presentation.ui.navigation
 
+import android.content.IntentFilter
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -7,17 +8,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.Scaffold
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -28,20 +28,22 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.dilara.beatify.core.navigation.BeatifyRoutes
 import com.dilara.beatify.core.navigation.NavigationAnimations
+import com.dilara.beatify.core.service.BeatifyNotificationManager
+import com.dilara.beatify.core.service.MusicNotificationReceiver
 import com.dilara.beatify.presentation.state.PlayerUIEvent
+import com.dilara.beatify.presentation.ui.album.AlbumDetailScreen
+import com.dilara.beatify.presentation.ui.artist.ArtistDetailScreen
 import com.dilara.beatify.presentation.ui.components.BeatifyBottomNavigationBar
 import com.dilara.beatify.presentation.ui.components.player.FullScreenPlayer
 import com.dilara.beatify.presentation.ui.components.player.MiniPlayer
-import com.dilara.beatify.presentation.ui.album.AlbumDetailScreen
-import com.dilara.beatify.presentation.ui.artist.ArtistDetailScreen
 import com.dilara.beatify.presentation.ui.favorites.FavoritesScreen
 import com.dilara.beatify.presentation.ui.genre.GenreDetailScreen
 import com.dilara.beatify.presentation.ui.home.HomeScreen
-import com.dilara.beatify.presentation.ui.radio.RadioDetailScreen
 import com.dilara.beatify.presentation.ui.hooks.useFavoritesState
-import com.dilara.beatify.presentation.ui.playlists.PlaylistDetailScreen
 import com.dilara.beatify.presentation.ui.playlist.PublicPlaylistDetailScreen
+import com.dilara.beatify.presentation.ui.playlists.PlaylistDetailScreen
 import com.dilara.beatify.presentation.ui.playlists.PlaylistsScreen
+import com.dilara.beatify.presentation.ui.radio.RadioDetailScreen
 import com.dilara.beatify.presentation.ui.search.SearchScreen
 import com.dilara.beatify.presentation.viewmodel.PlayerViewModel
 
@@ -52,8 +54,50 @@ fun BeatifyNavigation(
 ) {
     val playerViewModel: PlayerViewModel = hiltViewModel()
     val playerState by playerViewModel.uiState.collectAsState()
+    val context = LocalContext.current
     
     val favoritesState = useFavoritesState()
+    
+    // Register notification receiver
+    DisposableEffect(Unit) {
+        val receiver = MusicNotificationReceiver(
+            onPlayPause = {
+                playerViewModel.onEvent(PlayerUIEvent.PlayPause)
+            },
+            onNext = {
+                playerViewModel.onEvent(PlayerUIEvent.Next)
+            },
+            onPrevious = {
+                playerViewModel.onEvent(PlayerUIEvent.Previous)
+            },
+            onStop = {
+                playerViewModel.onEvent(PlayerUIEvent.Collapse)
+                // Service will be stopped automatically
+            }
+        )
+        
+        val filter = IntentFilter().apply {
+            addAction(BeatifyNotificationManager.ACTION_PLAY_PAUSE)
+            addAction(BeatifyNotificationManager.ACTION_NEXT)
+            addAction(BeatifyNotificationManager.ACTION_PREVIOUS)
+            addAction(BeatifyNotificationManager.ACTION_STOP)
+        }
+        
+        ContextCompat.registerReceiver(
+            context,
+            receiver,
+            filter,
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
+        
+        onDispose {
+            try {
+                context.unregisterReceiver(receiver)
+            } catch (e: Exception) {
+                // Receiver might not be registered
+            }
+        }
+    }
     
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route

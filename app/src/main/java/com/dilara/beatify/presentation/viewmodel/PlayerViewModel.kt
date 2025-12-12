@@ -5,6 +5,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.dilara.beatify.R
 import com.dilara.beatify.core.player.PlayerStateHolder
+import com.dilara.beatify.core.service.NotificationAction
+import com.dilara.beatify.core.service.NotificationActionBus
+import com.dilara.beatify.core.service.ServiceHelper
 import com.dilara.beatify.domain.model.Track
 import com.dilara.beatify.domain.repository.MusicRepository
 import com.dilara.beatify.domain.repository.RecentTracksRepository
@@ -14,6 +17,7 @@ import com.dilara.beatify.presentation.state.RepeatMode
 import com.google.android.exoplayer2.Player
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -35,6 +39,7 @@ class PlayerViewModel @Inject constructor(
 
     init {
         observePlayerState()
+        observeNotificationActions()
     }
 
     fun onEvent(event: PlayerUIEvent) {
@@ -77,6 +82,29 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
+    private fun observeNotificationActions() {
+        viewModelScope.launch {
+            NotificationActionBus.actions.collectLatest { action ->
+                when (action) {
+                    NotificationAction.PLAY_PAUSE -> {
+                        // Service already toggled, just sync UI state with player state
+                        val player = playerStateHolder.getPlayer()
+                        _uiState.value = _uiState.value.copy(isPlaying = player.isPlaying)
+                        ServiceHelper.updateNotification(
+                            _uiState.value.currentTrack,
+                            player.isPlaying,
+                            _uiState.value.playlist,
+                            _uiState.value.currentIndex
+                        )
+                    }
+                    NotificationAction.NEXT -> onEvent(PlayerUIEvent.Next)
+                    NotificationAction.PREVIOUS -> onEvent(PlayerUIEvent.Previous)
+                    NotificationAction.STOP -> onEvent(PlayerUIEvent.Collapse)
+                }
+            }
+        }
+    }
+
     private fun playTrack(track: Track, playlist: List<Track>) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(
@@ -108,11 +136,18 @@ class PlayerViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(
                 playlist = trackList,
                 currentIndex = index,
-                position = 0L
+                position = 0L,
+                currentTrack = trackToPlay  // Ensure currentTrack is updated
             )
-    
+            
             recentTracksRepository.addRecentTrack(trackToPlay)
-    
+            
+            // Update notification immediately with new track
+            ServiceHelper.updateNotification(trackToPlay, _uiState.value.isPlaying, trackList, index)
+            
+            // Start foreground service (will update notification if service already running)
+            ServiceHelper.startService(getApplication(), trackToPlay, trackList, index)
+            
             startPlayback(url)
         }
     }
@@ -162,6 +197,14 @@ class PlayerViewModel @Inject constructor(
                     } else if (p.isPlaying) {
                         _uiState.value = _uiState.value.copy(isPlaying = true)
                     }
+                    
+                    // Update notification when playback is ready
+                    ServiceHelper.updateNotification(
+                        _uiState.value.currentTrack,
+                        p.isPlaying,
+                        _uiState.value.playlist,
+                        _uiState.value.currentIndex
+                    )
                 }
             }
         } catch (e: Exception) {
@@ -288,6 +331,14 @@ class PlayerViewModel @Inject constructor(
                             }
                             
                             _uiState.value = _uiState.value.copy(isPlaying = player.isPlaying && player.playWhenReady)
+                            
+                            // Update notification when ready
+                            ServiceHelper.updateNotification(
+                                _uiState.value.currentTrack,
+                                player.isPlaying,
+                                _uiState.value.playlist,
+                                _uiState.value.currentIndex
+                            )
                         }
                     }
                     Player.STATE_BUFFERING -> {
@@ -313,17 +364,16 @@ class PlayerViewModel @Inject constructor(
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 _uiState.value = _uiState.value.copy(isPlaying = isPlaying)
                 
-                if (!isPlaying && player.playWhenReady && player.playbackState == Player.STATE_READY) {
-                    viewModelScope.launch {
-                        delay(200)
-                        if (!player.isPlaying && player.playWhenReady && player.playbackState == Player.STATE_READY) {
-                            player.playWhenReady = false
-                            delay(50)
-                            player.playWhenReady = true
-                            _uiState.value = _uiState.value.copy(isPlaying = player.isPlaying)
-                        }
-                    }
-                }
+                // Update notification
+                ServiceHelper.updateNotification(
+                    _uiState.value.currentTrack,
+                    isPlaying,
+                    _uiState.value.playlist,
+                    _uiState.value.currentIndex
+                )
+                
+                // Removed the playWhenReady toggle logic as it was causing conflicts
+                // Service handles play/pause directly, ViewModel just syncs UI state
             }
             
             override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
@@ -365,6 +415,7 @@ class PlayerViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
+        ServiceHelper.stopService(getApplication())
         playerStateHolder.releasePlayer()
     }
 }

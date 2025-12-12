@@ -88,6 +88,9 @@ dependencies {
     // ExoPlayer
     implementation(libs.exoplayer)
     
+    // Media (for MediaSessionCompat)
+    implementation(libs.androidx.media)
+    
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
